@@ -8,5 +8,4 @@ function HomePage(){
     <div>첫번째 화면</div>
   );
 }
-
 export default HomePage;
