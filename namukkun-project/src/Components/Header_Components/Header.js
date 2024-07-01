@@ -72,8 +72,6 @@ const MenuButtonRight = styled.button`
 const MenuText = styled.div`
   color: #191919;
   text-align: center;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Min Sans";
   font-size: 20px;
   font-style: normal;
@@ -92,8 +90,6 @@ const Login = styled.div`
 const LoginButton = styled.button`
   color: #000;
   text-align: right;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Min Sans";
   font-size: 14px;
   font-style: normal;
