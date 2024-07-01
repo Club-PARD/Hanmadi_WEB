@@ -1,3 +1,13 @@
 import axios from "axios";
 
-//서버 연결 파일
+const server = process.env.REACT_APP_SERVER;
+
+
+export const getSendCodeAPI = async (code) => {
+  try {
+    const response = await axios.get(`${server}?code=${code}`,{withCredentials: true,});
+    return response;
+  } catch (err) {
+    console.error(err);
+  }
+};
