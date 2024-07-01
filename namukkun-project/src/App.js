@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
-import HomePage from './Pages/HomePage';
+import MainPage from './Pages/MainPage';
 import KaKaoLogin from './Components/Login_Components/KaKaoLogin';
 import ListPage from './Pages/ListPage';
 
@@ -9,7 +9,7 @@ import ListPage from './Pages/ListPage';
 function App() {
   return (
     <Routes>  
-      <Route path='/' element={<HomePage/>}/>
+      <Route path='/' element={<MainPage/>}/>
       <Route path='/login/oauth2/code/kakao' element={<KaKaoLogin/>}/>
       <Route path='/list' element={<ListPage/>}/>
     </Routes>
