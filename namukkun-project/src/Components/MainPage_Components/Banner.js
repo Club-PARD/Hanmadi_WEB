@@ -1,6 +1,6 @@
 import styled, { createGlobalStyle } from 'styled-components';
-import blueduck from '/Users/ion-yu/Desktop/나무꾼/Jigaesa_WEB/namukkun-project/src/Assets/Img/blueduck.svg';
-import whiteduck from '/Users/ion-yu/Desktop/나무꾼/Jigaesa_WEB/namukkun-project/src/Assets/Img/whiteduck.svg';
+import blueduck from '../../Assets/Img/blueduck.svg';
+import whiteduck from '../../Assets/Img/whiteduck.svg';
 
 import { BrowserRouter } from 'react-router-dom';
 import { GlobalStyle } from '../../Assets/Style/theme';
