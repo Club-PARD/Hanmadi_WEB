@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import Header from "../Components/MainPage_Components/Header";
 import Banner from '../Components/MainPage_Components/Banner';
 import pointer from '../Assets/Img/pointer.svg';
 import minilogo from '../Assets/Img/minilogo.svg';
 import IdeaPage from "../Components/MainPage_Components/IdeaPage";
+import Header from "../Components/Layout_Components/Header";
 
 function MainPage(){
 
