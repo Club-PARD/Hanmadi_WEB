@@ -103,7 +103,18 @@ export const GlobalStyle = createGlobalStyle`
       url('https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-Black.ttf') format("truetype");
   font-display: swap;
 }
-
+@font-face {
+        font-family: 'UhBeeJJIBBABBA';
+        src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_five@.2.0/UhBeeJJIBBABBA.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+@font-face {
+    font-family: 'MinSans-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/MinSans-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
   body{
       font-family: "Pretendard";
    }
@@ -113,11 +124,8 @@ export const GlobalStyle = createGlobalStyle`
 //밑에껀 예시 우리꺼에 맞게 수정하면 됨.
 export const theme = {
   colors: {
-    black: "#191919",
-    blue: "#005AFF",
-    accent: "#e74c3c",
-    background: "#ecf0f1",
-    text: "#2c3e50",
+    black: '#191919',
+    blue: '#005AFF',
   },
   Web_fontSizes: {
     Header1: "32px",
