@@ -10,7 +10,7 @@ function KaKaoLogin(){
 
   const code = params.get('code');
   if (code) {
-   const con = getSendCodeAPI(code);
+   getSendCodeAPI(code);
   }
 
 

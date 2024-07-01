@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import LoginModal from '../LoginModal_Components/LoginModal';
+import LoginModal from '../Login_Components/LoginModal';
 
 //Home_Components의 컴포넌트들을 여기 불러오면 됨. 화면에 띄울 페이지
 function Home(){

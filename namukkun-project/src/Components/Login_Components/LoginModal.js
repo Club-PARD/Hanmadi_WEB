@@ -10,7 +10,6 @@ const LoginModal = ({ show, onClose}) => {
   const rest = process.env.REACT_APP_REST_API_KEY;
   const redirect = process.env.REACT_APP_REDIRECT_URI;
 
-
   //카카오계정으로 게속하기 버튼 클릭시 카카오 로그인 페이지로 이동
   const url = `https://kauth.kakao.com/oauth/authorize?client_id=${rest}&redirect_uri=${redirect}&response_type=code`;
 
