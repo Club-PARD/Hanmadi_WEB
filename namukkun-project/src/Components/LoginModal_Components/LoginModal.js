@@ -2,9 +2,17 @@ import React from 'react';
 import styled from 'styled-components';
 
 const LoginModal = ({ show, onClose}) => {
+
   if(!show) {
     return null;
   }
+
+  const rest = process.env.REACT_APP_REST_API_KEY;
+  const redirect = process.env.REACT_APP_REDIRECT_URI;
+
+
+  //카카오계정으로 게속하기 버튼 클릭시 카카오 로그인 페이지로 이동
+  const url = `https://kauth.kakao.com/oauth/authorize?client_id=${rest}&redirect_uri=${redirect}&response_type=code`;
 
   return (
     <Modal onClick = {onClose}>
@@ -26,7 +34,7 @@ const LoginModal = ({ show, onClose}) => {
             </LoginGuide>
           </ModalBody>
           <ModalFooter>
-            <CloseButton onClick = {onClose}>카카오계정으로 계속하기</CloseButton>
+            <CloseButton href={url} >카카오계정으로 계속하기</CloseButton>
           </ModalFooter>
         </ModalContent>
       </ModalWindow>
@@ -137,7 +145,7 @@ const ModalFooter = styled.div`
   margin-top: 20px;
 `;
 
-const CloseButton = styled.button`
+const CloseButton = styled.a`
   display: flex;
   width: 390px;
   height: 50px;
@@ -148,6 +156,8 @@ const CloseButton = styled.button`
   background: #FFDC27;
   border: none;
   cursor: pointer;
+  text-decoration: none; /* 밑줄 제거 */
+  color: inherit;
 `;
 
 export default LoginModal;
