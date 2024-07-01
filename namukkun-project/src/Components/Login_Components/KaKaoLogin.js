@@ -14,7 +14,7 @@ function KaKaoLogin(){
    getSendCodeAPI(code);
   }
 
-
+  //아래에 스피너 등의 화면이 보여야 할 것 같음
   return(
     <div >
       로그인~~
