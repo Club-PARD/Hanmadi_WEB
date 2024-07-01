@@ -147,6 +147,7 @@ const CloseButton = styled.button`
   border-radius: 10px;
   background: #FFDC27;
   border: none;
+  cursor: pointer;
 `;
 
 export default LoginModal;
