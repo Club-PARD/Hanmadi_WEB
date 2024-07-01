@@ -4,6 +4,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { getSendCodeAPI } from "../../API/AxiosAPI";
 
+//카카오 로그인을 위해 카카오 로그인 페이지에서 인가코드를 추출해 서버에 보내는 함수
 function KaKaoLogin(){
 
   const params = new URL(document.location.toString()).searchParams;
