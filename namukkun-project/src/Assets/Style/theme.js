@@ -103,7 +103,6 @@ export const GlobalStyle = createGlobalStyle`
       url('https://cdn.jsdelivr.net/gh/webfontworld/pretendard/Pretendard-Black.ttf') format("truetype");
   font-display: swap;
 }
-<<<<<<< HEAD
 @font-face {
         font-family: 'UhBeeJJIBBABBA';
         src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_five@.2.0/UhBeeJJIBBABBA.woff') format('woff');
@@ -120,28 +119,13 @@ export const GlobalStyle = createGlobalStyle`
       font-family: "Pretendard";
    }
 
-=======
-
-  body{
-      font-family: "Pretendard";
-   }
-
->>>>>>> develop
 `;
 
 //밑에껀 예시 우리꺼에 맞게 수정하면 됨.
 export const theme = {
   colors: {
-<<<<<<< HEAD
     black: '#191919',
     blue: '#005AFF',
-=======
-    black: "#191919",
-    blue: "#005AFF",
-    accent: "#e74c3c",
-    background: "#ecf0f1",
-    text: "#2c3e50",
->>>>>>> develop
   },
   Web_fontSizes: {
     Header1: "32px",
