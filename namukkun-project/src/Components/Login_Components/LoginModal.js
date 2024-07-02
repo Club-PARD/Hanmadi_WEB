@@ -155,8 +155,6 @@ const LoginGuide = styled.div`
 const Content = styled.div`
   color: var(--Black-main, #191919);
   text-align: center;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Min Sans";
   font-size: 14px;
   font-style: normal;
