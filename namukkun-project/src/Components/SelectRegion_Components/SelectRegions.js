@@ -11,6 +11,7 @@ function SelectRegions() {
 
   return (
     <Container>
+      <GlobalStyle />
       <MainContainer>
         <ContentContainer>
           <IntroContainer>
