@@ -5,6 +5,7 @@ import pointer from '../Assets/Img/pointer.svg';
 import minilogo from '../Assets/Img/minilogo.svg';
 import IdeaPage from "../Components/MainPage_Components/IdeaPage";
 import Header from "../Components/Layout_Components/Header";
+import GreatIdeaPage from "../Components/MainPage_Components/GreatIdeaPage";
 
 function MainPage(){
 
@@ -13,6 +14,7 @@ function MainPage(){
       <Header/>
       <Banner/>
       <IdeaPage/>
+      <GreatIdeaPage/>
       <FixedButton>
         <Container><img src={pointer}></img></Container>
         <Container>
