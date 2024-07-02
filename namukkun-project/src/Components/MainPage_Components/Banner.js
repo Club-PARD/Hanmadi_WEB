@@ -15,10 +15,10 @@ function Banner() {
                 </WhiteduckContainer>
                 <BannerTextContainer>
                     <LineTextContainer>
-                    <BannerText>나의 용기낸{' '}<BannerText Color='blue'>한마디</BannerText><BannerText>가</BannerText></BannerText>
+                        <BannerText>나의 용기낸{' '}<BannerText $color='blue'>한마디</BannerText><BannerText>가</BannerText></BannerText>
                     </LineTextContainer>
                     <LineTextContainer>
-                    <BannerText Color='blue'>우리 지역</BannerText><BannerText>의 변화를,</BannerText>
+                        <BannerText $color='blue'>우리 지역</BannerText><BannerText>의 변화를,</BannerText>
                     </LineTextContainer>
                 </BannerTextContainer>
                 <BlueduckContainer>
@@ -38,6 +38,7 @@ const Container = styled.div`
     justify-content: center;
     align-items: center;
     background: radial-gradient(50% 50% at 50% 50%, #FFF 0%, #EAEAEA 100%);
+    overflow: hidden; /* Add this line */
 `;
 
 const WhiteduckContainer = styled.div`
@@ -65,7 +66,7 @@ const BannerTextContainer = styled.div`
 
 const LineTextContainer = styled.div`
     justify-content: center;
-`
+`;
 
 const BlueduckContainer = styled.div`
     width: 33%;
@@ -81,7 +82,7 @@ const BlueduckImg = styled.img`
 `;
 
 const BannerText = styled.span`
-    color: ${(props) => props.Color || '#191919'};
+    color: ${(props) => props.$color || '#191919'};
     font-size: 46px;
     font-style: normal;
     font-family: 'UhBeeJJIBBABBA';
