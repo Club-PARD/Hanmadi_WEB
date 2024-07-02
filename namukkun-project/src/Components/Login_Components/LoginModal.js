@@ -1,7 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { GlobalStyle } from '../../Assets/Style/theme';
 import styled from 'styled-components';
+import Cancel from '../../Assets/Img/Cancel.svg';
 
 const LoginModal = ({ show, onClose}) => {
+
+  useEffect(() => {
+    if(show) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [show]);
 
   if(!show) {
     return null;
@@ -16,6 +29,7 @@ const LoginModal = ({ show, onClose}) => {
   return (
     <Modal onClick = {onClose}>
       <ModalWindow onClick = {e => e.stopPropagation()}>
+        <CloseIcon src={Cancel} alt="Close" onClick={onClose} />
         <ModalContent>
           <ModalHeader>
             <ModalTitle>한마디 로그인</ModalTitle>
@@ -52,18 +66,30 @@ const Modal = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1100;
 `;
 
 const ModalWindow = styled.div`
+  position: relative;
   display: flex;
   width: 564px;
   padding: 71.5px 87px 72.5px 87px;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  box-sizing: border-box;
 
   border-radius: 20px;
   background: #FFF;
+`;
+
+const CloseIcon = styled.img`
+  position: absolute;
+  top: 30px;
+  right: 35px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
 `;
 
 const ModalContent = styled.div`
@@ -127,13 +153,16 @@ const LoginGuide = styled.div`
 `;
 
 const Content = styled.div`
-  color: #191919;
+  color: var(--Black-main, #191919);
   text-align: center;
+  leading-trim: both;
+  text-edge: cap;
   font-family: "Min Sans";
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
-  line-height: 30px;
+  line-height: normal; /* 214.286% */
+  margin: 0;
 `;
 
 const ModalFooter = styled.div`
