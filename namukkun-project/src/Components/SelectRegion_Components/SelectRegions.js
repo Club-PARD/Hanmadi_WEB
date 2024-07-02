@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 
 function SelectRegions() {
   const [selectedButton, setSelectedButton] = useState(null);
-  const [mycode, setMyCode] = useRecoilState(myCode);
   const navigate = useNavigate();
 
   const regionToInt = {
@@ -36,8 +35,9 @@ function SelectRegions() {
   const onClickSubmitRegion = () =>{
     console.log(regionToInt[selectedButton]);
 
-    if (mycode.code && regionToInt[selectedButton] && (state===1)) {
-      postRegisterRegion(mycode.code, parseInt(regionToInt[selectedButton]));
+    if (regionToInt[selectedButton] && (state===1)) {
+      const response = postRegisterRegion(parseInt(regionToInt[selectedButton]));
+      console.log(response);
       ++state;
       navigate('/');
     }
@@ -113,8 +113,6 @@ const IntroContainer = styled.div`
 const MainTitle = styled.div`
   align-self: stretch;
   color: #191919;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Min Sans";
   font-size: 28px;
   font-style: normal;
@@ -125,8 +123,6 @@ const MainTitle = styled.div`
 const SubTitle = styled.div`
   align-self: stretch;
   color: #191919;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Min Sans";
   font-size: 16px;
   font-style: normal;
