@@ -18,7 +18,8 @@ export const getSendCodeAPI = async (code) => {
 //회원가입하고 서버에 쿠키를 받음
 export const postRegisterRegion = async (code, region) =>{
   try{
-    const response =await axios.post(`${server}/login/createuser?code=${code}&local=${region}`)
+    const response = await axios.post(`${server}/login/create/user?code=${code}&local=${region}`); 
+
     return response;
   }
   catch(err){
