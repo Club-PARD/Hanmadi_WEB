@@ -138,9 +138,13 @@ const ContentImageContainer = styled.div`
     width: 100%;
     height: 210px;
     display: flex;
+    justify-content: space-between;
     flex-direction: row;
     border-bottom: 1px solid #DEDEDE;
     background: transparent;
+    &:hover{
+        cursor: pointer; 
+    }
 `;
 
 const DetailText = styled.span`
@@ -169,10 +173,13 @@ const ContentTitleText = styled.div`
     font-weight: 600;
     padding-bottom: 18px;
     background: transparent;
+    &:hover{
+        color: #005AFF; 
+        cursor: pointer; 
+    }
 `;
 
 const ContentTextContainer = styled.div`
-    width: 80%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -180,7 +187,6 @@ const ContentTextContainer = styled.div`
 `;
 
 const ImageContainer = styled.div`
-    width: 20%;
     height: 210px;
     display: flex;
     justify-content: flex-end;
@@ -205,7 +211,7 @@ const DuckContainer = styled.div`
     align-items: flex-end;
     justify-content: space-between;
     position: absolute;
-    top: calc(100% - 190px); 
+    top: calc(100% - 190px);  
     z-index: 1;
     background: transparent;
 `;

@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import imgcontent from '../../Assets/Img/imgcontent.svg';
@@ -5,7 +6,7 @@ import imgcontent from '../../Assets/Img/imgcontent.svg';
 function IdeaPage() {
     return (
         <Container>
-            <GlobalStyle/>
+            <GlobalStyle />
             <PopularContentContainer>
                 <TextContainer>
                     <LineTextContainer>
@@ -16,50 +17,51 @@ function IdeaPage() {
                     </LineTextContainer>
                 </TextContainer>
                 <TwoContentContainer>
-                    <ImageContentContainer>
-                        <img src={imgcontent} alt="content image" style={{ width: '515px' }} />
-                        <ContentTitleText>
-                            포항시 생태공원조성 사업 제안합니다.
-                        </ContentTitleText>
-                        <DetailContainer>
-                            <DetailText>작성자</DetailText>
-                            <DetailText $color="#5A5A5A">김**님</DetailText>
-                        </DetailContainer>
-                        <DetailContainer>
-                            <DetailText>종료일</DetailText>
-                            <DetailText $color="#5A5A5A">D-1</DetailText>
-                        </DetailContainer>
-                        <DetailContainer>
-                            <DetailText>공감수</DetailText>
-                            <DetailText $color="#5A5A5A">143</DetailText>
-                        </DetailContainer>
-                        <BraveButton>용기 보내기</BraveButton>
-                    </ImageContentContainer>
-
-                    <ImageContentContainer>
-                        <img src={imgcontent} alt="content image" style={{ width: '515px' }} />
-                        <ContentTitleText>
-                            포항시 생태공원조성 사업 제안합니다.
-                        </ContentTitleText>
-                        <DetailContainer>
-                            <DetailText>작성자</DetailText>
-                            <DetailText $color="#5A5A5A">김**님</DetailText>
-                        </DetailContainer>
-                        <DetailContainer>
-                            <DetailText>종료일</DetailText>
-                            <DetailText $color="#5A5A5A">D-1</DetailText>
-                        </DetailContainer>
-                        <DetailContainer>
-                            <DetailText>공감수</DetailText>
-                            <DetailText $color="#5A5A5A">143</DetailText>
-                        </DetailContainer>
-                        <BraveButton>용기 보내기</BraveButton>
-                    </ImageContentContainer>
+                    <ImageContent title="포항시 생태공원조성 사업 제안합니다." author="김**님" due="D-1" initialLikes={143} />
+                    <ImageContent title="포항시 생태공원조성 사업 제안합니다." author="김**님" due="D-1" initialLikes={143} />
                 </TwoContentContainer>
             </PopularContentContainer>
         </Container>
     );
 }
+
+const ImageContent = ({ title, author, due, initialLikes }) => {
+    const [likeCount, setLikeCount] = useState(initialLikes);
+    const [isLiked, setIsLiked] = useState(false);
+
+    const handleLike = () => {
+        if (isLiked) {
+            setLikeCount(likeCount - 1);
+        } else {
+            setLikeCount(likeCount + 1);
+        }
+        setIsLiked(!isLiked);
+    };
+
+    return (
+        <ImageContentContainer>
+            <img src={imgcontent} alt="content image" style={{ width: '515px' }} />
+            <ContentTitleText>
+                {title}
+            </ContentTitleText>
+            <DetailContainer>
+                <DetailText>작성자</DetailText>
+                <DetailText $color="#5A5A5A">{author}</DetailText>
+            </DetailContainer>
+            <DetailContainer>
+                <DetailText>종료일</DetailText>
+                <DetailText $color="#5A5A5A">{due}</DetailText>
+            </DetailContainer>
+            <DetailContainer>
+                <DetailText>공감수</DetailText>
+                <DetailText $color="#5A5A5A">{likeCount}</DetailText>
+            </DetailContainer>
+            <BraveButton onClick={handleLike} isLiked={isLiked}>
+                {isLiked ? '용기 보내기' : '용기 보내기'}
+            </BraveButton>
+        </ImageContentContainer>
+    );
+};
 
 export default IdeaPage;
 
@@ -127,6 +129,10 @@ const ContentTitleText = styled.div`
     font-weight: 600;
     padding-top: 28px;
     padding-bottom: 30px;
+    &:hover {
+        color: #005AFF; 
+        cursor: pointer; 
+    }
 `;
 
 const DetailText = styled.span`
@@ -162,14 +168,20 @@ const BraveButton = styled.button`
     align-items: center;
     gap: 10px;
     border-radius: 4px;
-    background: #005AFF;
-    color: white;
+    background: ${(props) => (props.isLiked ? '#E2ECFF' : '#005AFF')};
+    color: ${(props) => (props.isLiked ? '#246BEB' : 'white')};
     border: none;
     align-self: stretch;
     font-family: 'UhBeeJJIBBABBA';
     cursor: pointer;
+
     &:hover {
-        background: #0047CC;
+        background: ${(props) => (props.isLiked ? '#D1E4FF' : '#0043BE')};
+    }
+
+    &:active {
+        background: #E2ECFF;  
+        color: #246BEB;
     }
 `;
 
