@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Banner from '../Components/MainPage_Components/Banner';
 import pointer from '../Assets/Img/pointer.svg';
@@ -6,21 +6,27 @@ import minilogo from '../Assets/Img/minilogo.svg';
 import IdeaPage from "../Components/MainPage_Components/IdeaPage";
 import Header from "../Components/Layout_Components/Header";
 import GreatIdeaPage from "../Components/MainPage_Components/GreatIdeaPage";
-import onclickminilogo from '../Assets/Img/onclickminilogo.svg'
-import onclickpointer from '../Assets/Img/onclickpointer.svg'
+import onclickminilogo from '../Assets/Img/onclickminilogo.svg';
+import onclickpointer from '../Assets/Img/onclickpointer.svg';
 
-function MainPage(){
+function MainPage() {
+  const [isHovered, setIsHovered] = useState(false);
 
-  return(
+  return (
     <div>
-      <Header/>
-      <Banner/>
-      <IdeaPage/>
-      <GreatIdeaPage/>
-      <FixedButton>
-        <Container><img src={pointer}></img></Container>
+      <Header />
+      <Banner />
+      <IdeaPage />
+      <GreatIdeaPage />
+      <FixedButton
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         <Container>
-          <img src={minilogo}></img>
+          <img src={isHovered ? onclickpointer : pointer} alt="pointer" />
+        </Container>
+        <Container>
+          <img src={isHovered ? onclickminilogo : minilogo} alt="minilogo" />
           &nbsp;한마디 해보기
         </Container>
       </FixedButton>
@@ -50,9 +56,9 @@ const FixedButton = styled.button`
 `;
 
 const Container = styled.div`
-    display: flex;
-    background-color: transparent;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 10px;
+  display: flex;
+  background-color: transparent;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
 `;
