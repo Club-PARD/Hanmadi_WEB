@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Header from "../Components/Layout_Components/Header";
 import SelectRegions from "../Components/SelectRegion_Components/SelectRegions";
 
-function RegionPage(){
+function SelectRegionPage(){
 
   return(
     <div>
@@ -13,4 +13,4 @@ function RegionPage(){
   );
 }
 
-export default RegionPage;
+export default SelectRegionPage;
