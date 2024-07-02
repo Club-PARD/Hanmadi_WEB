@@ -6,7 +6,7 @@ function IdeaPage() {
     return (
         <Container>
             <GlobalStyle/>
-            <ContentContainer>
+            <PopularContentContainer>
                 <TextContainer>
                     <LineTextContainer>
                         <Dot></Dot><TopicText>인기있는 제안</TopicText>
@@ -17,47 +17,46 @@ function IdeaPage() {
                 </TextContainer>
                 <TwoContentContainer>
                     <ImageContentContainer>
-                    <img src={imgcontent} alt="content image" style={{ width: '515px' }} />
+                        <img src={imgcontent} alt="content image" style={{ width: '515px' }} />
                         <ContentTitleText>
                             포항시 생태공원조성 사업 제안합니다.
                         </ContentTitleText>
                         <DetailContainer>
                             <DetailText>작성자</DetailText>
-                            <DetailText Color="#5A5A5A">김**님</DetailText>
+                            <DetailText $color="#5A5A5A">김**님</DetailText>
                         </DetailContainer>
                         <DetailContainer>
                             <DetailText>종료일</DetailText>
-                            <DetailText Color="#5A5A5A">D-1</DetailText>
+                            <DetailText $color="#5A5A5A">D-1</DetailText>
                         </DetailContainer>
                         <DetailContainer>
                             <DetailText>공감수</DetailText>
-                            <DetailText Color="#5A5A5A">143</DetailText>
+                            <DetailText $color="#5A5A5A">143</DetailText>
                         </DetailContainer>
                         <BraveButton>용기 보내기</BraveButton>
                     </ImageContentContainer>
 
                     <ImageContentContainer>
-                    <img src={imgcontent} alt="content image" style={{ width: '515px' }} />
+                        <img src={imgcontent} alt="content image" style={{ width: '515px' }} />
                         <ContentTitleText>
                             포항시 생태공원조성 사업 제안합니다.
                         </ContentTitleText>
                         <DetailContainer>
                             <DetailText>작성자</DetailText>
-                            <DetailText Color="#5A5A5A">김**님</DetailText>
+                            <DetailText $color="#5A5A5A">김**님</DetailText>
                         </DetailContainer>
                         <DetailContainer>
                             <DetailText>종료일</DetailText>
-                            <DetailText Color="#5A5A5A">D-1</DetailText>
+                            <DetailText $color="#5A5A5A">D-1</DetailText>
                         </DetailContainer>
                         <DetailContainer>
                             <DetailText>공감수</DetailText>
-                            <DetailText Color="#5A5A5A">143</DetailText>
+                            <DetailText $color="#5A5A5A">143</DetailText>
                         </DetailContainer>
                         <BraveButton>용기 보내기</BraveButton>
                     </ImageContentContainer>
-
                 </TwoContentContainer>
-            </ContentContainer>
+            </PopularContentContainer>
         </Container>
     );
 }
@@ -65,14 +64,14 @@ function IdeaPage() {
 export default IdeaPage;
 
 const Container = styled.div`
+    margin-top: 100px;
     width: 100%;
-    height: 800px;
     display: flex;
     justify-content: center;
     background-color: white;
 `;
 
-const ContentContainer = styled.div`
+const PopularContentContainer = styled.div`
     width: 70%;
     height: 1000px;
     display: flex;
@@ -84,7 +83,7 @@ const ContentContainer = styled.div`
 const TextContainer = styled.div`
     width: 100%;
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
     padding-bottom: 50px;
 `;
 
@@ -131,12 +130,12 @@ const ContentTitleText = styled.div`
 `;
 
 const DetailText = styled.span`
-    color: ${(props) => props.Color || '#9D9D9D'};
+    color: ${(props) => props.$color || '#9D9D9D'};
     font-family: "Min Sans";
     font-size: 20px;
     font-style: normal;
     font-weight: 500;
-    padding-right:34px;
+    padding-right: 34px;
 `;
 
 const DetailContainer = styled.div`
@@ -148,13 +147,13 @@ const DetailContainer = styled.div`
 
 const TwoContentContainer = styled.div`
     width: 100%;
-    height: 500px;
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     color: white;
 `;
 
-const BraveButton = styled.div`
+const BraveButton = styled.button`
     display: flex;
     width: 100%;
     height: 57px;
@@ -164,10 +163,18 @@ const BraveButton = styled.div`
     gap: 10px;
     border-radius: 4px;
     background: #005AFF;
+    color: white;
+    border: none;
     align-self: stretch;
     font-family: 'UhBeeJJIBBABBA';
-`
+    cursor: pointer;
+    &:hover {
+        background: #0047CC;
+    }
+`;
+
 const ImageContentContainer = styled.div`
     width: 515px;
-    padding-right: 200px;
+    display: flex;
+    flex-direction: column;
 `;
