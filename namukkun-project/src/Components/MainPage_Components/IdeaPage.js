@@ -74,7 +74,7 @@ const Container = styled.div`
 `;
 
 const PopularContentContainer = styled.div`
-    width: 70%;
+    width: 1130px;
     height: 1000px;
     display: flex;
     flex-direction: column;

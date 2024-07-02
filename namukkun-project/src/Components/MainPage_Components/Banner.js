@@ -52,7 +52,7 @@ const WhiteduckContainer = styled.div`
 
 const WhiteduckImg = styled.img`
     height: 489.595px;
-    margin-right: 400px;
+    margin-right: 300px;
 `;
 
 const BannerTextContainer = styled.div`
