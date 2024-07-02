@@ -1,12 +1,12 @@
 import axios from "axios";
 
+const kakaoserver = process.env.REACT_APP_KAKAO_SERVER;
 const server = process.env.REACT_APP_SERVER;
 
-
-//성공/실패 했을 때 페이지 이동이 필요함
+//로그인 성공/실패 했을 때 페이지 이동이 필요함
 export const getSendCodeAPI = async (code) => {
   try {
-    const response = await axios.get(`${server}?code=${code}`,{withCredentials: true,});
+    const response = await axios.get(`${kakaoserver}?code=${code}`,{withCredentials: true,});
     return response;
   } catch (err) {
     console.error(err);
@@ -14,3 +14,5 @@ export const getSendCodeAPI = async (code) => {
     throw err ;
   }
 };
+
+// const response = await axios.post(`${server}/login/createuser?code=${code}&local=${local})
