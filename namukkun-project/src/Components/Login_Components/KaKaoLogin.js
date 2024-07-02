@@ -17,7 +17,7 @@ function KaKaoLogin(){
         navigate('/');  // (로그인)성공했을 때 이동할 경로
       } catch (err) {
         if (err.response && err.response.status === 401) {
-          navigate('/list');  // 401 에러(회원가입해야함)일 때 이동할 경로
+          navigate('/selectregion');  // 401 에러(회원가입해야함)일 때 이동할 경로
         } else {
          console.error("에러", err);
         }
