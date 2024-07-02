@@ -84,7 +84,7 @@ const Container = styled.div`
 `;
 
 const GreatContentContainer = styled.div`
-    width: 70%;
+    width: 1130px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -200,7 +200,7 @@ const BottomBlueDuck = styled.div`
 `;
 
 const BottomWhiteDuck = styled.div`
-    margin-right: 193px;
+    margin-right: 28px;
     background: transparent;
 `;
 
