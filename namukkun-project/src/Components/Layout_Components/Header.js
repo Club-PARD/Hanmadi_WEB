@@ -1,7 +1,16 @@
 import styled from 'styled-components';
 import logo from '../../Assets/Img/logo.svg';
+import { useState } from 'react';
+import LoginModal from '../Login_Components/LoginModal';
 
 function Header() {
+
+  const [showModal, setShowModal] = useState(false);
+
+  const toggleModal = () => {
+    setShowModal(!showModal);
+  };
+
     return (
         <Container>
             <Head>
@@ -15,7 +24,8 @@ function Header() {
                   <MenuText>사이트 소개</MenuText>
                 </MenuButtonRight>
                 <Login>
-                  <LoginButton>로그인</LoginButton>
+                  <LoginButton onClick = {toggleModal} >로그인</LoginButton>
+                  <LoginModal show = {showModal} onClose={toggleModal} />
                 </Login>
             </Head>
         </Container>
@@ -72,8 +82,6 @@ const MenuButtonRight = styled.button`
 const MenuText = styled.div`
   color: #191919;
   text-align: center;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Min Sans";
   font-size: 20px;
   font-style: normal;
@@ -92,8 +100,6 @@ const Login = styled.div`
 const LoginButton = styled.button`
   color: #000;
   text-align: right;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Min Sans";
   font-size: 14px;
   font-style: normal;

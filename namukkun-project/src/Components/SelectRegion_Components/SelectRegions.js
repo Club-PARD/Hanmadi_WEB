@@ -1,7 +1,7 @@
 import BackGround from '../../Assets/Img/BackGround.svg';
 import styled from 'styled-components';
 
-function SelectRegion() {
+function SelectRegions() {
   return (
     <Container>
       <MainContainer>
@@ -77,8 +77,6 @@ const IntroContainer = styled.div`
 const MainTitle = styled.div`
   align-self: stretch;
   color: #191919;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Min Sans";
   font-size: 36px;
   font-style: normal;
@@ -89,8 +87,6 @@ const MainTitle = styled.div`
 const SubTitle = styled.div`
   align-self: stretch;
   color: #191919;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Min Sans";
   font-size: 16px;
   font-style: normal;
@@ -156,4 +152,4 @@ const LocalButton = styled.button`
   background: rgba(255, 255, 255, 0.60);
 `;
 
-export default SelectRegion;
+export default SelectRegions;
