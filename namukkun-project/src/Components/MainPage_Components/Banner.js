@@ -15,10 +15,10 @@ function Banner() {
                 </WhiteduckContainer>
                 <BannerTextContainer>
                     <LineTextContainer>
-                        <BannerText>나의 용기낸{' '}<BannerText $color='blue'>한마디</BannerText><BannerText>가</BannerText></BannerText>
+                        <BannerText>나의 용기낸{' '}<BannerText $color='#005AFF'>한마디</BannerText><BannerText>가</BannerText></BannerText>
                     </LineTextContainer>
                     <LineTextContainer>
-                        <BannerText $color='blue'>우리 지역</BannerText><BannerText>의 변화를,</BannerText>
+                        <BannerText $color='#005AFF'>우리 지역</BannerText><BannerText>의 변화를,</BannerText>
                     </LineTextContainer>
                 </BannerTextContainer>
                 <BlueduckContainer>
