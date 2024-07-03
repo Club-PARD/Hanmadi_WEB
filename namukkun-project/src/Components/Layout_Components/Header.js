@@ -143,7 +143,7 @@ const MenuText = styled.div`
   cursor: pointer;
 
   &:hover {
-    color: #005AFF;
+    color: #0045CE;
   }
 `;
 
