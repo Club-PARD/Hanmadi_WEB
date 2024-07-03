@@ -27,7 +27,9 @@ function Header() {
   //제안 게시판 클릭 -> 제안 게시판 페이지로 이동
   const handleMenuClick = (menu) => {
     setActiveMenu(menu);
+    if(menu==='board'){
     navigate('/list')
+    }
   };
 
   //로고 클릭 -> 메인페이지로 이동
