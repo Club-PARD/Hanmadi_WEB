@@ -14,9 +14,9 @@ function App() {
     <Routes>  
       <Route element={<Header/>}>
         <Route path='/' element={<MainPage/>}/>
-        <Route path='/login/oauth2/code/kakao' element={<KaKaoLogin/>}/>
         <Route path='/list' element={<ListPage/>}/>
       </Route>
+      <Route path='/login/oauth2/code/kakao' element={<KaKaoLogin/>}/>
       <Route path='/selectregion' element={<SelectRegionPage/>}/>
       <Route path="/*" element={<NotFound/>} />
     </Routes>
