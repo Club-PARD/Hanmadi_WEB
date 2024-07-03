@@ -3,14 +3,13 @@ import styled from "styled-components";
 import Header from "../Components/Layout_Components/Header";
 import SelectRegions from "../Components/SelectRegion_Components/SelectRegions";
 
-function SelectRegionPage(){
+function NotFound(){
 
   return(
     <div>
-      {/* <Header/> */}
-      <SelectRegions/>
+      404페이지
     </div>
   );
 }
 
-export default SelectRegionPage;
+export default NotFound;

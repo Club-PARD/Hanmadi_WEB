@@ -3,6 +3,7 @@ import logo from '../../Assets/Img/logo.svg';
 import { useState } from 'react';
 import LoginModal from '../Login_Components/LoginModal';
 import ProfileImg from '../../Assets/Img/ProfileImg.svg';
+import { Outlet } from 'react-router-dom';
 
 function Header() {
   const [showModal, setShowModal] = useState(false);
@@ -77,15 +78,12 @@ function Header() {
           <LoginModal show={showModal} onClose={() => setShowModal(false)} />
         </Login>
       </Head>
+      <Outlet/>
     </Container>
   );
 }
 
 const Container = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  background-color: lightgray;
 `;
 
 const Head = styled.div`
