@@ -40,7 +40,7 @@ function Header() {
                 onClick={() => handleMenuClick('board')}
                 isActive={activeMenu === 'board'}
               >
-                자유게시판
+                제안게시판
               </MenuText>
               <Underline isActive={activeMenu === 'board'} />
             </MenuTextContainer>
