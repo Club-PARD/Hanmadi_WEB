@@ -10,10 +10,12 @@ function Postit(){
         <Header/>
         <Container>
         <PostitSectionContainer>
-            <PostitSection>
-            </PostitSection>
+            <PostitSection/>
         </PostitSectionContainer>
         <DetailContent/>
+        <PostitSectionContainer>
+            <PostitSection/>
+        </PostitSectionContainer>
         </Container>
         
     </div>
