@@ -28,7 +28,7 @@ function MyPage() {
 
   return (
     <div>
-      <Header />
+      {/* <Header /> */}
       <StatusBlock />
       <IngPost />
       <EndPost />

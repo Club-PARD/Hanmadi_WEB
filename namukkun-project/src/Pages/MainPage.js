@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Banner from '../Components/MainPage_Components/Banner';
 import pointer from '../Assets/Img/pointer.svg';
@@ -14,7 +14,7 @@ function MainPage() {
 
   return (
     <div>
-      <Header />
+      {/* <Header /> */}
       <Banner />
       <IdeaPage />
       <GreatIdeaPage />
