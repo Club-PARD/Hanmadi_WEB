@@ -2,8 +2,9 @@ import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import SideHint from '../../Assets/Img/SideHint.svg';
 import Picture from '../../Assets/Img/Picture.svg';
+import WritingModal from './WritingModal';
 
-const MyComponent = () => {
+const Writing = () => {
   const [selectedButton, setSelectedButton] = useState(null);
   const [title, setTitle] = useState('');
   const [background, setBackground] = useState('');
@@ -14,14 +15,15 @@ const MyComponent = () => {
   const solutionRef = useRef(null);
   const effectRef = useRef(null);
 
-  const handleExit = () => {
-    // 나가기 버튼 클릭 시 실행되는 함수
-    // 필요한 로직을 여기에 추가하세요.
-  };
+  //모달창 끌지 켤지 다루는 usestate
+  const [isWModalOpen, setIsWModalOpen] = useState(false);
+  //모달 종류 확인
+  const [modalMethod, setModalMethod] = useState('');
 
-  const handleSave = () => {
-    // 임시저장 버튼 클릭 시 실행되는 함수
-    // 필요한 로직을 여기에 추가하세요.
+  //모달창 관리하는 함수
+  const handleWModalOpen = (modalMethod) => {
+    setModalMethod(modalMethod);
+    setIsWModalOpen(!isWModalOpen);
   };
 
   const handleButtonClick = (region) => {
@@ -53,8 +55,8 @@ const MyComponent = () => {
     <Container>
       <Intro>
         <TopButtonContainer>
-          <BackButton onClick={handleExit}>나가기</BackButton>
-          <SaveButton onClick={handleSave}>임시저장</SaveButton>
+          <BackButton onClick={() => handleWModalOpen('out')}>나가기</BackButton>
+          <SaveButton onClick={() => handleWModalOpen('save')}>임시저장</SaveButton>
         </TopButtonContainer>
         <RegionContainer>
           <SelectRegion>제안지역 선택하기</SelectRegion>
@@ -127,6 +129,11 @@ const MyComponent = () => {
           <PostButton>게시하기</PostButton>
         </ButtonSection>
       </WritingBody>
+      <WritingModal
+          isOpen={isWModalOpen}
+          closeModal={() => handleWModalOpen(modalMethod)}
+          method={modalMethod}
+      ></WritingModal>
     </Container>
   );
 };
@@ -136,6 +143,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-top: 107px;
 `;
 
 const Intro = styled.div`
@@ -411,4 +419,4 @@ const PostButton = styled.button`
   align-self: flex-end;
 `;
 
-export default MyComponent;
+export default Writing;

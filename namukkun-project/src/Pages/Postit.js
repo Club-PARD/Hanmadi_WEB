@@ -7,7 +7,7 @@ function Postit(){
 
     return(
     <div>
-        <Header/>
+        {/* <Header/> */}
         <Container>
         <PostitSectionContainer>
             <PostitSection/>
