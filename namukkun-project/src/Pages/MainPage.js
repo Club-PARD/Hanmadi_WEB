@@ -14,7 +14,7 @@ function MainPage() {
 
   return (
     <div>
-      <Header />
+      {/* <Header /> */}
       <Banner />
       <IdeaPage />
       <GreatIdeaPage />
