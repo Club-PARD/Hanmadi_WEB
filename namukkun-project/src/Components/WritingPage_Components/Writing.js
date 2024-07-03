@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import SideHint from '../../Assets/Img/SideHint.svg';
 import Picture from '../../Assets/Img/Picture.svg';
 import WritingModal from './WritingModal';
+import { GlobalStyle } from '../../Assets/Style/theme';
 
 const Writing = () => {
   const [selectedButton, setSelectedButton] = useState(null);
@@ -53,6 +54,7 @@ const Writing = () => {
 
   return (
     <Container>
+      <GlobalStyle/>
       <Intro>
         <TopButtonContainer>
           <BackButton onClick={() => handleWModalOpen('out')}>나가기</BackButton>
