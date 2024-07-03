@@ -7,6 +7,7 @@ import ListPage from './Pages/ListPage';
 import SelectRegionPage from './Pages/SelectRegionPage';
 import Header from './Components/Layout_Components/Header';
 import NotFound from './Pages/NotFound';
+import MyPage from './Pages/MyPage';
 
 //Pages 폴더로부터 컴포넌트를 가져와서 라우터 연결  
 function App() {
@@ -15,6 +16,7 @@ function App() {
       <Route element={<Header/>}>
         <Route path='/' element={<MainPage/>}/>
         <Route path='/list' element={<ListPage/>}/>
+        <Route path='/mypage' element={<MyPage/>}/>
       </Route>
       <Route path='/login/oauth2/code/kakao' element={<KaKaoLogin/>}/>
       <Route path='/selectregion' element={<SelectRegionPage/>}/>
