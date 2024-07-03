@@ -1,13 +1,47 @@
 import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { myCode } from '../../Recoil/Atom';
+import { useRecoilState } from 'recoil';
+import { postRegisterRegion } from '../../API/AxiosAPI';
+import { useNavigate } from 'react-router-dom';
 
 function SelectRegions() {
   const [selectedButton, setSelectedButton] = useState(null);
+  const navigate = useNavigate();
+
+  const regionToInt = {
+    '경산시' : 0, 
+    '경주시': 1,
+    '구미시':2, 
+    '김천시':3,
+    '문경시':4, 
+    '상주시': 5, 
+    '안동시' : 6, 
+    '영주시' : 7, 
+    '영천시': 8, 
+    '포항시': 9
+  };
+
+  //서버에 요청을 한번만 보내기 위함. 
+  let state =1 ;
 
   const handleButtonClick = (region) => {
     setSelectedButton((prevSelected) => (prevSelected === region ? null : region));
+    --state;
   };
+
+  //지역 제출 후 회원가입하기
+  const onClickSubmitRegion = () =>{
+    console.log(regionToInt[selectedButton]);
+
+    if (regionToInt[selectedButton] && (state===1)) {
+      const response = postRegisterRegion(parseInt(regionToInt[selectedButton]));
+      console.log(response);
+      ++state;
+      navigate('/');
+    }
+  }
 
   return (
     <Container>
@@ -32,7 +66,7 @@ function SelectRegions() {
         </ContentContainer>
             <SelectContainer>
               <BackButton>뒤로가기</BackButton>
-              <SelectButton disabled={!selectedButton}>확인</SelectButton>
+              <SelectButton disabled={!selectedButton} onClick={onClickSubmitRegion}>확인</SelectButton>
             </SelectContainer>
       </MainContainer>
     </Container>
@@ -79,8 +113,6 @@ const IntroContainer = styled.div`
 const MainTitle = styled.div`
   align-self: stretch;
   color: #191919;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Min Sans";
   font-size: 28px;
   font-style: normal;
@@ -91,8 +123,6 @@ const MainTitle = styled.div`
 const SubTitle = styled.div`
   align-self: stretch;
   color: #191919;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Min Sans";
   font-size: 16px;
   font-style: normal;
@@ -174,7 +204,7 @@ const LocalButton = styled.button`
   border-radius: 4px;
   border: 1px solid #D6D6D6;
   background: ${(props) => (props.selected ? 'rgba(0, 90, 255, 0.06)' : 'rgba(255, 255, 255, 0.60)')};
-  font-family: 'Arial', sans-serif;
+  font-family: "Min Sans";
   font-size: 16px;
   color: #333;
   cursor: pointer;
@@ -194,6 +224,7 @@ const LocalButton = styled.button`
     `
     border: 1px solid #005AFF;
     background: rgba(0, 90, 255, 0.06);
+    color: #005AFF;
   `}
 `;
 
