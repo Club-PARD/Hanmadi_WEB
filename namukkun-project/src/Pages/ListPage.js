@@ -10,7 +10,7 @@ function ListPage() {
   return (
     <Div>
       <GlobalStyle/>
-      <Header />
+      {/* <Header /> */}
       <ListSelectRegion />
       <PopularPost />
       <NewPost />
