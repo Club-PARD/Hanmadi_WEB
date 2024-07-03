@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import React, { useState } from 'react';
+import ListBanner from "../../Assets/Img/ListBanner.svg";
 
-function SelectRegions() {
-  const [selectedButton, setSelectedButton] = useState(null);
+function ListSelectRegion() {
+  const [selectedButton, setSelectedButton] = useState('포항시');  // 초기값을 '포항시'로 설정
 
   const handleButtonClick = (region) => {
     setSelectedButton((prevSelected) => (prevSelected === region ? null : region));
@@ -12,11 +13,12 @@ function SelectRegions() {
   return (
     <Container>
       <GlobalStyle />
+      <BannerImgDiv src={ListBanner}></BannerImgDiv>
       <MainContainer>
         <ContentContainer>
           <IntroContainer>
             <MainTitle>지역 선택하기</MainTitle>
-            <SubTitle>한마디 건네고 싶은 지역을 골라주세요.</SubTitle>
+            <SubTitle>의견만 있다면, 어느 지역이든 한마디 남겨주세요!</SubTitle>
           </IntroContainer>
           <ButtonContainer>
             {['경산시', '경주시', '구미시', '김천시', '문경시', '상주시', '안동시', '영주시', '영천시', '포항시'].map((region) => (
@@ -30,10 +32,6 @@ function SelectRegions() {
             ))}
           </ButtonContainer>
         </ContentContainer>
-            <SelectContainer>
-              <BackButton>뒤로가기</BackButton>
-              <SelectButton disabled={!selectedButton}>확인</SelectButton>
-            </SelectContainer>
       </MainContainer>
     </Container>
   );
@@ -41,24 +39,27 @@ function SelectRegions() {
 
 const Container = styled.div`
   width: 100%;
-  height: 800px;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: white;
+  flex-direction: column;
+`;
+
+const BannerImgDiv = styled.img`
+  height: 301px;
+  flex-shrink: 0;
 `;
 
 const MainContainer = styled.div`
   display: flex;
-  width: 695px;
-  padding: 63px 72px 62px 73px;
+  width: 100%;
+  padding-top: 63px;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   box-sizing: border-box;
-
   border-radius: 20px;
-  background: #FAFAFA;
 `;
 
 const ContentContainer = styled.div`
@@ -70,7 +71,7 @@ const ContentContainer = styled.div`
 
 const IntroContainer = styled.div`
   display: flex;
-  width: 245px;
+  width: 377px;
   flex-direction: column;
   align-items: flex-start;
   gap: 1px;
@@ -78,23 +79,18 @@ const IntroContainer = styled.div`
 
 const MainTitle = styled.div`
   align-self: stretch;
-  color: #191919;
-  leading-trim: both;
-  text-edge: cap;
+  color: #005AFF;
   font-family: "Min Sans";
-  font-size: 28px;
+  font-size: 30px;
   font-style: normal;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 30px; /* 83.333% */
 `;
 
 const SubTitle = styled.div`
-  align-self: stretch;
   color: #191919;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Min Sans";
-  font-size: 16px;
+  font-size: 18px;
   font-style: normal;
   font-weight: 500;
   line-height: 30px; /* 187.5% */
@@ -102,79 +98,27 @@ const SubTitle = styled.div`
 
 const ButtonContainer = styled.div`
   display: flex;
-  width: 550px;
+  width: 936px;
   align-items: flex-start;
   align-content: flex-start;
   gap: 10px;
   flex-shrink: 0;
   flex-wrap: wrap;
-  margin-bottom: 52px;
-`;
-
-const SelectContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  align-self: flex-end;
-`;
-
-const BackButton = styled.button`
-  display: flex;
-  width: 86px;
-  height: 36px;
-  padding: 10px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border: none;
-  background: none;
-  cursor: pointer;
-
-  color: #005AFF;
-  text-align: center;
-  font-family: "Min Sans";
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 30px; /* 214.286% */
-`;
-
-const SelectButton = styled.button`
-  display: flex;
-  width: 63px;
-  height: 36px;
-  padding: 10px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border: none;
-
-  color: #FFF;
-  text-align: center;
-  font-family: "Min Sans";
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 30px; /* 214.286% */
-
-  border-radius: var(--Corner-Full, 1000px);
-  background: ${(props) => (props.disabled ? '#ccc' : '#005aff')}; /* 비활성화 상태일 때 회색 배경 */
-  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')}; /* 비활성화 상태일 때 커서 변경 */
 `;
 
 const LocalButton = styled.button`
   display: flex;
-  width: 130px;
-  height: 62px;
+  width: 176px;
+  height: 64px;
   padding: 10px;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  font-family: "Min Sans";
+  gap: 14px;
   flex-shrink: 0;
   border-radius: 4px;
   border: 1px solid #D6D6D6;
   background: ${(props) => (props.selected ? 'rgba(0, 90, 255, 0.06)' : 'rgba(255, 255, 255, 0.60)')};
-  font-family: "Min Sans";
   font-size: 16px;
   color: #333;
   cursor: pointer;
@@ -198,4 +142,4 @@ const LocalButton = styled.button`
   `}
 `;
 
-export default SelectRegions;
+export default ListSelectRegion;

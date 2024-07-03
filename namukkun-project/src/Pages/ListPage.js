@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import ListregionSelect from "../Components/List_Components/ListregionSelect";
+import ListSelectRegion from "../Components/List_Components/ListSelectRegion";
+import Header from "../Components/Layout_Components/Header"
+import PopularPost from "../Components/List_Components/PopularPost";
+import NewPost from '../Components/List_Components/NewPost';
 
 function ListPage(){
 
   return(
     <Div>
-      <ListregionSelect/>
+      <Header/>
+      <ListSelectRegion/>
+      <PopularPost/>
+      <NewPost/>
     </Div>
   );
 }
