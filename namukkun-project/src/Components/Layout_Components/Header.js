@@ -4,32 +4,53 @@ import { useState } from 'react';
 import LoginModal from '../Login_Components/LoginModal';
 import ProfileImg from '../../Assets/Img/ProfileImg.svg';
 import { Outlet } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 
 function Header() {
   const [showModal, setShowModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
+  const navigate = useNavigate();
 
+  //로그인 
   const handleLoginClick = () => {
     setIsLoggedIn(true);
     setShowModal(true);
   };
 
+  //로그아웃
   const handleLogoutClick = () => {
     setIsLoggedIn(false);
   };
 
+  //제안 게시판 클릭 -> 제안 게시판 페이지로 이동
   const handleMenuClick = (menu) => {
     setActiveMenu(menu);
+    if(menu==='board'){
+    navigate('/list')
+    }
   };
 
+  //로고 클릭 -> 메인페이지로 이동
   const handleLogoClick = () => {
     setActiveMenu(null);
+    navigate('/');
   };
+
+  //글쓰기 페이지로 이동
+  const handleWriting = () => {
+    navigate('/writing');
+  }
+
+  //마이 페이지로 이동
+  const handleMypage = () => {
+    navigate('/mypage');
+  }
 
   return (
     <Container>
-      <Head>
+      <Head> 
         <Logo onClick={handleLogoClick}>
           <img width='94px' height='46px' src={logo} alt="Logo" />
         </Logo>
@@ -40,7 +61,7 @@ function Header() {
                 onClick={() => handleMenuClick('board')}
                 isActive={activeMenu === 'board'}
               >
-                자유게시판
+                제안게시판
               </MenuText>
               <Underline isActive={activeMenu === 'board'} />
             </MenuTextContainer>
@@ -58,12 +79,12 @@ function Header() {
         <Login>
           {isLoggedIn ? (
             <LoggedInContainer>
-              <ProposalButton>제안하러가기</ProposalButton>
+              <ProposalButton onClick={handleWriting}>제안하러가기</ProposalButton>
               <UserInfo>
                 <ProfileImage src={ProfileImg} alt="Profile" />
                 나무꾼님 / 포항시
               </UserInfo>
-              <MyPage>
+              <MyPage onClick={handleMypage}>
                 마이페이지
               </MyPage>
               <Logout onClick={handleLogoutClick}>
@@ -94,7 +115,7 @@ const Head = styled.div`
   align-items: center;
   justify-content: space-between;
   background-color: white;
-  padding: 0 20px;
+  /* padding: 0 20px; */
   position: relative;
 `;
 
