@@ -1,0 +1,5 @@
+@import '~react-quill/dist/quill.snow.css';
+
+.ql-editor {
+  font-family: 'MinSans-Regular', Arial, sans-serif, Sofia Pro;
+}
