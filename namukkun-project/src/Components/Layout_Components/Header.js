@@ -29,7 +29,7 @@ function Header() {
 
   return (
     <Container>
-      <Head>
+      <Head> 
         <Logo onClick={handleLogoClick}>
           <img width='94px' height='46px' src={logo} alt="Logo" />
         </Logo>
@@ -94,7 +94,7 @@ const Head = styled.div`
   align-items: center;
   justify-content: space-between;
   background-color: white;
-  padding: 0 20px;
+  /* padding: 0 20px; */
   position: relative;
 `;
 
