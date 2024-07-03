@@ -79,8 +79,6 @@ const IntroContainer = styled.div`
 const MainTitle = styled.div`
   align-self: stretch;
   color: #191919;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Min Sans";
   font-size: 28px;
   font-style: normal;
@@ -91,8 +89,6 @@ const MainTitle = styled.div`
 const SubTitle = styled.div`
   align-self: stretch;
   color: #191919;
-  leading-trim: both;
-  text-edge: cap;
   font-family: "Min Sans";
   font-size: 16px;
   font-style: normal;
