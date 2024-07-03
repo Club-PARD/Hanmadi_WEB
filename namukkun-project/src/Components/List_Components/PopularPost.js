@@ -4,12 +4,13 @@ import { GlobalStyle } from '../../Assets/Style/theme';
 import imgcontent from '../../Assets/Img/imgcontent.svg';
 import sendbrave from '../../Assets/Img/sendbrave.svg';
 import onclicksendbrave from '../../Assets/Img/onclicksendbrave.svg';
-import rightarrow from '../../Assets/Img/rightarrow.svg'
+import hoversendbrave from '../../Assets/Img/hoversendbrave.svg';
+import rightarrow from '../../Assets/Img/rightarrow.svg';
 
 function PopularPost() {
     const [isClicked, setIsClicked] = useState(false);
     const [activeButton, setActiveButton] = useState('진행중'); // 진행중이 기본값
-    const [sendBraveClicked, setSendBraveClicked] = useState([false, false, false]); // sendbravebutton 클릭 상태
+    const [sendBraveClicked, setSendBraveClicked] = useState([false, false, false, false]); // sendbravebutton 클릭 상태
 
     const handleButtonClick = (button) => {
         setActiveButton(button);
@@ -52,7 +53,7 @@ function PopularPost() {
                             종료
                         </StatusButton>
                     </StatBtuContainer>
-                    <AllButton>전체글 보러가기<img src={rightarrow} style={{ width: '6px', height: '12px' }}/></AllButton>
+                    <AllButton>전체글 보러가기<img src={rightarrow} style={{ width: '6px', height: '12px' }} /></AllButton>
                 </StatusBar>
                 <ContentImageContainer>
                     <ImageContainer>
@@ -71,7 +72,10 @@ function PopularPost() {
                             </DetailContainer>
                         </ContentTextContainer>
                     </ImageContainer>
-                    <SendBraveButton onClick={() => handleSendBraveClick(0)}>
+                    <SendBraveButton
+                        onClick={() => handleSendBraveClick(0)}
+                        isClicked={sendBraveClicked[0]}
+                    >
                         <img src={sendBraveClicked[0] ? onclicksendbrave : sendbrave} alt="send brave" />
                     </SendBraveButton>
                 </ContentImageContainer>
@@ -92,7 +96,10 @@ function PopularPost() {
                             </DetailContainer>
                         </ContentTextContainer>
                     </ImageContainer>
-                    <SendBraveButton onClick={() => handleSendBraveClick(1)}>
+                    <SendBraveButton
+                        onClick={() => handleSendBraveClick(1)}
+                        isClicked={sendBraveClicked[1]}
+                    >
                         <img src={sendBraveClicked[1] ? onclicksendbrave : sendbrave} alt="send brave" />
                     </SendBraveButton>
                 </ContentImageContainer>
@@ -113,7 +120,10 @@ function PopularPost() {
                             </DetailContainer>
                         </ContentTextContainer>
                     </ImageContainer>
-                    <SendBraveButton onClick={() => handleSendBraveClick(2)}>
+                    <SendBraveButton
+                        onClick={() => handleSendBraveClick(2)}
+                        isClicked={sendBraveClicked[2]}
+                    >
                         <img src={sendBraveClicked[2] ? onclicksendbrave : sendbrave} alt="send brave" />
                     </SendBraveButton>
                 </ContentImageContainer>
@@ -134,7 +144,10 @@ function PopularPost() {
                             </DetailContainer>
                         </ContentTextContainer>
                     </ImageContainer>
-                    <SendBraveButton onClick={() => handleSendBraveClick(3)}>
+                    <SendBraveButton
+                        onClick={() => handleSendBraveClick(3)}
+                        isClicked={sendBraveClicked[3]}
+                    >
                         <img src={sendBraveClicked[3] ? onclicksendbrave : sendbrave} alt="send brave" />
                     </SendBraveButton>
                 </ContentImageContainer>
@@ -319,4 +332,9 @@ const SendBraveButton = styled.button`
     height: 134px;
     border: none;
     background: transparent;
+    cursor: pointer;
+
+    &:hover img {
+        ${({ isClicked }) => !isClicked && `content: url(${hoversendbrave});`}
+    }
 `;
