@@ -21,7 +21,7 @@ const Writing = () => {
   const [modalMethod, setModalMethod] = useState('');
 
   //모달창 관리하는 함수
-  const handleWModalOpen = () => {
+  const handleWModalOpen = (modalMethod) => {
     setModalMethod(modalMethod);
     setIsWModalOpen(!isWModalOpen);
   };

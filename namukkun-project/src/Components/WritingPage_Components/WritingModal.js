@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
+import { GlobalStyle } from "../../Assets/Style/theme";
 
 // 개발자를 추가, 수정하는 버튼을 눌렀을 때 뜨는 모달
 function WritingModal({ isOpen, closeModal, method }) {
@@ -14,11 +15,12 @@ function WritingModal({ isOpen, closeModal, method }) {
 
   return (
     <Background style={{ display: isOpen ? "block" : "none" }} onClick={closeModal}>
+      <GlobalStyle/>
       <Container>
         <Title>{modalcon.title}</Title>
         <Contents method ={method}>{modalcon.content}</Contents>
         <BtnContainer  method ={method}>
-          <ContinueBtn onClick={closeModal}>계속 작성하기</ContinueBtn>
+          <ContinueBtn onClick={closeModal}>계속작성하기</ContinueBtn>
           <OutButton onClick={onClcikPath}>나가기</OutButton>
         </BtnContainer>
       </Container>
@@ -56,7 +58,7 @@ const Container = styled.div`
 const Title = styled.div`
   color: var(--gray-008, #191919);
   text-align: center;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 24px;
   font-style: normal;
   font-weight: 600;
@@ -67,7 +69,7 @@ const Title = styled.div`
 const Contents =styled.div`
   color: var(--gray-005, #707070);
   text-align: center;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
@@ -100,7 +102,7 @@ const ContinueBtn = styled.button`
 
   color: var(--gray-004, #959595);
   text-align: center;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -123,7 +125,7 @@ const OutButton = styled.button`
 
   color: var(--white-001, #FFF);
   text-align: center;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
