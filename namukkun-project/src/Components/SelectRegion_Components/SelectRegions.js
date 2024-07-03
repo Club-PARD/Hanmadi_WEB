@@ -204,7 +204,7 @@ const LocalButton = styled.button`
   border-radius: 4px;
   border: 1px solid #D6D6D6;
   background: ${(props) => (props.selected ? 'rgba(0, 90, 255, 0.06)' : 'rgba(255, 255, 255, 0.60)')};
-  font-family: 'Arial', sans-serif;
+  font-family: "Min Sans";
   font-size: 16px;
   color: #333;
   cursor: pointer;
@@ -224,6 +224,7 @@ const LocalButton = styled.button`
     `
     border: 1px solid #005AFF;
     background: rgba(0, 90, 255, 0.06);
+    color: #005AFF;
   `}
 `;
 
