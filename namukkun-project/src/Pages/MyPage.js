@@ -44,7 +44,7 @@ function MyPage() {
       <EndPost />
       <TempPost />
       <FixedButton $isSticky={isSticky}>
-        <img src={face} style={{ width: '144px', height: '144px' }} alt="face" />
+        <img src={face} style={{ width: '144px', height: '144px', borderRadius:'50%' }} alt="face" />
         <InfoContainer>
             <InfoName>이름</InfoName>
             <InfoContent>나무꾼과선녀도끼와선</InfoContent>

@@ -31,7 +31,7 @@ function WritingModal({ isOpen, closeModal, method }) {
   return (
     <Background style={{ display: isOpen ? "block" : "none" }} onClick={closeModal}>
       <GlobalStyle/>
-      <Container>
+      <Container onClick={(e) => e.stopPropagation()}>
         <Title>{modalcon.title}</Title>
         <Contents method ={method}>{modalcon.content}</Contents>
         <BtnContainer  method ={method}>
