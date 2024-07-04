@@ -212,7 +212,6 @@ const MentTitle = styled.div`
   font-weight: 500;
   color: #393939;
   font-style: normal;
-  margin-bottom: 10px;
   white-space: nowrap; /* Prevent text wrapping */
 `;
 
@@ -220,6 +219,7 @@ const MentBody = styled.div`
   font-family: "Min Sans-Regular";
   font-size: 22px;
   font-weight: 500;
+  line-height: 180%;
   color: #191919;
   font-style: normal;
   margin-top: 73px;
