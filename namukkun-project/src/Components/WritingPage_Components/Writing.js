@@ -13,16 +13,12 @@ const Font = Quill.import('formats/font');
 Font.whitelist = fonts;
 Quill.register(Font, true);
 
-const handleFileUpload = (quill, file) => {
+const handleImageUpload = (quill, file) => {
   const reader = new FileReader();
   reader.onload = (e) => {
     const range = quill.getSelection();
     if (file.type.startsWith('image/')) {
       quill.insertEmbed(range.index, 'image', e.target.result);
-    } else {
-      const fileName = file.name;
-      const link = e.target.result;
-      quill.insertText(range.index, fileName, 'link', link);
     }
   };
   reader.readAsDataURL(file);
@@ -34,24 +30,20 @@ const modules = {
     container: [
       [{ 'size': [] }],
       ['bold'],
-      ['link']
+      ['image']
     ],
     handlers: {
-      link: function(value) {
-        if (value) {
-          const input = document.createElement('input');
-          input.setAttribute('type', 'file');
-          input.setAttribute('accept', '.pdf,.doc,.docx,.hwp,.jpg,.png,.jpeg'); // 지원하는 파일 형식
-          input.onchange = () => {
-            const file = input.files[0];
-            if (file) {
-              handleFileUpload(this.quill, file);
-            }
-          };
-          input.click();
-        } else {
-          this.quill.format('link', false);
-        }
+      image: function() {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.onchange = () => {
+          const file = input.files[0];
+          if (file) {
+            handleImageUpload(this.quill, file);
+          }
+        };
+        input.click();
       }
     }
   },
@@ -61,7 +53,7 @@ const modules = {
 };
 
 const formats = [
-  'font', 'size', 'bold', 'link', 'image'
+  'font', 'size', 'bold', 'image'
 ];
 
 const Writing = () => {
@@ -70,17 +62,14 @@ const Writing = () => {
   const [background, setBackground] = useState('');
   const [solution, setSolution] = useState('');
   const [effect, setEffect] = useState('');
+  const [attachments, setAttachments] = useState([]);
 
-  const backgroundRef = useRef(null);
-  const solutionRef = useRef(null);
-  const effectRef = useRef(null);
-
-  //모달창 끌지 켤지 다루는 usestate
+  // 모달창 끌지 켤지 다루는 usestate
   const [isWModalOpen, setIsWModalOpen] = useState(false);
-  //모달 종류 확인
+  // 모달 종류 확인
   const [modalMethod, setModalMethod] = useState('');
 
-  //모달창 관리하는 함수
+  // 모달창 관리하는 함수
   const handleWModalOpen = (modalMethod) => {
     setModalMethod(modalMethod);
     setIsWModalOpen(!isWModalOpen);
@@ -97,6 +86,14 @@ const Writing = () => {
       const limitedValue = value.replace(/<\/?[^>]+(>|$)/g, "").substring(0, limit);
       setter(limitedValue);
     }
+  };
+
+  const handleFileChange = (e) => {
+    setAttachments([...attachments, ...Array.from(e.target.files)]);
+  };
+
+  const handleFileRemove = (index) => {
+    setAttachments(attachments.filter((_, i) => i !== index));
   };
 
   return (
@@ -169,6 +166,23 @@ const Writing = () => {
               formats={formats}
             />
           </QuillContainer>
+        </Section>
+        <Section>
+          <Label>첨부파일</Label>
+          <FileWrapper>
+            <FileBox>
+              <FileInputWrapper>
+                <FileInput type="file" multiple onChange={handleFileChange} id="file-upload" />
+                {attachments.map((file, index) => (
+                  <FileItem key={index}>
+                    <FileName>{file.name}</FileName>
+                    <RemoveButton onClick={() => handleFileRemove(index)}>제거</RemoveButton>
+                  </FileItem>
+                ))}
+              </FileInputWrapper>
+            </FileBox>
+            <FileInputLabel htmlFor="file-upload">추가</FileInputLabel>
+          </FileWrapper>
         </Section>
         <ButtonSection>
           <PostButton>게시하기</PostButton>
@@ -419,6 +433,75 @@ const PostButton = styled.button`
   border: none;
   margin-top: 20px;
   align-self: flex-end;
+`;
+
+const FileWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
+`;
+
+const FileBox = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  width: 800px;
+  padding: 18px;
+  border: 1px solid var(--gray-001, #E0E0E0);
+  border-radius: 10px;
+  background: var(--white-004, #FDFDFD);
+  max-height: 150px; /* 최대 높이를 설정 */
+  overflow-y: auto; /* 내용이 넘칠 경우 스크롤 */
+`;
+
+const FileInputWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+`;
+
+const FileInput = styled.input`
+  display: none;
+`;
+
+const FileInputLabel = styled.label`
+  display: flex;
+  width: 72px;
+  height: 36px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  background: #005AFF;
+  color: #FFF;
+  font-family: "MinSans-Regular";
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  cursor: pointer;
+  border: none;
+`;
+
+const FileItem = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 5px;
+`;
+
+const FileName = styled.div`
+  margin-left: 10px;
+  font-family: "MinSans-Regular";
+  font-size: 16px;
+`;
+
+const RemoveButton = styled.button`
+  margin-left: 10px;
+  background: none;
+  border: none;
+  color: red;
+  cursor: pointer;
+  font-family: "MinSans-Regular";
+  font-size: 14px;
 `;
 
 export default Writing;
