@@ -6,6 +6,7 @@ import '../../Assets/Style/quill.snow.custom.css';
 import SideHint from '../../Assets/Img/SideHint.svg';
 import Picture from '../../Assets/Img/Picture.svg';
 import WritingModal from './WritingModal';
+import { GlobalStyle } from '../../Assets/Style/theme';
 
 // Custom font
 const fonts = ['Min Sans-Regular'];
@@ -98,6 +99,7 @@ const Writing = () => {
 
   return (
     <Container>
+      <GlobalStyle/>
       <Intro>
         <TopButtonContainer>
           <BackButton onClick={() => handleWModalOpen('out')}>나가기</BackButton>
