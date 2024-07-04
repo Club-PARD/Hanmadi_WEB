@@ -248,6 +248,10 @@ const ProposalButton = styled.button`
   font-style: normal;
   font-weight: 600;
   line-height: 20px;
+
+  &:hover {
+    background: #CCDCAB;
+  }
 `;
 
 const UserInfo = styled.div`
