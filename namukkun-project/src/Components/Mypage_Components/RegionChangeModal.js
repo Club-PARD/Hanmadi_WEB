@@ -1,187 +1,347 @@
-// import React, { useEffect } from 'react';
-// import { GlobalStyle } from '../../Assets/Style/theme';
-// import styled from 'styled-components';
-// import Cancel from '../../Assets/Img/Cancel.svg';
+import React, { useEffect, useRef, useState } from 'react';
+import { GlobalStyle } from '../../Assets/Style/theme';
+import styled from 'styled-components';
+import Cancel from '../../Assets/Img/Cancel.svg';
+import { useNavigate } from 'react-router-dom';
+import test1 from '../../Assets/Img/test1.png';
+import changeProfile from '../../Assets/Img/changeProfile.svg';
 
-// const LoginModal = ({ show, onClose}) => {
+const RegionChangeModal = ({ isOpen, closeModal }) => {
+  const [selectedButton, setSelectedButton] = useState(null);
+  // const navigate = useNavigate();
+  const imageInput =useRef();
 
-//   useEffect(() => {
-//     if(show) {
-//       document.body.style.overflow = 'hidden';
-//     } else {
-//       document.body.style.overflow = 'auto';
-//     }
-//     return () => {
-//       document.body.style.overflow = 'auto';
-//     };
-//   }, [show]);
+  //프로필 인풋값 입력 및 변경을 위함
+  const [info, setInfo] =useState({
+    name: '김영채',
+    region: '포항시',
+    profileimg : test1
+    });
 
-//   if(!show) {
-//     return null;
-//   }
+  const handleButtonClick = (e, region) => {
+    e.stopPropagation();
+    e.preventDefault()
+    setSelectedButton((prevSelected) => (prevSelected === region ? null : region));
+  };
 
-//   const rest = process.env.REACT_APP_REST_API_KEY;
-//   const redirect = process.env.REACT_APP_REDIRECT_URI;
+  //이벤트 핸들러 
+  const handleInputName = (e) =>{
+    e.stopPropagation();
+    setInfo({
+      ...info,
+      name: e.target.value
+    });
+  }
 
-//   //카카오계정으로 게속하기 버튼 클릭시 카카오 로그인 페이지로 이동
-//   const url = `https://kauth.kakao.com/oauth/authorize?client_id=${rest}&redirect_uri=${redirect}&response_type=code`;
+  //이벤트 핸들러 파일 업로드
+  const handleProfileimg = (e) =>{
+    e.stopPropagation();
+    const file = e.target.files[0];
+    if (file){
+      const imgURL = URL.createObjectURL(file);
+      setInfo({
+        ...info,
+        profileimg: imgURL
+      })
+    }
+  }
 
-//   return (
-//     <Modal onClick = {onClose}>
-//       <ModalWindow onClick = {e => e.stopPropagation()}>
-//         <CloseIcon src={Cancel} alt="Close" onClick={onClose} />
-//         <ModalContent>
-//           <ModalHeader>
-//             <ModalTitle>한마디 로그인</ModalTitle>
-//             <ModalSub>한마디는 지역 발전과 활성화를 위해 목소리를 내고자 하지만 <br />확신이 부족한 사람들을 위한 공간이에요.</ModalSub>
-//           </ModalHeader>
-//           <ModalBody>
-//             <LoginGuide>
-//               <Content>지역발전에 대한 내 의견과 사람들의 지지를 얻고 싶어요.</Content>
-//             </LoginGuide>
-//             <LoginGuide>
-//               <Content>완벽하지 않지만 우리 지역을 위한 의견을 내고 싶어요.</Content>
-//             </LoginGuide>
-//             <LoginGuide>
-//               <Content>다른 사람들의 의견도 들어보고 싶어요.</Content>
-//             </LoginGuide>
-//           </ModalBody>
-//           <ModalFooter>
-//             <CloseButton href={url} >카카오계정으로 계속하기</CloseButton>
-//           </ModalFooter>
-//         </ModalContent>
-//       </ModalWindow>
-//     </Modal>
-//   );
-// };
+  const onClickBtn = (e) =>{
 
+    e.preventDefault()
+    imageInput.current.click();
+  }
 
-// const Modal = styled.div`
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   right: 0;
-//   bottom: 0;
-//   background-color: rgba(0, 0, 0, 0.5);
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   z-index: 1100;
-// `;
-
-// const ModalWindow = styled.div`
-//   position: relative;
-//   display: flex;
-//   width: 564px;
-//   padding: 71.5px 87px 72.5px 87px;
-//   justify-content: center;
-//   align-items: center;
-//   flex-direction: column;
-//   box-sizing: border-box;
-
-//   border-radius: 20px;
-//   background: #FFF;
-// `;
-
-// const CloseIcon = styled.img`
-//   position: absolute;
-//   top: 30px;
-//   right: 35px;
-//   width: 20px;
-//   height: 20px;
-//   cursor: pointer;
-// `;
-
-// const ModalContent = styled.div`
-//   display: flex;
-//   width: 390px;
-//   flex-direction: column;
-//   justify-content: center;
-//   align-items: center;
-//   gap: 31px;
-//   flex-shrink: 0;`
-
-// const ModalHeader = styled.div`
-//   display: flex;
-//   width: 390px;
-//   flex-direction: column;
-//   align-items: center;
-//   gap: 36px;
-// `;
-
-// const ModalTitle = styled.div`
-//   align-self: stretch;
-
-//   color: #191919;
-//   text-align: center;
-//   font-family: "Min Sans";
-//   font-size: 28px;
-//   font-style: normal;
-//   font-weight: 700;
-//   line-height: 28.008px;
-// `;
-
-// const ModalSub = styled.div`
-//   align-self: stretch;
   
-//   color: #626262;
-//   text-align: center;
-//   font-family: "Min Sans";
-//   font-size: 12px;
-//   font-style: normal;
-//   font-weight: 400;
-//   line-height: 16px;
-// `;
+  useEffect(() => {
+    if(isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isOpen]);
 
-// const ModalBody = styled.div`
-//   display: flex;
-//   width: 390px;
-//   flex-direction: column;
-//   align-items: flex-start;
-//   gap: 26px;
-// `;
+  if(!isOpen) {
+    return null;
+  }
 
-// const LoginGuide = styled.div`
-//   display: flex;
-//   padding: 10px;
-//   justify-content: center;
-//   align-items: center;
-//   gap: 10px;
+  const profileEditChagne =(e)=>{
+    e.preventDefault();
+    closeModal();
+    console.log(info);
+  }
+
+  return (
+    <Background style={{ display: isOpen ? "block" : "none" }} onClick={closeModal}>
+      <GlobalStyle/>
+      <Container onClick={(e) => e.stopPropagation()}>
+        <Title>프로필 수정하기</Title>
+        <ContentsDiv>
+          <ImgDiv>  
+            <ProfileBtn onClick={(e)=>onClickBtn(e)}>
+              <img src={changeProfile} alt='이미지 변경 아이콘'></img>
+            </ProfileBtn>
+            <img src={info.profileimg} style={{ width: '140px', height: '140px', borderRadius:'50%' }} alt="profile" />
+            <input type="file" accept='.png' ref={imageInput}  name="profileimg" onChange={handleProfileimg}></input>
+          </ImgDiv>
+          <div>
+            <NameChagne>이름 변경하기</NameChagne>
+            <NameInput type='text' onChange={handleInputName} value={info.name}></NameInput>
+            <RegionChagne>지역 변경하기</RegionChagne>
+            <ButtonContainer>
+            {['경산시', '경주시', '구미시', '김천시', '문경시', '상주시', '안동시', '영주시', '영천시', '포항시'].map((region) => (
+              <LocalButton
+                key={region}
+                onClick={(e) => handleButtonClick(e, region)}
+                selected={selectedButton === region}
+              >
+                {region}
+              </LocalButton>
+            ))}
+          </ButtonContainer>
+          </div>
+        </ContentsDiv>
+        <BtnDiv>
+          <OutBtn onClick={closeModal}>나가기</OutBtn>
+          <CheckBtn onClick={profileEditChagne}>확인</CheckBtn>
+        </BtnDiv>
+      </Container>
+    </Background>
+  );
+}
+
+const Background = styled.div`
+  background-color: white;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.30);
+  z-index: 1100;
+`;
+
+const Container = styled.form`
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  /* align-items: center; */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 747px;
+  height: 559px;
+  flex-shrink: 0;
+  border-radius: 20px;
+  background: #F9F9F9;
+  /* 모달 그림자 */
+  box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.10);
+
+`;
+
+const Title = styled.div`
+  color: var(--gray-008, #191919);
+  font-family: "MinSans-Regular";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  /* line-height: 30px; 125% */
+  margin-top: 56px;
+  margin-left: 61px;
+
+`;
+
+const ContentsDiv =styled.div`
+  display: flex;
+  margin-top: 35px;
+  margin-left: 61px;
+  gap: 60px;
+`;
+
+const ImgDiv =styled.div`
+  display: flex;
+  position: relative;
+  > img{
+    border-radius: 604.118px;
+    border: 2px solid #E5E5E5;
+    background: url(<path-to-image>) lightgray 50% / cover no-repeat;
+    box-shadow: 2px 4px 10px 0px rgba(0, 0, 0, 0.05);
+  }
+  > input{
+    display: none;
+  }
+`;
+
+const ProfileBtn = styled.button`
+  width: 29px;
+  height: 29px;
+  border: none;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  margin-left: 103px;
+  cursor: pointer;
+`;
+
+const NameChagne = styled.div`
+  color: var(--gray-007, #393939);
+  font-family: "MinSans-Regular";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 30px; /* 166.667% */
+`;
+
+const NameInput = styled.input`
+  width: 245px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 3px;
+  border: 1px solid var(--gray-001, #E0E0E0);
+  background: var(--white-005, #F5F5F5);
+  margin-top: 20px;
+
+  color: var(--gray-005, #707070);
+  font-family: "MinSans-Regular";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 30px; /* 187.5% */
+  outline: none;
+  padding: 0;
+  padding-left: 22px;
+  padding-right: 22px;
+`;
+
+const RegionChagne = styled.div`
+  color: var(--gray-007, #393939);
+  font-family: "MinSans-Regular";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
   
-//   border-radius: 200px;
-//   background: #E4ECF9;
-// `;
+/* line-height: 30px; 166.667% */
 
-// const Content = styled.div`
-//   color: var(--Black-main, #191919);
-//   text-align: center;
-//   font-family: "Min Sans";
-//   font-size: 14px;
-//   font-style: normal;
-//   font-weight: 500;
-//   line-height: normal; /* 214.286% */
-//   margin: 0;
-// `;
+`;
 
-// const ModalFooter = styled.div`
-//   display: flex;
-//   justify-content: flex-end;
-//   margin-top: 20px;
-// `;
+const ButtonContainer = styled.div`
+  display: flex;
+  width: 425px;
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 8.236px;
+  flex-wrap: wrap;
+  margin-top: 20px;
 
-// const CloseButton = styled.a`
-//   display: flex;
-//   width: 390px;
-//   height: 50px;
-//   justify-content: center;
-//   align-items: center;
-//   gap: 10px;
-//   border-radius: 10px;
-//   background: #FFDC27;
-//   border: none;
-//   cursor: pointer;
-//   text-decoration: none; /* 밑줄 제거 */
-//   color: inherit;
-// `;
+  display: flex;
+  width: 425px;
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 8.236px;
+  flex-wrap: wrap;
+`;
 
-// export default LoginModal;
+const LocalButton = styled.button`
+  display: flex;
+  width: 100px;
+  height: 50px;
+  padding: 0px;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  border: 1px solid #D6D6D6;
+  background: ${(props) => (props.selected ? 'rgba(0, 90, 255, 0.06)' : 'rgba(255, 255, 255, 0.60)')};
+  font-family: "MinSans-Regular";
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.3s, border 0.3s;
+
+  color: #9D9D9D;
+  font-family: "Apple SD Gothic Neo";
+  font-size: 13.178px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24.709px; /* 187.5% */
+
+  ${(props) =>
+    !props.selected &&
+    `
+    &:hover {
+      background: rgba(236, 236, 236, 0.60);
+      border: 1px solid #D6D6D6;
+    }
+  `}
+
+  ${(props) =>
+    props.selected &&
+    `
+    border: 1px solid #005AFF;
+    background: rgba(0, 90, 255, 0.06);
+    color: #005AFF;
+  `}
+`;
+
+const BtnDiv =styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: end;
+  margin-top: 33.53px;
+`;
+
+const OutBtn =styled.button`
+  display: flex;
+  width: 86px;
+  height: 36px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  color: var(--Main-001, #005AFF);
+  text-align: center;
+  font-family: "Min Sans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 30px; /* 214.286% */
+
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+`;
+
+const CheckBtn =styled.button`
+  display: flex;
+  width: 63px;
+  height: 36px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  border-radius: var(--Corner-Full, 1000px);
+  background: var(--Main-001, #005AFF);
+  border: none;
+
+  color: var(--white-001, #FFF);
+  text-align: center;
+  font-family: "MinSans-Regular";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 30px; /* 214.286% */
+  margin-right: 61px;
+  cursor: pointer;
+`;
+
+export default RegionChangeModal;

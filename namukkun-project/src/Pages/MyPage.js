@@ -7,9 +7,19 @@ import EndPost from '../Components/Mypage_Components/EndPost';
 import TempPost from '../Components/Mypage_Components/TempPost';
 import face from '../Assets/Img/face.svg';
 import advisepen from '../Assets/Img/advisepen.svg';
+import WritingModal from "../Components/WritingPage_Components/WritingModal";
+import RegionChangeModal from "../Components/Mypage_Components/RegionChangeModal";
 
 function MyPage() {
   const [isSticky, setIsSticky] = useState(false);
+
+  //모달창 끌지 켤지 다루는 usestate
+  const [isWModalOpen, setIsWModalOpen] = useState(false);
+
+  //모달창 관리하는 함수
+  const handleWModalOpen = () => {
+    setIsWModalOpen(!isWModalOpen);
+  };
 
   const handleScroll = () => {
     if (window.scrollY >= 225) { // 400px 스크롤 시 상단에 고정
@@ -34,7 +44,7 @@ function MyPage() {
       <EndPost />
       <TempPost />
       <FixedButton $isSticky={isSticky}>
-        <img src={face} style={{ width: '144px', height: '144px' }} alt="face" />
+        <img src={face} style={{ width: '144px', height: '144px', borderRadius:'50%' }} alt="face" />
         <InfoContainer>
             <InfoName>이름</InfoName>
             <InfoContent>나무꾼과선녀도끼와선</InfoContent>
@@ -43,11 +53,15 @@ function MyPage() {
             <InfoName>지역</InfoName>
             <InfoContent>포항시</InfoContent>
         </InfoContainer>
-        <ProfileAdviseButton>
+        <ProfileAdviseButton onClick={handleWModalOpen}>
             프로필 수정하기&nbsp;&nbsp;&nbsp;
             <img src={advisepen} style={{ width: '9px', height: '9px' }} alt="advisepen"/> 
         </ProfileAdviseButton>
       </FixedButton>
+      <RegionChangeModal
+          isOpen={isWModalOpen}
+          closeModal={handleWModalOpen}
+      ></RegionChangeModal>
     </div>
   );
 }
@@ -97,7 +111,7 @@ const InfoContent = styled.div`
     font-weight: 400;
 `
 
-const ProfileAdviseButton = styled.div`
+const ProfileAdviseButton = styled.button`
     margin-top: 14px;
     display: flex;
     width: 100px;
@@ -112,4 +126,5 @@ const ProfileAdviseButton = styled.div`
     font-style: normal;
     font-weight: 400;
     cursor: pointer;
+    border: none;
 `
