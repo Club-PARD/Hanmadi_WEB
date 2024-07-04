@@ -1,8 +1,68 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
+import ReactQuill, { Quill } from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import '../../Assets/Style/quill.snow.custom.css';
 import SideHint from '../../Assets/Img/SideHint.svg';
 import Picture from '../../Assets/Img/Picture.svg';
 import WritingModal from './WritingModal';
+
+// Custom font
+const fonts = ['Min Sans-Regular'];
+const Font = Quill.import('formats/font');
+Font.whitelist = fonts;
+Quill.register(Font, true);
+
+const handleFileUpload = (quill, file) => {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const range = quill.getSelection();
+    if (file.type.startsWith('image/')) {
+      quill.insertEmbed(range.index, 'image', e.target.result);
+    } else {
+      const fileName = file.name;
+      const link = e.target.result;
+      quill.insertText(range.index, fileName, 'link', link);
+    }
+  };
+  reader.readAsDataURL(file);
+};
+
+// Custom toolbar configuration
+const modules = {
+  toolbar: {
+    container: [
+      [{ 'size': [] }],
+      ['bold'],
+      ['link']
+    ],
+    handlers: {
+      link: function(value) {
+        if (value) {
+          const input = document.createElement('input');
+          input.setAttribute('type', 'file');
+          input.setAttribute('accept', '.pdf,.doc,.docx,.hwp,.jpg,.png,.jpeg'); // 지원하는 파일 형식
+          input.onchange = () => {
+            const file = input.files[0];
+            if (file) {
+              handleFileUpload(this.quill, file);
+            }
+          };
+          input.click();
+        } else {
+          this.quill.format('link', false);
+        }
+      }
+    }
+  },
+  clipboard: {
+    matchVisual: false,
+  },
+};
+
+const formats = [
+  'font', 'size', 'bold', 'link', 'image'
+];
 
 const Writing = () => {
   const [selectedButton, setSelectedButton] = useState(null);
@@ -30,24 +90,12 @@ const Writing = () => {
     setSelectedButton(region);
   };
 
-  const handleInputChange = (setter, limit) => (e) => {
-    if (e.target.value.length <= limit) {
-      setter(e.target.value);
-    }
-  };
-
-  const handleImageChange = (ref) => (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const img = document.createElement('img');
-        img.src = event.target.result;
-        img.style.maxWidth = '100px';
-        img.style.maxHeight = '100px';
-        ref.current.appendChild(img);
-      };
-      reader.readAsDataURL(file);
+  const handleInputChange = (setter, limit) => (value) => {
+    if (value.replace(/<\/?[^>]+(>|$)/g, "").length <= limit) {
+      setter(value);
+    } else {
+      const limitedValue = value.replace(/<\/?[^>]+(>|$)/g, "").substring(0, limit);
+      setter(limitedValue);
     }
   };
 
@@ -79,51 +127,48 @@ const Writing = () => {
           <TitleBox
             placeholder="제목을 입력해주세요"
             value={title}
-            onChange={handleInputChange(setTitle, 30)} // 제목 글자수 제한 (30자)
+            onChange={(e) => handleInputChange(setTitle, 30)(e.target.value)} // 제목 글자수 제한 (30자)
           />
         </Section>
         <Section>
           <Label>
             제안배경 <HintWrapper><HintIcon src={SideHint} alt="Alert" /><Hint>장소나 기사 링크를 함께 넣어주면 다른 지역 주민들이 공감하기 쉬워요!</Hint></HintWrapper>
           </Label>
-          <EditableBox
-            contentEditable
-            ref={backgroundRef}
-            placeholder="이런 생각이 들어서 제안하게 되었어요."
-          />
-          <PictureLabel htmlFor="background-upload">
-            <PictureIcon src={Picture} alt="Upload" />
-          </PictureLabel>
-          <input type="file" id="background-upload" style={{ display: 'none' }} onChange={handleImageChange(backgroundRef)} />
-          <Count>{background.length}/400</Count>
+          <QuillContainer>
+            <StyledQuill
+              theme="snow"
+              value={background}
+              onChange={handleInputChange(setBackground, 250)} // 제안배경 글자수 제한 (250자)
+              modules={modules}
+              formats={formats}
+            />
+          </QuillContainer>
         </Section>
         <Section>
           <Label>
             해결방안 <HintWrapper><HintIcon src={SideHint} alt="Alert" /><Hint>사례 사진을 함께 넣어주면 다른 지역주민들이 이해하기 쉬워요!</Hint></HintWrapper>
           </Label>
-          <EditableBox
-            contentEditable
-            ref={solutionRef}
-            placeholder="이렇게 해보면 좋을 것 같아요."
-          />
-          <PictureLabel htmlFor="solution-upload">
-            <PictureIcon src={Picture} alt="Upload" />
-          </PictureLabel>
-          <input type="file" id="solution-upload" style={{ display: 'none' }} onChange={handleImageChange(solutionRef)} />
-          <Count>{solution.length}/400</Count>
+          <QuillContainer>
+            <StyledQuill
+              theme="snow"
+              value={solution}
+              onChange={handleInputChange(setSolution, 250)} // 해결방안 글자수 제한 (250자)
+              modules={modules}
+              formats={formats}
+            />
+          </QuillContainer>
         </Section>
         <Section>
           <Label>기대효과</Label>
-          <EditableBox
-            contentEditable
-            ref={effectRef}
-            placeholder="그러면 우리 지역이 이렇게 되지 않을까요?"
-          />
-          <PictureLabel htmlFor="effect-upload">
-            <PictureIcon src={Picture} alt="Upload" />
-          </PictureLabel>
-          <input type="file" id="effect-upload" style={{ display: 'none' }} onChange={handleImageChange(effectRef)} />
-          <Count>{effect.length}/300</Count>
+          <QuillContainer>
+            <StyledQuill
+              theme="snow"
+              value={effect}
+              onChange={handleInputChange(setEffect, 250)} // 기대효과 글자수 제한 (250자)
+              modules={modules}
+              formats={formats}
+            />
+          </QuillContainer>
         </Section>
         <ButtonSection>
           <PostButton>게시하기</PostButton>
@@ -328,42 +373,20 @@ const TitleBox = styled.input`
   }
 `;
 
-const EditableBox = styled.div`
-  display: inline-flex;
-  width: 880px;
-  height: 250px;
-  padding: 20px;
-  align-items: flex-start;
-  flex-shrink: 0;
-  border-radius: 10px;
-  border: 1px solid var(--gray-001, #E0E0E0);
-  background: var(--white-004, #FDFDFD);
-  resize: none;
-  color: #393939;
-  font-size: 22px;
-  overflow-y: auto;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  &::placeholder {
-    color: #C7C7C7;
-    font-size: 22px;
+const QuillContainer = styled.div`
+  width: 920px;
+  .ql-container {
+    height: 250px; /* Box의 높이에 맞춤 */
+    border-radius: 20px;
   }
 `;
 
-const SolutionBox = styled(EditableBox)`
-  height: 250px;
-`;
-
-const SideEffectBox = styled(EditableBox)`
-  height: 150px;
-`;
-
-const Count = styled.div`
-  align-self: flex-end;
-  color: var(--gray-004, #a0a0a0);
-  font-family: "MinSans-Regular";
-  font-size: 18px;
-  margin-top: 8px;
+const StyledQuill = styled(ReactQuill)`
+  .ql-container {
+    height: 250px; /* Box의 높이에 맞춤 */
+    border-radius: 10px;
+    width: 920px;
+  }
 `;
 
 const HintIcon = styled.img`
@@ -376,27 +399,6 @@ const HintWrapper = styled.div`
   align-items: center;
   gap: 4px;
   margin-left: 13px;
-`;
-
-const PictureLabel = styled.label`
-  position: absolute;
-  top: 9px; /* Box와의 거리 설정 */
-  right: 9px; /* Box와의 거리 설정 */
-  width: 22px;
-  height: 22px;
-  cursor: pointer;
-`;
-
-const PictureIcon = styled.img`
-  width: 100%;
-  height: 100%;
-`;
-
-const ImagePreview = styled.img`
-  max-width: 100px;
-  max-height: 100px;
-  margin-top: 10px;
-  margin-right: 10px;
 `;
 
 const PostButton = styled.button`
