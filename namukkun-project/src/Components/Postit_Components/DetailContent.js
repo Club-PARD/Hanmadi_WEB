@@ -220,6 +220,12 @@ const FileContent = styled.div`
     height: 38px;
     display: flex;
     align-items: center;
+    color: var(--gray-005, #707070);
+    font-family: 'MinSans-Regular';
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    text-decoration-line: underline;
 `
 
 const SendBraveButton = styled.button`
