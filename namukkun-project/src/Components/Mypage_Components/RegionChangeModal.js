@@ -78,6 +78,7 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
     <Background style={{ display: isOpen ? "block" : "none" }} onClick={closeModal}>
       <GlobalStyle/>
       <Container onClick={(e) => e.stopPropagation()}>
+        <ModalDiv> 
         <Title>프로필 수정하기</Title>
         <ContentsDiv>
           <ImgDiv>  
@@ -87,7 +88,7 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
             <img src={info.profileimg} style={{ width: '140px', height: '140px', borderRadius:'50%' }} alt="profile" />
             <input type="file" accept='.png' ref={imageInput}  name="profileimg" onChange={handleProfileimg}></input>
           </ImgDiv>
-          <div>
+          <div style={{margin: "0px", padding: "0"}}> 
             <NameChagne>이름 변경하기</NameChagne>
             <NameInput type='text' onChange={handleInputName} value={info.name}></NameInput>
             <RegionChagne>지역 변경하기</RegionChagne>
@@ -108,6 +109,7 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
           <OutBtn onClick={closeModal}>나가기</OutBtn>
           <CheckBtn onClick={profileEditChagne}>확인</CheckBtn>
         </BtnDiv>
+        </ModalDiv>
       </Container>
     </Background>
   );
@@ -143,23 +145,26 @@ const Container = styled.form`
 
 `;
 
+const ModalDiv =styled.div`
+  display: flex;
+  margin: 56px 61px;
+  flex-direction: column;
+`;
+
+
 const Title = styled.div`
   color: var(--gray-008, #191919);
   font-family: "MinSans-Regular";
   font-size: 24px;
   font-style: normal;
   font-weight: 600;
-  /* line-height: 30px; 125% */
-  margin-top: 56px;
-  margin-left: 61px;
 
 `;
 
 const ContentsDiv =styled.div`
   display: flex;
-  margin-top: 35px;
-  margin-left: 61px;
   gap: 60px;
+  margin-top: 35px;
 `;
 
 const ImgDiv =styled.div`
@@ -200,7 +205,7 @@ const NameChagne = styled.div`
 
 const NameInput = styled.input`
   width: 245px;
-  height: 42px;
+  height: 40px;
   flex-shrink: 0;
   border-radius: 3px;
   border: 1px solid var(--gray-001, #E0E0E0);
@@ -212,7 +217,7 @@ const NameInput = styled.input`
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
-  line-height: 30px; /* 187.5% */
+  /* line-height: 30px; 187.5% */
   outline: none;
   padding: 0;
   padding-left: 22px;
@@ -225,6 +230,7 @@ const RegionChagne = styled.div`
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
+  margin-top: 27px;
   
 /* line-height: 30px; 166.667% */
 
@@ -237,7 +243,7 @@ const ButtonContainer = styled.div`
   align-content: flex-start;
   gap: 8.236px;
   flex-wrap: wrap;
-  margin-top: 20px;
+  margin-top: 9px;
 
   display: flex;
   width: 425px;
@@ -266,7 +272,7 @@ const LocalButton = styled.button`
   transition: background 0.3s, border 0.3s;
 
   color: #9D9D9D;
-  font-family: "Apple SD Gothic Neo";
+  font-family: "MinSans-Regular";
   font-size: 13.178px;
   font-style: normal;
   font-weight: 500;

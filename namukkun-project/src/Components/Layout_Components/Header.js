@@ -28,7 +28,10 @@ function Header() {
   const handleMenuClick = (menu) => {
     setActiveMenu(menu);
     if(menu==='board'){
-    navigate('/list')
+    navigate('/list');
+    }
+    else if (menu ==='about'){
+      navigate('/about');
     }
   };
 
@@ -46,6 +49,11 @@ function Header() {
   //마이 페이지로 이동
   const handleMypage = () => {
     navigate('/mypage');
+  }
+
+  //마이 페이지로 이동
+  const handleAbout = () => {
+    navigate('/about');
   }
 
   return (
