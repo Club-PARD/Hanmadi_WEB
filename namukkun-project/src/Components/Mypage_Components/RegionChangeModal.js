@@ -90,7 +90,7 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
           <div>
             <NameChagne>이름 변경하기</NameChagne>
             <NameInput type='text' onChange={handleInputName} value={info.name}></NameInput>
-            <RegionChagne style={{marginTop:"38px"}}>지역 변경하기</RegionChagne>
+            <RegionChagne>지역 변경하기</RegionChagne>
             <ButtonContainer>
             {['경산시', '경주시', '구미시', '김천시', '문경시', '상주시', '안동시', '영주시', '영천시', '포항시'].map((region) => (
               <LocalButton
@@ -221,10 +221,11 @@ const NameInput = styled.input`
 
 const RegionChagne = styled.div`
   color: var(--gray-007, #393939);
-font-family: "MinSans-Regular";
-font-size: 18px;
-font-style: normal;
-font-weight: 600;
+  font-family: "MinSans-Regular";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 600;
+  
 /* line-height: 30px; 166.667% */
 
 `;
@@ -237,6 +238,13 @@ const ButtonContainer = styled.div`
   gap: 8.236px;
   flex-wrap: wrap;
   margin-top: 20px;
+
+  display: flex;
+  width: 425px;
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 8.236px;
+  flex-wrap: wrap;
 `;
 
 const LocalButton = styled.button`
@@ -291,15 +299,22 @@ const BtnDiv =styled.div`
 `;
 
 const OutBtn =styled.button`
+  display: flex;
+  width: 86px;
+  height: 36px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
   color: var(--Main-001, #005AFF);
   text-align: center;
-  font-family: "MinSans-Regular";
+  font-family: "Min Sans";
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
   line-height: 30px; /* 214.286% */
 
-  border-radius: var(--Corner-Full, 1000px);
   border: none;
   background-color: transparent;
   cursor: pointer;
