@@ -11,7 +11,7 @@ import MyPage from './Pages/MyPage';
 import Postit from './Pages/Postit';
 import WritingPage from './Pages/WritingPage';
 import AboutPage from './Components/About_Components/AboutPage';
-import ListAllPage from './Pages/AllListPage';
+import ListAllPage from './Pages/ListAllPage';
 
 //Pages 폴더로부터 컴포넌트를 가져와서 라우터 연결  
 function App() {
