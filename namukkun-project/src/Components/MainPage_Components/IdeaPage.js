@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
-import imgcontent from '../../Assets/Img/imgcontent.svg';
+import defaultwhite from '../../Assets/Img/defaultwhite.svg';
 
 function IdeaPage() {
     return (
@@ -40,7 +40,7 @@ const ImageContent = ({ title, author, due, initialLikes }) => {
 
     return (
         <ImageContentContainer>
-            <img src={imgcontent} alt="content image" style={{ width: '515px' }} />
+            <img src={defaultwhite} alt="content image" style={{ width: '515px' }} />
             <ContentTitleText>
                 {title}
             </ContentTitleText>
@@ -57,7 +57,7 @@ const ImageContent = ({ title, author, due, initialLikes }) => {
                 <DetailText $color="#5A5A5A">{likeCount}</DetailText>
             </DetailContainer>
             <BraveButton onClick={handleLike} isLiked={isLiked}>
-                {isLiked ? '용기 보내기' : '용기 보내기'}
+                {isLiked ? '용길이 보내기' : '용길이 보내기'}
             </BraveButton>
         </ImageContentContainer>
     );

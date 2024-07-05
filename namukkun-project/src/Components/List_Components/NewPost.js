@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
-import imgcontent from '../../Assets/Img/imgcontent.svg';
 import rightpagearrow from '../../Assets/Img/rightpagearrow.svg';
 import leftpagearrow from '../../Assets/Img/leftpagearrow.svg';
+import defaultblue from '../../Assets/Img/defaultblue.svg';
 
 function PopularPost() {
     const [isClicked, setIsClicked] = useState(false);
@@ -97,7 +97,7 @@ const ImageContent = ({ title, author, due, initialLikes, truncateText }) => {
 
     return (
         <ImageContentContainer>
-            <img src={imgcontent} alt="content image" style={{ width: '424px', height: '300px' }} />
+            <img src={defaultblue} alt="content image" style={{ width: '424px', height: '300px' }} />
             <ContentTitleText>
                 {truncateText(title, 43)} {/* title을 truncateText로 잘라내기 */}
             </ContentTitleText>
@@ -114,7 +114,7 @@ const ImageContent = ({ title, author, due, initialLikes, truncateText }) => {
                 <DetailText $color="#5A5A5A">{likeCount}</DetailText>
             </DetailContainer>
             <BraveButton onClick={handleLike} isLiked={isLiked}>
-                {isLiked ? '용기 보내기' : '용기 보내기'}
+                {isLiked ? '용길이 보내기' : '용길이 보내기'}
             </BraveButton>
         </ImageContentContainer>
     );
