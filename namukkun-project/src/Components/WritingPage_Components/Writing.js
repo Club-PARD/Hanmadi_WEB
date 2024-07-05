@@ -4,7 +4,6 @@ import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import '../../Assets/Style/quill.snow.custom.css';
 import SideHint from '../../Assets/Img/SideHint.svg';
-import Picture from '../../Assets/Img/Picture.svg';
 import WritingModal from './WritingModal';
 import { GlobalStyle } from '../../Assets/Style/theme';
 

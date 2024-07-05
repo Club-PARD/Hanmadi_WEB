@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "react-draggable": "^4.4.6",
     "react-quill": "^2.0.0"
   }
 }
