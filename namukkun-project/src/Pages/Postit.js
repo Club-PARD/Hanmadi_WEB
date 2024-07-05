@@ -213,7 +213,7 @@ function Postit() {
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
                             onInput={adjustTextareaHeight}
-                            placeholder="댓글을 입력하세요"
+                            placeholder="작성한 댓글이 해당 글 작성자에 의해 채택될 경우, 삭제가 불가능하니 따뜻한 댓글 부탁해요!"
                             rows={1} // 기본 높이를 설정합니다
                         />
                         <CommentButton onClick={handleAddComment}>
@@ -533,6 +533,16 @@ const CommentInput = styled.textarea`
     font-weight: 500;
     resize: none; /* 사용자가 크기를 조절할 수 없도록 */
     overflow: hidden; /* 스크롤바가 나타나지 않도록 */
+
+    &::placeholder {
+        font-family: "MinSans-Regular";
+        color: #A0AEC9;
+        font-family: "Min Sans";
+        font-size: 15px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 150%; /* 22.5px */
+    }
 `;
 
 // 댓글 추가 버튼 스타일
