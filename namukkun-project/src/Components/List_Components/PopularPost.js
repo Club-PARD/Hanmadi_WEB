@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
-import imgcontent from '../../Assets/Img/imgcontent.svg';
 import sendbrave from '../../Assets/Img/sendbrave.svg';
 import onclicksendbrave from '../../Assets/Img/onclicksendbrave.svg';
 import hoversendbrave from '../../Assets/Img/hoversendbrave.svg';
 import rightarrow from '../../Assets/Img/rightarrow.svg';
+import defaultwhite from '../../Assets/Img/defaultwhite.svg';
 
 function PopularPost() {
     const [isClicked, setIsClicked] = useState(false);
@@ -57,7 +57,7 @@ function PopularPost() {
                 </StatusBar>
                 <ContentImageContainer>
                     <ImageContainer>
-                        <img src={imgcontent} alt="content image" style={{ width: '209px', height: '134px' }} />
+                        <img src={defaultwhite} alt="content image" style={{ width: '209px', height: '134px' }} />
                         <ContentTextContainer>
                             <ContentTitleText>
                                 {truncateText("포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요.", 52)}
@@ -81,7 +81,7 @@ function PopularPost() {
                 </ContentImageContainer>
                 <ContentImageContainer>
                     <ImageContainer>
-                        <img src={imgcontent} alt="content image" style={{ width: '209px', height: '134px' }} />
+                        <img src={defaultwhite} alt="content image" style={{ width: '209px', height: '134px' }} />
                         <ContentTextContainer>
                             <ContentTitleText>
                                 {truncateText("포항시 버스정류장에 공유", 52)}
@@ -105,7 +105,7 @@ function PopularPost() {
                 </ContentImageContainer>
                 <ContentImageContainer>
                     <ImageContainer>
-                        <img src={imgcontent} alt="content image" style={{ width: '209px', height: '134px' }} />
+                        <img src={defaultwhite} alt="content image" style={{ width: '209px', height: '134px' }} />
                         <ContentTextContainer>
                             <ContentTitleText>
                                 {truncateText("포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요.그렇게 생각하고 싶지 않지만 많아요", 52)}
@@ -129,7 +129,7 @@ function PopularPost() {
                 </ContentImageContainer>
                 <ContentImageContainer>
                     <ImageContainer>
-                        <img src={imgcontent} alt="content image" style={{ width: '209px', height: '134px' }} />
+                        <img src={defaultwhite} alt="content image" style={{ width: '209px', height: '134px' }} />
                         <ContentTextContainer>
                             <ContentTitleText>
                                 {truncateText("포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요.그렇게 생각하고 싶지 않지만 많아요", 52)}
