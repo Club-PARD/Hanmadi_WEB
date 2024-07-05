@@ -13,6 +13,20 @@ import close from '../Assets/Img/close.svg';
 import bluebackground from '../Assets/Img/bluebackground.svg';
 import yellowbackground from '../Assets/Img/yellowbackground.svg';
 import brownbackground from '../Assets/Img/brownbackground.svg';
+import aftertaken from '../Assets/Img/aftertaken.svg'; // 추가된 이미지 경로
+
+const intToRegion = {
+    0: '경산시',
+    1: '경주시',
+    2: '구미시',
+    3: '김천시',
+    4: '문경시',
+    5: '상주시',
+    6: '안동시',
+    7: '영주시',
+    8: '영천시',
+    9: '포항시'
+};
 
 function Postit() {
     const [comments, setComments] = useState([]);
@@ -24,11 +38,18 @@ function Postit() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
     const [postitToDelete, setPostitToDelete] = useState(null);
+    const [commentToDelete, setCommentToDelete] = useState(null); // 삭제할 댓글 상태 추가
     const [highestZIndex, setHighestZIndex] = useState(1000); // z-index 관리를 위한 상태 추가
 
     useEffect(() => {
         // JSON 데이터로 comments 상태를 초기화 합니다
-        setComments(commentsData.users.map(comment => ({ ...comment, isTaken: false })));
+        setComments(commentsData.users);
+        const initialZIndex = Math.max(...commentsData.users.map(comment => comment.zIndex)) + 1;
+        setHighestZIndex(initialZIndex);
+
+        // 초기 포스티잇 설정
+        setLeftPostits(commentsData.users.filter(comment => comment.section === 'left' && comment.isTaken));
+        setRightPostits(commentsData.users.filter(comment => comment.section === 'right' && comment.isTaken));
     }, []);
 
     const handleAddComment = () => {
@@ -37,14 +58,15 @@ function Postit() {
             const newCommentData = {
                 id: Date.now(), // 각 포스티잇을 고유하게 식별하기 위한 id 추가
                 name: "사용자", // 여기에 실제 이름 데이터를 넣을 수 있습니다.
-                region: "서울", // 여기에 실제 지역 데이터를 넣을 수 있습니다.
+                region: 9, // 여기에 실제 지역 데이터를 넣을 수 있습니다. (예: 포항시)
                 date: new Date().toLocaleString(),
-                like: 0,
+                up: 0,
                 content: newComment,
                 position: { x: 0, y: 0 }, // 초기 위치를 설정합니다
                 design: design, // 포스티잇의 디자인을 설정합니다
                 isTaken: false,
-                zIndex: highestZIndex
+                zIndex: highestZIndex,
+                section: "left"
             };
             setComments([...comments, newCommentData]);
             setNewComment('');
@@ -58,9 +80,9 @@ function Postit() {
         e.target.style.height = `${e.target.scrollHeight}px`;
     };
 
-    const handleLike = (index) => {
+    const handleUp = (index) => {
         const updatedComments = [...comments];
-        updatedComments[index].like += 1;
+        updatedComments[index].up += 1;
         setComments(updatedComments);
     };
 
@@ -85,7 +107,14 @@ function Postit() {
         );
 
         setComments(updatedComments);
-        setLeftPostits([...leftPostits, { ...comment, design: designIndex, isTaken: true, zIndex: highestZIndex }]);
+        const newPostit = { ...comment, design: designIndex, isTaken: true, zIndex: highestZIndex };
+        
+        if (newPostit.section === "left") {
+            setLeftPostits([...leftPostits, newPostit]);
+        } else {
+            setRightPostits([...rightPostits, newPostit]);
+        }
+        
         setDesignIndex((designIndex + 1) % 3); // 디자인 인덱스를 순환하도록 업데이트
         setHighestZIndex(highestZIndex + 1); // 새로운 포스티잇에 가장 높은 z-index 할당
     };
@@ -95,13 +124,13 @@ function Postit() {
             const postitToMove = leftPostits.find(postit => postit.id === id);
             if (postitToMove) {
                 setLeftPostits(leftPostits.filter(postit => postit.id !== id));
-                setRightPostits([...rightPostits, postitToMove]);
+                setRightPostits([...rightPostits, { ...postitToMove, section: "right" }]);
             }
         } else {
             const postitToMove = rightPostits.find(postit => postit.id === id);
             if (postitToMove) {
                 setRightPostits(rightPostits.filter(postit => postit.id !== id));
-                setLeftPostits([...leftPostits, postitToMove]);
+                setLeftPostits([...leftPostits, { ...postitToMove, section: "left" }]);
             }
         }
     };
@@ -113,6 +142,7 @@ function Postit() {
 
     const closeDeleteModal = () => {
         setPostitToDelete(null);
+        setCommentToDelete(null); // 삭제할 댓글 상태 초기화
         setIsModalOpen(false);
     };
 
@@ -127,7 +157,7 @@ function Postit() {
 
             // comments 상태에서 해당 포스티잇의 isTaken을 false로 설정
             setComments(comments.map(comment => 
-                comment.id === postitToDelete.id ? { ...comment, isTaken: false } : comment
+                comment.id === postitToDelete.id ? { ...comment, isTaken: false, section: "left" } : comment
             ));
         }
         closeDeleteModal();
@@ -142,6 +172,19 @@ function Postit() {
             postit.id === id ? { ...postit, zIndex: highestZIndex } : postit
         ));
         setHighestZIndex(highestZIndex + 1);
+    };
+
+    const handleCommentDelete = (id) => {
+        setCommentToDelete(id); // 삭제할 댓글 설정
+        setIsModalOpen(true); // 모달 오픈
+    };
+
+    const confirmDeleteComment = () => {
+        if (commentToDelete) {
+            setComments(comments.filter(comment => comment.id !== commentToDelete));
+            setCommentToDelete(null); // 삭제할 댓글 초기화
+        }
+        closeDeleteModal(); // 모달 닫기
     };
 
     return (
@@ -170,7 +213,7 @@ function Postit() {
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
                             onInput={adjustTextareaHeight}
-                            placeholder="댓글을 입력하세요"
+                            placeholder="작성한 댓글이 해당 글 작성자에 의해 채택될 경우, 삭제가 불가능하니 따뜻한 댓글 부탁해요!"
                             rows={1} // 기본 높이를 설정합니다
                         />
                         <CommentButton onClick={handleAddComment}>
@@ -183,27 +226,37 @@ function Postit() {
                                 <CommentContainer key={index}>
                                     <CommentHeader>
                                         <CommentInfo>
-                                            <CommentNameRegion>{comment.name} / {comment.region}</CommentNameRegion>
+                                            <CommentNameRegion>{comment.name} / {intToRegion[comment.region]}</CommentNameRegion>
                                             <CommentDate>{comment.date}</CommentDate>
                                         </CommentInfo>
                                         <CommentLikes>
-                                            <LikeButton onClick={() => handleLike(index)}>
+                                            <LikeButton onClick={() => handleUp(index)}>
                                                 <LikeContianer>
                                                     <img src={commentlike} alt="commentlike" style={{ width: '16.63px', height: '14.25px' }} />
                                                 </LikeContianer>
                                             </LikeButton>
-                                            <LikeCount>{comment.like}</LikeCount>
+                                            <LikeCount>{comment.up}</LikeCount>
                                         </CommentLikes>
                                     </CommentHeader>
                                     <CommentDisplayButtonContainer>
                                         <CommentDisplayBox>
                                             <Comment>{comment.content}</Comment>
                                         </CommentDisplayBox>
-                                        <TakeButton isTaken={comment.isTaken} onClick={() => handleTakeButtonClick(comment)}>
-                                            <img src={takenduck} alt="takenduck" style={{ width: '15px', height: '19px' }} />
+                                        <TakeButton 
+                                            isTaken={comment.isTaken} 
+                                            onClick={() => !comment.isTaken && handleTakeButtonClick(comment)}
+                                        >
+                                            <img 
+                                                src={comment.isTaken ? aftertaken : takenduck} 
+                                                alt="takenduck" 
+                                                style={{ width: '15px', height: '19px' }} 
+                                            />
                                             <TakenButtonText isTaken={comment.isTaken}>채택하기</TakenButtonText>
                                         </TakeButton>
                                     </CommentDisplayButtonContainer>
+                                    <CommentDeleteButton onClick={() => handleCommentDelete(comment.id)}>
+                                        삭제
+                                    </CommentDeleteButton>
                                 </CommentContainer>
                             ))}
                         </CommentsDisplayContainer>
@@ -227,17 +280,17 @@ function Postit() {
                 <Modal>
                     <ModalContent>
                         <ModalTitle>
-                            채택을 해제하시겠어요?
+                            {commentToDelete ? "정말 삭제하시겠어요?" : "채택을 해제하시겠어요?"}
                         </ModalTitle>
                         <ModalSubText>
-                        채택이 해제된 댓글은 
-                        </ModalSubText>
-                        <ModalSubText>
-                        댓글창에서 그대로 확인할 수 있어요.
+                            {commentToDelete 
+                                ? "삭제된 댓글은 되돌릴 수 없어요."
+                                : "채택이 해제된 댓글은 댓글창에서 그대로 확인할 수 있어요."
+                            }
                         </ModalSubText>
                         <ModalButtonContainer>
                             <ModalButton onClick={closeDeleteModal}>&nbsp;취소하기&nbsp;</ModalButton>
-                            <ModalButton onClick={confirmDeletePostit}>&nbsp;확인&nbsp;</ModalButton>
+                            <ModalButton onClick={commentToDelete ? confirmDeleteComment : confirmDeletePostit}>&nbsp;확인&nbsp;</ModalButton>
                         </ModalButtonContainer>
                     </ModalContent>
                 </Modal>
@@ -249,10 +302,7 @@ function Postit() {
                             포스티잇 한도가 초과되었습니다!
                         </ModalTitle>
                         <ModalSubText>
-                            포스티잇은 최대 10개까지만 
-                        </ModalSubText>
-                        <ModalSubText>
-                        추가할 수 있습니다.
+                            포스티잇은 최대 10개까지만 추가할 수 있습니다.
                         </ModalSubText>
                         <ModalButtonContainer>
                             <ModalButton onClick={closeLimitModal}>&nbsp;확인&nbsp;</ModalButton>
@@ -300,7 +350,7 @@ const DraggablePostit = ({ postit, onMove, onDelete, onStart }) => {
                 <AllPostitContainer>
                     <PostitWriteButtonContainer>
                         <PostitContent>
-                            <PostitInfo>{postit.name} / {postit.region}</PostitInfo>
+                            <PostitInfo>{postit.name} / {intToRegion[postit.region]}</PostitInfo>
                             <PostWriting>{postit.content}</PostWriting>
                         </PostitContent>
                         <ButtonContainer>
@@ -326,6 +376,7 @@ export default Postit;
 const MainContainer = styled.div`
     display: flex;
     flex-direction: row;
+    justify-content: center;
     min-height: 100vh;
 `;
 
@@ -341,7 +392,6 @@ const PostitSectionContainer = styled.div`
 const PostitSection = styled.div`
     width: 378px;
     flex-grow: 1;
-    background: #F8F8F8;
     position: relative;
 `;
 
@@ -359,19 +409,16 @@ const PostitContainerBase = styled.div`
 const BlueContainer = styled(PostitContainerBase)`
     background: url(${bluebackground}) no-repeat center center;
     background-size: cover;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const YellowContainer = styled(PostitContainerBase)`
     background: url(${yellowbackground}) no-repeat center center;
     background-size: cover;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 `;
 
 const BrownContainer = styled(PostitContainerBase)`
     background: url(${brownbackground}) no-repeat center center;
     background-size: cover;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 `;
 
 const AllPostitContainer = styled.div`
@@ -486,6 +533,16 @@ const CommentInput = styled.textarea`
     font-weight: 500;
     resize: none; /* 사용자가 크기를 조절할 수 없도록 */
     overflow: hidden; /* 스크롤바가 나타나지 않도록 */
+
+    &::placeholder {
+        font-family: "MinSans-Regular";
+        color: #A0AEC9;
+        font-family: "Min Sans";
+        font-size: 15px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 150%; /* 22.5px */
+    }
 `;
 
 // 댓글 추가 버튼 스타일
@@ -612,11 +669,12 @@ const MyComment = styled.div`
 const CommentDisplayButtonContainer = styled.div`
     display: flex;
     align-items: stretch; /* CommentDisplayBox와 높이를 맞추기 위해 추가 */
-    margin-bottom: 50px;
+    margin-bottom: 6px;
 `;
 
 const TakeButton = styled.div`
     margin-left: 6px;
+    height: 39px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -625,18 +683,47 @@ const TakeButton = styled.div`
     padding: 10px;
     border-radius: 5px;
     border: 1px solid ${props => props.isTaken ? '#d3d3d3' : '#96B948'};
-    background: ${props => props.isTaken ? 'rgba(211, 211, 211, 0.06)' : 'rgba(175, 205, 109, 0.06)'};
+    background: ${props => props.isTaken ? '#AFCD6D' : 'rgba(175, 205, 109, 0.06)'};
     cursor: ${props => props.isTaken ? 'not-allowed' : 'pointer'};
+
+    ${props => !props.isTaken && `
+        &:hover {
+            background: rgba(175, 205, 109, 0.30);
+        }
+    `}
 `;
 
 const TakenButtonText = styled.div`
     padding-top: 4px;
-    color: ${props => props.isTaken ? '#d3d3d3' : '#96B948'};
+    color: ${props => props.isTaken ? 'var(--white-001, #FFF)' : '#96B948'};
     text-align: center;
     font-family: "MinSans-Regular";
     font-size: 14px;
     font-style: normal;
     font-weight: 600;
+`;
+
+// 댓글 삭제 버튼 스타일
+const CommentDeleteButton = styled.button`
+    display: flex;
+    width: 46px;
+    height: 25px;
+    padding: 7px;
+    justify-content: center;
+    border-radius: 5px;
+    background: rgba(0, 90, 255, 0.06);
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    font-family: "MinSans-Regular";
+    font-size: 14px;
+    margin-bottom: 50px; /* 버튼 간격을 위해 추가 */
+    color: var(--Main-001, #005AFF);
+    text-align: center;
+    font-size: 10.236px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 21.934px; /* 214.286% */
 `;
 
 // 모달 스타일

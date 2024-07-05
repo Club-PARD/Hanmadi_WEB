@@ -1,6 +1,7 @@
 import styled, { createGlobalStyle } from 'styled-components';
 import blueduck from '../../Assets/Img/blueduck.svg';
 import whiteduck from '../../Assets/Img/whiteduck.svg';
+import bannerimg from '../../Assets/Img/bannerimg.svg';
 
 import { BrowserRouter } from 'react-router-dom';
 import { GlobalStyle } from '../../Assets/Style/theme';
@@ -10,7 +11,8 @@ function Banner() {
         <>
             <GlobalStyle/>
             <Container>
-                <WhiteduckContainer>
+                <img src={bannerimg} alt='bannerimg' style={{ width: '1443px', height: "815px" }}></img>
+                {/* <WhiteduckContainer>
                     <WhiteduckImg src={whiteduck} />
                 </WhiteduckContainer>
                 <BannerTextContainer>
@@ -23,7 +25,7 @@ function Banner() {
                 </BannerTextContainer>
                 <BlueduckContainer>
                     <BlueduckImg src={blueduck} />
-                </BlueduckContainer>
+                </BlueduckContainer> */}
             </Container>
         </>
     );
@@ -37,7 +39,6 @@ const Container = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    background: radial-gradient(50% 50% at 50% 50%, #FFF 0%, #EAEAEA 100%);
     overflow: hidden; /* Add this line */
 `;
 
