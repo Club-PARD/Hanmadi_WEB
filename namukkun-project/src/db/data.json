@@ -1,44 +1,69 @@
 {
-    "users": [
-      {
-        "name": "이온유",
-        "region": "광주",
-        "id": "1",
-        "date": "2024.07.02",
-        "like": "24",
-        "content": "포항시 발전을 위해 꼭 필요하다고 생각합니다. 그렇게 생각합니다. 그렇게 생각합니다이그렇게 추진되길 강력하게 원합니다."
-      },
-      {
-        "name": "이한결",
-        "region": "서울",
-        "id": "2",
-        "date": "2024.07.02",
-        "like": "90",
-        "content": "좋은데~~"
-      },
-      {
-        "name": "김영채",
-        "region": "광주",
-        "id": "3",
-        "date": "2024.07.02",
-        "like": "24",
-        "content": "자고 싶다"
-      },
-      {
-        "name": "이가연",
-        "region": "모름",
-        "id": "4",
-        "date": "2024.07.02",
-        "like": "24",
-        "content": "나 기획자인데 디스콰이엇 작성한다."
-      },
-      {
-        "name": "이유현",
-        "region": "포항",
-        "id": "5",
-        "date": "2024.07.02",
-        "like": "24",
-        "content": "나 리드개발자인데 집가고 싶다"
-      }
-    ]
-  }
+  "users": [
+    {
+      "name": "이온유",
+      "region": 8,
+      "id": "1",
+      "date": "2024.07.02",
+      "up": 24,
+      "content": "포항시 발전을 위해 꼭 필요하다고 생각합니다. 그렇게 생각합니다. 그렇게 생각합니다이그렇게 추진되길 강력하게 원합니다.",
+      "position": {"x": 150, "y": 300},
+      "zIndex": 1000,
+      "design": 0,
+      "section": "left",
+      "isTaken": false
+    },
+    {
+      "name": "이한결",
+      "region": 9,
+      "id": "2",
+      "date": "2024.07.02",
+      "up": 90,
+      "content": "좋은데~~",
+      "position": {"x": 150, "y": 100},
+      "zIndex": 1001,
+      "design": 1,
+      "section": "right",
+      "isTaken": false
+    },
+    {
+      "name": "김영채",
+      "region": 7,
+      "id": "3",
+      "date": "2024.07.02",
+      "up": 24,
+      "content": "자고 싶다",
+      "position": {"x": 150, "y": 500},
+      "zIndex": 1002,
+      "design": 2,
+      "section": "left",
+      "isTaken": false
+    },
+    {
+      "name": "이가연",
+      "region": 6,
+      "id": "4",
+      "date": "2024.07.02",
+      "up": 24,
+      "content": "나 기획자인데 디스콰이엇 작성한다.",
+      "position": {"x": 150, "y": 200},
+      "zIndex": 1003,
+      "design": 0,
+      "section": "right",
+      "isTaken": false
+    },
+    {
+      "name": "이유현",
+      "region": 9,
+      "id": "5",
+      "date": "2024.07.02",
+      "up": 27,
+      "content": "나 리드개발자인데 집가고 싶다",
+      "position": {"x": 0, "y": 0},
+      "zIndex": 1004,
+      "design": 1,
+      "section": "left",
+      "isTaken": true
+    }
+  ]
+}

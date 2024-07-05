@@ -11,6 +11,7 @@ function DetailContent(){
     const [isClicked, setIsClicked] = useState(false);
     const [activeButton, setActiveButton] = useState('진행중'); // 진행중이 기본값
     const [sendBraveClicked, setSendBraveClicked] = useState([false, false, false, false]); // sendbravebutton 클릭 상태
+    const [commentsCount, setCommentsCount] = useState(32); // 한마디 수 상태 추가
 
     const handleButtonClick = (button) => {
         setActiveButton(button);
@@ -20,6 +21,13 @@ function DetailContent(){
         const newSendBraveClicked = [...sendBraveClicked];
         newSendBraveClicked[index] = !newSendBraveClicked[index];
         setSendBraveClicked(newSendBraveClicked);
+
+        // sendbrave 버튼 클릭 시 한마디 수 증가
+        if (newSendBraveClicked[index]) {
+            setCommentsCount(prevCount => prevCount + 1);
+        } else {
+            setCommentsCount(prevCount => prevCount - 1);
+        }
     };
 
     const truncateText = (text, maxLength) => {
@@ -28,6 +36,7 @@ function DetailContent(){
         }
         return text;
     };
+
     return(
     <div>
         <Container>
@@ -51,7 +60,7 @@ function DetailContent(){
                     </StateInfoContainer>
                     <StateInfoContainer>
                         <StateName>한마디 수</StateName>
-                        <StateContent>32</StateContent>
+                        <StateContent>{commentsCount}</StateContent>
                     </StateInfoContainer>
                     <StateInfoContainer>
                         <StateName>용기 수</StateName>
