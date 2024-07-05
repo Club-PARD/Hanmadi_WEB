@@ -5,6 +5,7 @@ import Header from "../Components/Layout_Components/Header";
 import PopularPost from "../Components/List_Components/PopularPost";
 import NewPost from "../Components/List_Components/NewPost";
 import { GlobalStyle } from '../Assets/Style/theme';
+import FixList from "../Components/Layout_Components/FixList";
 
 function ListPage() {
   return (
@@ -14,14 +15,7 @@ function ListPage() {
       <ListSelectRegion />
       <PopularPost />
       <NewPost />
-      <FixedButtonContainer>
-        <FixedButton>
-          ✏️ 전체글 모아보기
-        </FixedButton>
-        <FixedButton>
-          🌟 인기글 모아보기
-        </FixedButton>
-      </FixedButtonContainer>
+      <FixList/>
     </Div>
   );
 }
