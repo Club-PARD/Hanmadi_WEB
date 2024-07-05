@@ -2,14 +2,22 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from "recoil";
-import { stateListCategory } from "../../Recoil/Atom";
+import { pagenation, stateListCategory } from "../../Recoil/Atom";
 
 function FixList(){
   const navigate = useNavigate();
   const [filter, setFilter] = useRecoilState(stateListCategory);
+  const [currentPage, setCurrentPage] =useRecoilState(pagenation);
 
   const onClcikListMenu = (category)=>{
     setFilter(category);
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth' // 부드러운 스크롤링 효과
+    });
+    setCurrentPage(1);
+
     navigate('/listall');
   }
 
