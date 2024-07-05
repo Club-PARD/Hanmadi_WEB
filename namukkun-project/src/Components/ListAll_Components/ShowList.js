@@ -3,10 +3,13 @@ import styled from "styled-components";
 import Contents from "./Contents";
 import arrowleft from '../../Assets/Img/Arrowleft.svg';
 import arrowright from '../../Assets/Img/Arrowright.svg';
+import { useRecoilState } from "recoil";
+import { pagenation, stateListCategory } from "../../Recoil/Atom";
 
 function ShowList() {
   // 필터 버튼 값 설정 [추천/최신]
-  const [filter, setFilter] = useState('recent');
+  const [filter, setFilter] = useRecoilState(stateListCategory);
+  const [currentPage, setCurrentPage] =useRecoilState(pagenation);
   const onClickFilterBtn = (filterValue) => {
     setFilter(filterValue);
   }
@@ -38,8 +41,6 @@ function ShowList() {
     { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" }
   ];
 
-  // 페이지네이션 상태
-  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6; //한 페이지당 보여지는 컨텐츠 갯수
   //총 페이지 갯수
   const totalPages = Math.ceil(contents.length / itemsPerPage);

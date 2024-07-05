@@ -11,16 +11,6 @@ function PopularPost() {
     const [sendBraveClicked, setSendBraveClicked] = useState([false, false, false]); // sendbravebutton 클릭 상태
     const [activeDot, setActiveDot] = useState(0); // pagination 상태
 
-    const handleButtonClick = (button) => {
-        setActiveButton(button);
-    };
-
-    const handleSendBraveClick = (index) => {
-        const newSendBraveClicked = [...sendBraveClicked];
-        newSendBraveClicked[index] = !newSendBraveClicked[index];
-        setSendBraveClicked(newSendBraveClicked);
-    };
-
     const handleDotClick = (index) => {
         setActiveDot(index);
     };
