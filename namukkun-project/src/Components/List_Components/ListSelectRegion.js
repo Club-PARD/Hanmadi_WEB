@@ -80,7 +80,7 @@ const IntroContainer = styled.div`
 const MainTitle = styled.div`
   align-self: stretch;
   color: #005AFF;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 30px;
   font-style: normal;
   font-weight: 700;
@@ -89,7 +89,7 @@ const MainTitle = styled.div`
 
 const SubTitle = styled.div`
   color: #191919;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 18px;
   font-style: normal;
   font-weight: 500;
@@ -113,7 +113,7 @@ const LocalButton = styled.button`
   padding: 10px;
   justify-content: center;
   align-items: center;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   gap: 14px;
   flex-shrink: 0;
   border-radius: 4px;

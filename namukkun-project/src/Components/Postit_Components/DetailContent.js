@@ -43,6 +43,7 @@ function DetailContent(){
             <GlobalStyle/>
             <TitleContainer>
                 <TitleText>포항시 전동킥보드 헬멧 단속 시스템 도입하면 좋을 듯용?</TitleText>
+                <DateText>2024.07.02</DateText>
             </TitleContainer>
             <StateContainer>
                 <StateBox>
@@ -122,6 +123,7 @@ const TitleContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 `
 
 const TitleText = styled.div`
@@ -129,14 +131,25 @@ const TitleText = styled.div`
     height: 62px;
     color: #191919;
     text-align: center;
-    font-family: "Min Sans";
+    font-family: 'MinSans-Regular';
     font-size: 28px;
     font-style: normal;
     font-weight: 600;
 `
 
+const DateText = styled.div`
+    margin-top: 15px;
+    color: var(--gray-006, #575757);
+    text-align: center;
+    font-family: 'MinSans-Regular';
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%; /* 18px */
+`
+
 const StateContainer = styled.div`
-    margin-top: 67px;
+    margin-top: 8px;
     width: 100%;
     display: flex;
     justify-content: center;

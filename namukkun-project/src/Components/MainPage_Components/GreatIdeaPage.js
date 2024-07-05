@@ -1,8 +1,9 @@
 import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
-import imgcontent from '../../Assets/Img/imgcontent.svg';
+import defaultblue from '../../Assets/Img/defaultblue.svg';
 import bottombd from '../../Assets/Img/bottombd.svg';
 import bottomwd from '../../Assets/Img/bottomwd.svg';
+import bottomimg from '../../Assets/Img/bottomimg.svg';
 
 function GreatIdeaPage() {
     return (
@@ -36,7 +37,7 @@ function GreatIdeaPage() {
                         </DetailContainer>
                     </ContentTextContainer>
                     <ImageContainer>
-                        <img src={imgcontent} alt="content image" style={{ width: '234px' }}/>
+                        <img src={defaultblue} alt="content image" style={{ width: '234px' }}/>
                     </ImageContainer>
                 </ContentImageContainer>
                 <ContentImageContainer>
@@ -58,13 +59,14 @@ function GreatIdeaPage() {
                         </DetailContainer>
                     </ContentTextContainer>
                     <ImageContainer>
-                        <img src={imgcontent} alt="content image" style={{ width: '234px' }}/>
+                        <img src={defaultblue} alt="content image" style={{ width: '234px' }}/>
                     </ImageContainer>
                 </ContentImageContainer>
             </GreatContentContainer>
             <DuckContainer>
-                <BottomBlueDuck><img src={bottombd} alt="content image" style={{ width: '230px' }}/></BottomBlueDuck>
-                <BottomWhiteDuck><img src={bottomwd} alt="content image" style={{ width: '494px' }}/></BottomWhiteDuck>
+                {/* <BottomBlueDuck><img src={bottombd} alt="content image" style={{ width: '230px' }}/></BottomBlueDuck>
+                <BottomWhiteDuck><img src={bottomwd} alt="content image" style={{ width: '494px' }}/></BottomWhiteDuck> */}
+                <img src={bottomimg} alt="bottomimg" style={{ width: '553px', height: '334px'}}/>
             </DuckContainer>
         </Container>
     );
@@ -209,9 +211,9 @@ const DuckContainer = styled.div`
     display: flex;
     flex-direction: row;
     align-items: flex-end;
-    justify-content: space-between;
+    justify-content: flex-end;
     position: absolute;
-    top: calc(100% - 190px);  
+    top: calc(100% - 100px);  
     z-index: 1;
     background: transparent;
 `;
