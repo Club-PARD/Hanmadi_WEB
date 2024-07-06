@@ -6,7 +6,7 @@ import '../../Assets/Style/quill.snow.custom.css';
 import SideHint from '../../Assets/Img/SideHint.svg';
 import WritingModal from './WritingModal';
 import { GlobalStyle } from '../../Assets/Style/theme';
-import { uploadImageAPI, uploadFileFetch, submitPostAPI } from '../../API/AxiosAPI.js';
+import { deleteFileAPI, uploadImageAPI, uploadFileFetch, submitPostAPI } from '../../API/AxiosAPI.js';
 
 // Custom font
 const fonts = ['Min Sans-Regular'];
@@ -101,10 +101,30 @@ const Writing = () => {
     }
   };
 
-  const handleFileRemove = (index) => {
-    setFileNames(fileNames.filter((_, i) => i !== index));
-    setFileRandomStrings(fileRandomStrings.filter((_, i) => i !== index));
+  const handleFileRemove = async (index) => {
+    try {
+      const fileNameToRemove = fileRandomStrings[index];
+      console.log('Removing file with name:', fileNameToRemove);
+      
+      // 서버로 파일 제거 요청 보내기
+      await deleteFileAPI(fileNameToRemove);
+  
+      // 파일이 성공적으로 제거되면 상태 업데이트
+      const updatedFileNames = [...fileNames];
+      const updatedFileRandomStrings = [...fileRandomStrings];
+  
+      updatedFileNames.splice(index, 1); // index에 있는 요소를 제거
+      updatedFileRandomStrings.splice(index, 1); // index에 있는 요소를 제거
+  
+      setFileNames(updatedFileNames);
+      setFileRandomStrings(updatedFileRandomStrings);
+  
+      console.log('파일이 성공적으로 제거되었습니다:', fileNameToRemove);
+    } catch (error) {
+      console.error('파일 제거 중 오류 발생:', error);
+    }
   };
+  
 
   const regionToInt = {
     '경산시': 0,
