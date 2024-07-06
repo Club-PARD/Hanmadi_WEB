@@ -57,7 +57,7 @@ function ShowList() {
   return (
     <Div>
       <TopHeader>
-        <Title>✏️{filter === 'recommend' ? '추천' : '전체'}글 모아보기</Title>
+        <Title>✏️ {filter === 'recommend' ? '추천' : '전체'}글 모아보기</Title>
         <BtnDiv>
           <FilterBtn onClick={() => onClickFilterBtn('recommend')} isSelected={filter === 'recommend'}>추천</FilterBtn>
           <FilterBtn onClick={() => onClickFilterBtn('recent')} isSelected={filter === 'recent'}>최신</FilterBtn>
@@ -110,7 +110,6 @@ const Title = styled.div`
   font-size: 32px;
   font-style: normal;
   font-weight: 600;
-  line-height: 30px; /* 93.75% */
 `;
 
 const BtnDiv = styled.div`
@@ -129,7 +128,7 @@ const FilterBtn = styled.button`
   color: var(--Main-001, #005AFF);
   text-align: center;
   font-family: "Min Sans";
-  font-size: 13.558px;
+  font-size: 18px;
   font-style: normal;
   font-weight: 500;
   line-height: 29.054px; /* 214.286% */

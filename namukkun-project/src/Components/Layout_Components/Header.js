@@ -1,36 +1,34 @@
 import styled from 'styled-components';
 import logo from '../../Assets/Img/logo.svg';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LoginModal from '../Login_Components/LoginModal';
 import ProfileImg from '../../Assets/Img/ProfileImg.svg';
 import { Outlet } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import { loginTestState } from '../../Recoil/Atom';
+import { useRecoilState } from 'recoil';
 
 
 function Header() {
   const [showModal, setShowModal] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const navigate = useNavigate();
+  //로그인 테스트 상태 -추후 서버랑 연결해야함.
+  const [isLogin, setIsLogin] = useRecoilState(loginTestState);
 
-  const [routeStyle ,setRouteStyle ] =useState(true);
+  // const [routeStyle ,setRouteStyle ] =useState(true);
 
-  // const route = new URL(document.location.toString()).pathname;
-  // // console.log(route)
+  const path = new URL(document.location.toString()).pathname;
 
-  // if(route ==='/mypage' || route === '/writing'){
-
-  // }
-
-  //로그인 
+  //로그인  - 이거 추후 서버 연결 후수정 필요함. 로그인 눌렀을 때 바로 로그아웃 상태 뜨지 않게.
   const handleLoginClick = () => {
-    setIsLoggedIn(true);
+    setIsLogin(true);
     setShowModal(true);
   };
 
   //로그아웃
   const handleLogoutClick = () => {
-    setIsLoggedIn(false);
+    setIsLogin(false);
   };
 
   //제안 게시판 클릭 -> 제안 게시판 페이지로 이동
@@ -38,12 +36,10 @@ function Header() {
     setActiveMenu(menu);
     //제안 게시판
     if(menu==='board'){
-      setRouteStyle(true);
     navigate('/list');
     }
     //사이트 소개
     else if (menu ==='about'){
-      setRouteStyle(true);
       navigate('/about');
     }
   };
@@ -56,13 +52,11 @@ function Header() {
 
   //글쓰기 페이지로 이동
   const handleWriting = () => {
-    setRouteStyle(false);
     navigate('/writing');
   }
 
   //마이 페이지로 이동
   const handleMypage = () => {
-    setRouteStyle(false);
     navigate('/mypage');
   }
 
@@ -77,25 +71,26 @@ function Header() {
             <MenuTextContainer>
               <MenuText
                 onClick={() => handleMenuClick('about')}
-                isActive={routeStyle&&activeMenu === 'about'}
+                isActive={path==='/about'&&activeMenu === 'about'}
               >
                 사이트소개
               </MenuText>
-              <Underline isActive={routeStyle&&activeMenu === 'about'} />
+              <Underline isActive={path==='/about'&&activeMenu === 'about'} />
             </MenuTextContainer>
             <MenuTextContainer>
               <MenuText
                 onClick={() => handleMenuClick('board')}
-                isActive={routeStyle&&activeMenu === 'board'}
+                isActive={(path==='/list'||path==='/listall'||path==='/postit')
+                  &&activeMenu === 'board'}
               >
                 제안게시판
               </MenuText>
-              <Underline isActive={ routeStyle &&activeMenu === 'board'}  />
+              <Underline isActive={(path==='/list'||path==='/listall'||path==='/postit') && activeMenu === 'board'}  />
             </MenuTextContainer>
           </MenuButton>
         </Menu>
         <Login>
-          {isLoggedIn ? (
+          {isLogin ? (
             <LoggedInContainer>
               <ProposalButton onClick={handleWriting}>제안하러가기</ProposalButton>
               <UserInfo>
@@ -208,7 +203,7 @@ const LoginButtonContainer = styled.div`
 const LoginButton = styled.button`
   color: #000;
   font-family: "Min Sans";
-  font-size: 14px;
+  font-size: 17px;
   font-style: normal;
   font-weight: 500;
   background: none;
@@ -227,7 +222,7 @@ const LoggedInContainer = styled.div`
   padding: 49px 0 21px 0; /* match the padding */
   color: #000;
   text-align: right;
-  font-family: "Min Sans";
+  font-family: "Min Sans-Regular";
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -239,7 +234,7 @@ const LoggedInContainer = styled.div`
 
 const ProposalButton = styled.button`
   display: flex;
-  width: 101px;
+  width: 110px;
   height: 35px;
   padding: 4px;
   justify-content: center;
@@ -254,7 +249,7 @@ const ProposalButton = styled.button`
   color: var(--Black-main, #191919);
   text-align: center;
   font-family: "Min Sans";
-  font-size: 14px;
+  font-size: 17px;
   font-style: normal;
   font-weight: 600;
   line-height: 20px;
@@ -272,7 +267,7 @@ const UserInfo = styled.div`
   color: var(--Black-main, #191919);
   text-align: right;
   font-family: "Min Sans";
-  font-size: 14px;
+  font-size: 17px;
   font-style: normal;
   font-weight: 500;
   line-height: 18px;
@@ -297,7 +292,7 @@ const MyPage = styled.button`
   color: var(--Black-main, #191919);
   text-align: right;
   font-family: "Min Sans";
-  font-size: 14px;
+  font-size: 17px;
   font-style: normal;
   font-weight: 500;
   line-height: 18px;
@@ -316,7 +311,7 @@ const Logout = styled.button`
   color: var(--Black-main, #191919);
   text-align: right;
   font-family: "Min Sans";
-  font-size: 14px;
+  font-size: 17px;
   font-style: normal;
   font-weight: 500;
   line-height: 18px;
