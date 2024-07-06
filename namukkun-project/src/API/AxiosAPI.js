@@ -128,6 +128,8 @@ export const deleteFileAPI = async (fileName) => {
     throw error;
   }
 };
+
+
 //comment 읽어오기
 export const fetchComments = async (postId) => {
     try {
