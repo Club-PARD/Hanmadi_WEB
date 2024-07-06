@@ -13,6 +13,15 @@ function Header() {
   const [activeMenu, setActiveMenu] = useState(null);
   const navigate = useNavigate();
 
+  const [routeStyle ,setRouteStyle ] =useState(true);
+
+  // const route = new URL(document.location.toString()).pathname;
+  // // console.log(route)
+
+  // if(route ==='/mypage' || route === '/writing'){
+
+  // }
+
   //로그인 
   const handleLoginClick = () => {
     setIsLoggedIn(true);
@@ -27,10 +36,14 @@ function Header() {
   //제안 게시판 클릭 -> 제안 게시판 페이지로 이동
   const handleMenuClick = (menu) => {
     setActiveMenu(menu);
+    //제안 게시판
     if(menu==='board'){
+      setRouteStyle(true);
     navigate('/list');
     }
+    //사이트 소개
     else if (menu ==='about'){
+      setRouteStyle(true);
       navigate('/about');
     }
   };
@@ -43,17 +56,14 @@ function Header() {
 
   //글쓰기 페이지로 이동
   const handleWriting = () => {
+    setRouteStyle(false);
     navigate('/writing');
   }
 
   //마이 페이지로 이동
   const handleMypage = () => {
+    setRouteStyle(false);
     navigate('/mypage');
-  }
-
-  //마이 페이지로 이동
-  const handleAbout = () => {
-    navigate('/about');
   }
 
   return (
@@ -67,20 +77,20 @@ function Header() {
             <MenuTextContainer>
               <MenuText
                 onClick={() => handleMenuClick('board')}
-                isActive={activeMenu === 'board'}
+                isActive={routeStyle&&activeMenu === 'board'}
               >
                 제안게시판
               </MenuText>
-              <Underline isActive={activeMenu === 'board'} />
+              <Underline isActive={routeStyle&&activeMenu === 'board'} />
             </MenuTextContainer>
             <MenuTextContainer>
               <MenuText
                 onClick={() => handleMenuClick('about')}
-                isActive={activeMenu === 'about'}
+                isActive={routeStyle&&activeMenu === 'about'}
               >
                 사이트소개
               </MenuText>
-              <Underline isActive={activeMenu === 'about'}  />
+              <Underline isActive={ routeStyle &&activeMenu === 'about'}  />
             </MenuTextContainer>
           </MenuButton>
         </Menu>

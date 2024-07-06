@@ -6,8 +6,10 @@ import onclicksendbrave from '../../Assets/Img/onclicksendbrave.svg';
 import hoversendbrave from '../../Assets/Img/hoversendbrave.svg';
 import rightarrow from '../../Assets/Img/rightarrow.svg';
 import defaultwhite from '../../Assets/Img/defaultwhite.svg';
+import { useNavigate } from 'react-router-dom';
 
 function PopularPost() {
+    const navigate = useNavigate();
     const [isClicked, setIsClicked] = useState(false);
     const [activeButton, setActiveButton] = useState('진행중'); // 진행중이 기본값
     const [sendBraveClicked, setSendBraveClicked] = useState([false, false, false, false]); // sendbravebutton 클릭 상태
@@ -28,6 +30,10 @@ function PopularPost() {
         }
         return text;
     };
+
+    const goToListall = () =>{
+        navigate('/listall');
+    }
 
     return (
         <Container>
@@ -53,7 +59,7 @@ function PopularPost() {
                             종료
                         </StatusButton>
                     </StatBtuContainer>
-                    <AllButton>전체글 보러가기<img src={rightarrow} style={{ width: '6px', height: '12px' }} /></AllButton>
+                    <AllButton onClick={goToListall}>전체글 보러가기<img src={rightarrow} style={{ width: '6px', height: '12px' }} /></AllButton>
                 </StatusBar>
                 <ContentImageContainer>
                     <ImageContainer>
@@ -289,6 +295,7 @@ const StatusButton = styled.button`
     font-family: 'Min Sans';
     background: transparent;
     position: relative;
+    cursor: pointer;
     color: ${({ $isActive }) => ($isActive ? '#000000' : '#A6A6A6')};
     &:hover::after,
     ${({ $isActive }) =>

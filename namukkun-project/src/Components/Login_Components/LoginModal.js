@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import styled from 'styled-components';
 import Cancel from '../../Assets/Img/Cancel.svg';
+import Ellipse from '../../Assets/Img/EllipseLogin.svg';
 
 const LoginModal = ({ show, onClose}) => {
 
@@ -36,15 +37,24 @@ const LoginModal = ({ show, onClose}) => {
             <ModalSub>한마디는 지역 발전과 활성화를 위해 목소리를 내고자 하지만 <br />확신이 부족한 사람들을 위한 공간이에요.</ModalSub>
           </ModalHeader>
           <ModalBody>
-            <LoginGuide>
-              <Content>지역발전에 대한 내 의견과 사람들의 지지를 얻고 싶어요.</Content>
-            </LoginGuide>
-            <LoginGuide>
-              <Content>완벽하지 않지만 우리 지역을 위한 의견을 내고 싶어요.</Content>
-            </LoginGuide>
-            <LoginGuide>
-              <Content>다른 사람들의 의견도 들어보고 싶어요.</Content>
-            </LoginGuide>
+            <BodyLineDiv>
+              <Img src={Ellipse}></Img>
+              <LoginGuide>
+                <Content>지역발전에 대한 내 의견과 사람들의 지지를 얻고 싶어요.</Content>
+              </LoginGuide>
+            </BodyLineDiv>
+            <BodyLineDiv>
+            <Img src={Ellipse}></Img>
+              <LoginGuide>
+                <Content>완벽하지 않지만 우리 지역을 위한 의견을 내고 싶어요.</Content>
+              </LoginGuide>
+            </BodyLineDiv>
+            <BodyLineDiv>
+            <Img src={Ellipse}></Img>
+              <LoginGuide>
+                <Content>다른 사람들의 의견도 들어보고 싶어요.</Content>
+              </LoginGuide>
+            </BodyLineDiv>
           </ModalBody>
           <ModalFooter>
             <CloseButton href={url} >카카오계정으로 계속하기</CloseButton>
@@ -133,6 +143,11 @@ const ModalSub = styled.div`
   line-height: 16px;
 `;
 
+const BodyLineDiv =styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
 const ModalBody = styled.div`
   display: flex;
   width: 390px;
@@ -151,6 +166,11 @@ const LoginGuide = styled.div`
   border-radius: 200px;
   background: #E4ECF9;
 `;
+
+const Img =styled.img`
+  width: 30px;
+  height: 30px;
+`
 
 const Content = styled.div`
   color: var(--Black-main, #191919);
