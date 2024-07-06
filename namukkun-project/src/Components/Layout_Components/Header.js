@@ -203,7 +203,7 @@ const LoginButtonContainer = styled.div`
 const LoginButton = styled.button`
   color: #000;
   font-family: "Min Sans";
-  font-size: 14px;
+  font-size: 17px;
   font-style: normal;
   font-weight: 500;
   background: none;
@@ -222,7 +222,7 @@ const LoggedInContainer = styled.div`
   padding: 49px 0 21px 0; /* match the padding */
   color: #000;
   text-align: right;
-  font-family: "Min Sans";
+  font-family: "Min Sans-Regular";
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -234,7 +234,7 @@ const LoggedInContainer = styled.div`
 
 const ProposalButton = styled.button`
   display: flex;
-  width: 101px;
+  width: 110px;
   height: 35px;
   padding: 4px;
   justify-content: center;
@@ -249,7 +249,7 @@ const ProposalButton = styled.button`
   color: var(--Black-main, #191919);
   text-align: center;
   font-family: "Min Sans";
-  font-size: 14px;
+  font-size: 17px;
   font-style: normal;
   font-weight: 600;
   line-height: 20px;
@@ -267,7 +267,7 @@ const UserInfo = styled.div`
   color: var(--Black-main, #191919);
   text-align: right;
   font-family: "Min Sans";
-  font-size: 14px;
+  font-size: 17px;
   font-style: normal;
   font-weight: 500;
   line-height: 18px;
@@ -292,7 +292,7 @@ const MyPage = styled.button`
   color: var(--Black-main, #191919);
   text-align: right;
   font-family: "Min Sans";
-  font-size: 14px;
+  font-size: 17px;
   font-style: normal;
   font-weight: 500;
   line-height: 18px;
@@ -311,7 +311,7 @@ const Logout = styled.button`
   color: var(--Black-main, #191919);
   text-align: right;
   font-family: "Min Sans";
-  font-size: 14px;
+  font-size: 17px;
   font-style: normal;
   font-weight: 500;
   line-height: 18px;

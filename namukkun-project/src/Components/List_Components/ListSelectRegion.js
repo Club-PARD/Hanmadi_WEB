@@ -74,26 +74,27 @@ const IntroContainer = styled.div`
   width: 377px;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1px;
+  gap: 9px;
 `;
 
 const MainTitle = styled.div`
   align-self: stretch;
   color: #005AFF;
   font-family: 'MinSans-Regular';
-  font-size: 30px;
+  font-size: 36px;
   font-style: normal;
-  font-weight: 700;
-  line-height: 30px; /* 83.333% */
+  font-weight: 600;
+  line-height: 30px;
 `;
 
 const SubTitle = styled.div`
   color: #191919;
   font-family: 'MinSans-Regular';
-  font-size: 18px;
+  font-size: 22px;
   font-style: normal;
   font-weight: 500;
   line-height: 30px; /* 187.5% */
+  white-space: nowrap;
 `;
 
 const ButtonContainer = styled.div`
@@ -119,10 +120,11 @@ const LocalButton = styled.button`
   border-radius: 4px;
   border: 1px solid #D6D6D6;
   background: ${(props) => (props.selected ? 'rgba(0, 90, 255, 0.06)' : 'rgba(255, 255, 255, 0.60)')};
-  font-size: 16px;
+  font-size: 18px;
   color: #333;
   cursor: pointer;
   transition: background 0.3s, border 0.3s;
+  line-height: 150%;
 
   ${(props) =>
     !props.selected &&
