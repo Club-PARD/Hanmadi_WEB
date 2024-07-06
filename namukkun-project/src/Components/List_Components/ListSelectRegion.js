@@ -2,9 +2,14 @@ import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import React, { useState } from 'react';
 import ListBanner from "../../Assets/Img/ListBanner.svg";
+import { useRecoilState } from 'recoil';
+import { userinfo } from '../../Recoil/Atom';
+import { intToRegion } from '../SelectRegion_Components/IntToRegion';
 
 function ListSelectRegion() {
-  const [selectedButton, setSelectedButton] = useState('포항시');  // 초기값을 '포항시'로 설정
+  //기본적으로 보여줄 유저 데이터
+  const [userData, setUserData] = useRecoilState(userinfo);
+  const [selectedButton, setSelectedButton] = useState(intToRegion[userData.local]); 
 
   const handleButtonClick = (region) => {
     setSelectedButton((prevSelected) => (prevSelected === region ? null : region));

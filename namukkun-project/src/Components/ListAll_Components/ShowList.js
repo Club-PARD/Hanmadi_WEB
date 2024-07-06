@@ -4,12 +4,19 @@ import Contents from "./Contents";
 import arrowleft from '../../Assets/Img/Arrowleft.svg';
 import arrowright from '../../Assets/Img/Arrowright.svg';
 import { useRecoilState } from "recoil";
-import { pagenation, stateListCategory } from "../../Recoil/Atom";
+import { loginTestState, pagenation, stateListCategory } from "../../Recoil/Atom";
+import LoginModal from "../Login_Components/LoginModal";
 
 function ShowList() {
   // 필터 버튼 값 설정 [추천/최신]
   const [filter, setFilter] = useState('recent');
   const [currentPage, setCurrentPage] =useRecoilState(pagenation);
+
+   //로그인 테스트 상태 -추후 서버랑 연결해야함.
+   const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
+   const [showModal, setShowModal] = useState(false);
+
+  //전체글에 대한 추천/최신 필터 버튼
   const onClickFilterBtn = (filterValue) => {
     setCurrentPage(1);
     setFilter(filterValue);
@@ -20,9 +27,14 @@ function ShowList() {
 
   // 버튼 클릭 이벤트 핸들러
   const handleSendBraveClick = (index) => {
-    const newSendBraveClicked = [...sendBraveClicked];
-    newSendBraveClicked[index] = !newSendBraveClicked[index];
-    setSendBraveClicked(newSendBraveClicked);
+    if(isLogin){
+      const newSendBraveClicked = [...sendBraveClicked];
+      newSendBraveClicked[index] = !newSendBraveClicked[index];
+      setSendBraveClicked(newSendBraveClicked);
+    }
+    else{
+      setShowModal(true);
+    }
   };
 
   // 컨텐츠 데이터 배열 - 임시 데이터
@@ -73,19 +85,20 @@ function ShowList() {
           />
         ))}
       </PostListContentsDiv>
-      <Pagination>
-        <PaginationButton onClick={() => handleChangePage(currentPage - 1)} disabled={currentPage === 1}>
+      <Pagenation>
+        <PagenationButton onClick={() => handleChangePage(currentPage - 1)} disabled={currentPage === 1}>
           <img src={arrowleft}></img>
-        </PaginationButton>
+        </PagenationButton>
         {[...Array(totalPages)].map((_, i) => (
-          <PaginationButton key={i} onClick={() => handleChangePage(i + 1)} isSelected={currentPage === i + 1}>
+          <PagenationButton key={i} onClick={() => handleChangePage(i + 1)} isSelected={currentPage === i + 1}>
             {i + 1}
-          </PaginationButton>
+          </PagenationButton>
         ))}
-        <PaginationButton onClick={() => handleChangePage(currentPage + 1)} disabled={currentPage === totalPages}>
+        <PagenationButton onClick={() => handleChangePage(currentPage + 1)} disabled={currentPage === totalPages}>
           <img src={arrowright}></img>
-        </PaginationButton>
-      </Pagination>
+        </PagenationButton>
+      </Pagenation>
+      <LoginModal show={showModal} onClose={() => setShowModal(false)} />
     </Div>
   );
 }
@@ -145,7 +158,7 @@ const PostListContentsDiv = styled.div`
   gap: 40px;
 `;
 
-const Pagination = styled.div`
+const Pagenation = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 69px;
@@ -153,7 +166,7 @@ const Pagination = styled.div`
   gap: 10px;
 `;
 
-const PaginationButton = styled.button`
+const PagenationButton = styled.button`
   display: flex;
   width: 31px;
   height: 31px;

@@ -36,7 +36,7 @@ function Header() {
     setActiveMenu(menu);
     //제안 게시판
     if(menu==='board'){
-    navigate('/list');
+    navigate('/listall');
     }
     //사이트 소개
     else if (menu ==='about'){
