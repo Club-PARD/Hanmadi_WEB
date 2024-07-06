@@ -114,3 +114,30 @@ export const submitPostAPI = async (postData) => {
     throw error;
   }
 };
+
+
+// 유저 프로필 수정
+export const userPofilePatchAPI = async(data) =>{
+  try {
+    const userid =4; //디버그용
+    
+    const response = await axios.patch(`${server}/user/update?userid=${userid}`, data);
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err ;
+  }
+}
+
+// 유저 정보 전달
+export const userInfoGetAPI = async() =>{
+  try {
+    const userid =4; //디버그용
+
+    const response = await axios.get(`${server}/user/info?userid=${userid}`);
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err ;
+  }
+}
