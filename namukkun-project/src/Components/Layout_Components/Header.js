@@ -80,7 +80,7 @@ function Header() {
               >
                 사이트소개
               </MenuText>
-              <Underline isActive={activeMenu === 'about'} />
+              <Underline isActive={activeMenu === 'about'}  />
             </MenuTextContainer>
           </MenuButton>
         </Menu>
