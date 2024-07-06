@@ -2,8 +2,13 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import defaultwhite from '../../Assets/Img/defaultwhite.svg';
+import { useRecoilState } from 'recoil';
+import { loginTestState } from '../../Recoil/Atom';
+import LoginModal from '../Login_Components/LoginModal';
 
-function IdeaPage() {
+function IdeaPage() { 
+    const [showModal, setShowModal] = useState(false);
+    
     return (
         <Container>
             <GlobalStyle />
@@ -17,25 +22,44 @@ function IdeaPage() {
                     </LineTextContainer>
                 </TextContainer>
                 <TwoContentContainer>
-                    <ImageContent title="포항시 생태공원조성 사업 제안합니다." author="김**님" due="D-1" initialLikes={143} />
-                    <ImageContent title="포항시 생태공원조성 사업 제안합니다." author="김**님" due="D-1" initialLikes={143} />
+                    <ImageContent 
+                    title="포항시 생태공원조성 사업 제안합니다." 
+                    author="김**님" 
+                    due="D-1" 
+                    initialLikes={143} 
+                    setShowModal ={setShowModal} />
+                    <ImageContent 
+                    title="포항시 생태공원조성 사업 제안합니다." 
+                    author="김**님" 
+                    due="D-1" 
+                    initialLikes={143}
+                    setShowModal ={setShowModal} />
                 </TwoContentContainer>
             </PopularContentContainer>
+            <LoginModal show={showModal} onClose={() => setShowModal(false)} />
         </Container>
     );
 }
 
-const ImageContent = ({ title, author, due, initialLikes }) => {
+const ImageContent = ({ title, author, due, initialLikes, setShowModal }) => {
     const [likeCount, setLikeCount] = useState(initialLikes);
     const [isLiked, setIsLiked] = useState(false);
 
+    //로그인 테스트 상태 -추후 서버랑 연결해야함.
+    const [isLogin, setIsLogin] = useRecoilState(loginTestState); 
+
     const handleLike = () => {
-        if (isLiked) {
-            setLikeCount(likeCount - 1);
-        } else {
-            setLikeCount(likeCount + 1);
+        if(isLogin){
+            if (isLiked) {
+                setLikeCount(likeCount - 1);
+            } else {
+                setLikeCount(likeCount + 1);
+            }
+            setIsLiked(!isLiked);
         }
-        setIsLiked(!isLiked);
+        else{
+            setShowModal(true);
+        }
     };
 
     return (

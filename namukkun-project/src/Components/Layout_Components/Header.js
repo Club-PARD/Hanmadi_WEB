@@ -13,7 +13,7 @@ function Header() {
   const [showModal, setShowModal] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const navigate = useNavigate();
-  //로그인 테스트 상태 -추후 서버랑 연결해야함.
+  //로그인 테스트 상태 - 추후 서버랑 연결해야함.
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);
 
   const path = new URL(document.location.toString()).pathname;
