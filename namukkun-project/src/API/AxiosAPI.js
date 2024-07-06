@@ -120,7 +120,7 @@ export const submitPostAPI = async (postData) => {
 export const userPofilePatchAPI = async(data) =>{
   try {
     const userid =4; //디버그용
-    
+
     const response = await axios.patch(`${server}/user/update?userid=${userid}`, data);
     return response;
   } catch (err) {
