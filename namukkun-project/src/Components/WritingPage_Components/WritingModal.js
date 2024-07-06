@@ -56,7 +56,7 @@ const Background = styled.div`
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  /* justify-content: center; */
+  justify-content: center;
   align-items: center;
   position: absolute;
   top: 50%;
@@ -74,7 +74,7 @@ const Title = styled.div`
   color: var(--gray-008, #191919);
   text-align: center;
   font-family: 'MinSans-Regular';
-  font-size: 24px;
+  font-size: 26px;
   font-style: normal;
   font-weight: 600;
   line-height: 30px; /* 125% */
@@ -85,10 +85,10 @@ const Contents =styled.div`
   color: var(--gray-005, #707070);
   text-align: center;
   font-family: 'MinSans-Regular';
-  font-size: 16px;
+  font-size: 18px;
   font-style: normal;
   font-weight: 500;
-  line-height: 30px; /* 187.5% */
+  line-height: 150%;
   margin-top: ${(props)=> props.method ==='out'? 31: 15}px;
     white-space: pre-line;
 `;
@@ -105,8 +105,8 @@ const BtnContainer = styled.div`
 
 const ContinueBtn = styled.button`
   display: flex;
-  width: 100px;
-  height: 32px;
+  width: 112px;
+  height: 34px;
   padding: 10px;
   justify-content: center;
   align-items: center;
@@ -118,33 +118,40 @@ const ContinueBtn = styled.button`
   color: var(--gray-004, #959595);
   text-align: center;
   font-family: 'MinSans-Regular';
-  font-size: 14px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 500;
-  line-height: 20px; /* 142.857% */
+  line-height: 150%;
+  white-space: nowrap;
+
   &:hover {
     cursor: pointer;
+    background: #F7F7F7;
   }
 `;
 
 const OutButton = styled.button`
   display: flex;
-  width: 62px;
-  height: 32px;
+  width: 72px;
+  height: 34px;
   padding: 10px;
   justify-content: center;
   align-items: center;
   gap: 10px;
   border-radius: var(--Corner-Full, 1000px);
   background: var(--Main-001, #005AFF);
+  margin-right: 20px;
+  margin-bottom: 10px;
 
   color: var(--white-001, #FFF);
   text-align: center;
   font-family: 'MinSans-Regular';
-  font-size: 14px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 500;
-  line-height: 20px; /* 142.857% */
+  line-height: 150%;
+  white-space: nowrap;
+
   border: none;
   &:hover {
     cursor: pointer;

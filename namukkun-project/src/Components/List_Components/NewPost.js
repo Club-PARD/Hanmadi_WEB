@@ -180,7 +180,7 @@ const MainTitle = styled.span`
     font-style: normal;
     font-weight: 700;
     line-height: 30px; /* 83.333% */
-    padding-bottom: 17px;
+    padding-bottom: 10px;
 `;
 
 const SubTitle = styled.div`
@@ -217,6 +217,9 @@ const Dot = styled.span`
 `;
 
 const ContentTitleText = styled.div`
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     height: 49px;
     color: #191919;
     font-family: "Min Sans";
@@ -270,7 +273,8 @@ const BraveButton = styled.button`
     color: ${(props) => (props.isLiked ? '#246BEB' : 'white')};
     border: none;
     align-self: stretch;
-    font-family: 'UhBeeJJIBBABBA';
+    font-family: "Min Sans-Regular";
+    font-weight: 600;
     cursor: pointer;
 
     &:hover {

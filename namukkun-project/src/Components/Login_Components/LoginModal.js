@@ -2,7 +2,10 @@ import React, { useEffect } from 'react';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import styled from 'styled-components';
 import Cancel from '../../Assets/Img/Cancel.svg';
-import Ellipse from '../../Assets/Img/EllipseLogin.svg';
+import Thumbs from '../../Assets/Img/Thumbs.svg';
+import BlueChat from '../../Assets/Img/BlueChat.svg';
+import Heart from '../../Assets/Img/Heart.svg';
+
 
 const LoginModal = ({ show, onClose}) => {
 
@@ -38,19 +41,19 @@ const LoginModal = ({ show, onClose}) => {
           </ModalHeader>
           <ModalBody>
             <BodyLineDiv>
-              <Img src={Ellipse}></Img>
+              <Img src={Thumbs}></Img>
               <LoginGuide>
                 <Content>지역발전에 대한 내 의견과 사람들의 지지를 얻고 싶어요.</Content>
               </LoginGuide>
             </BodyLineDiv>
             <BodyLineDiv>
-            <Img src={Ellipse}></Img>
+            <Img src={BlueChat}></Img>
               <LoginGuide>
                 <Content>완벽하지 않지만 우리 지역을 위한 의견을 내고 싶어요.</Content>
               </LoginGuide>
             </BodyLineDiv>
             <BodyLineDiv>
-            <Img src={Ellipse}></Img>
+            <Img src={Heart}></Img>
               <LoginGuide>
                 <Content>다른 사람들의 의견도 들어보고 싶어요.</Content>
               </LoginGuide>
@@ -125,7 +128,7 @@ const ModalTitle = styled.div`
   color: #191919;
   text-align: center;
   font-family: "Min Sans";
-  font-size: 28px;
+  font-size: 36px;
   font-style: normal;
   font-weight: 700;
   line-height: 28.008px;
@@ -137,10 +140,10 @@ const ModalSub = styled.div`
   color: #626262;
   text-align: center;
   font-family: "Min Sans";
-  font-size: 12px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 400;
-  line-height: 16px;
+  line-height: 150%;
 `;
 
 const BodyLineDiv =styled.div`
@@ -150,15 +153,16 @@ const BodyLineDiv =styled.div`
 
 const ModalBody = styled.div`
   display: flex;
-  width: 390px;
+  width: 470px;
   flex-direction: column;
   align-items: flex-start;
-  gap: 26px;
+  gap: 20px;
 `;
 
 const LoginGuide = styled.div`
   display: flex;
-  padding: 10px;
+  padding: 1px 15px;
+  height: 40px;
   justify-content: center;
   align-items: center;
   gap: 10px;
@@ -168,19 +172,18 @@ const LoginGuide = styled.div`
 `;
 
 const Img =styled.img`
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
 `
 
 const Content = styled.div`
   color: var(--Black-main, #191919);
   text-align: center;
-  font-family: "Min Sans";
-  font-size: 14px;
+  font-family: "Min Sans-Regular";
+  font-size: 17px;
   font-style: normal;
   font-weight: 500;
-  line-height: normal; /* 214.286% */
-  margin: 0;
+  line-height: 30px;
 `;
 
 const ModalFooter = styled.div`
@@ -192,7 +195,7 @@ const ModalFooter = styled.div`
 const CloseButton = styled.a`
   display: flex;
   width: 390px;
-  height: 50px;
+  height: 55px;
   justify-content: center;
   align-items: center;
   gap: 10px;
@@ -202,6 +205,8 @@ const CloseButton = styled.a`
   cursor: pointer;
   text-decoration: none; /* 밑줄 제거 */
   color: inherit;
+
+  font-size: 20px;
 `;
 
 export default LoginModal;

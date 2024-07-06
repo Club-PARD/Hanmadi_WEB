@@ -115,7 +115,6 @@ export const submitPostAPI = async (postData) => {
   }
 };
 
-<<<<<<< HEAD
 //comment 읽어오기
 export const fetchComments = async (postId) => {
     try {
@@ -190,7 +189,6 @@ export const toggleTakeComment = async (commentid, userid, take) => {
       throw error;
   }
 };
-=======
 
 // 유저 프로필 수정
 export const userPofilePatchAPI = async(data) =>{
@@ -217,4 +215,3 @@ export const userInfoGetAPI = async() =>{
     throw err ;
   }
 }
->>>>>>> develop

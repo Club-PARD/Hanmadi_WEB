@@ -11,21 +11,20 @@ function Banner() {
         <>
             <GlobalStyle/>
             <Container>
-                <img src={bannerimg} alt='bannerimg' style={{ width: '1443px', height: "815px" }}></img>
-                {/* <WhiteduckContainer>
-                    <WhiteduckImg src={whiteduck} />
+                <WhiteduckContainer>
+                    <WhiteduckImg src={blueduck} />
                 </WhiteduckContainer>
                 <BannerTextContainer>
                     <LineTextContainer>
-                        <BannerText>나의 용기낸{' '}<BannerText $color='#005AFF'>한마디</BannerText><BannerText>가</BannerText></BannerText>
+                        <BannerText>나의{' '}<BannerText $color='#005AFF'>한마디</BannerText><BannerText>가 만드는</BannerText></BannerText>
                     </LineTextContainer>
                     <LineTextContainer>
-                        <BannerText $color='#005AFF'>우리 지역</BannerText><BannerText>의 변화를,</BannerText>
+                        <BannerText>우리 지역</BannerText><BannerText>의 변화</BannerText>
                     </LineTextContainer>
                 </BannerTextContainer>
                 <BlueduckContainer>
-                    <BlueduckImg src={blueduck} />
-                </BlueduckContainer> */}
+                    <BlueduckImg src={whiteduck} />
+                </BlueduckContainer>
             </Container>
         </>
     );
@@ -52,8 +51,9 @@ const WhiteduckContainer = styled.div`
 `;
 
 const WhiteduckImg = styled.img`
-    height: 489.595px;
-    margin-right: 300px;
+    height: 559px;
+    width: 621px;
+    align-items: flex-start
 `;
 
 const BannerTextContainer = styled.div`
@@ -78,16 +78,18 @@ const BlueduckContainer = styled.div`
 `;
 
 const BlueduckImg = styled.img`
-    height: 652px; /* 비율 유지를 위해 */
-    margin-left: 300px; 
+    width: 600px;
+    height: 529px;
 `;
 
 const BannerText = styled.span`
     color: ${(props) => props.$color || '#191919'};
-    font-size: 46px;
+    font-size: 60px;
     font-style: normal;
     font-family: 'UhBeeJJIBBABBA';
     font-weight: 400;
     line-height: 70.89px;
     letter-spacing: -1.84px;
+    white-space: nowrap;
+
 `;

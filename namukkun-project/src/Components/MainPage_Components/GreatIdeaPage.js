@@ -12,7 +12,7 @@ function GreatIdeaPage() {
             <GreatContentContainer>
                 <TextContainer>
                     <LineTextContainer>
-                        <Dot></Dot><TopicText>지역 한마디</TopicText>
+                        <TopicText>지역 한마디</TopicText>
                     </LineTextContainer>
                     <LineTextContainer>
                         <TitleText>다른 지역의 한마디도 함께</TitleText>
@@ -113,18 +113,8 @@ const TopicText = styled.span`
     font-family: 'MinSans-Regular';
     font-size: 22px;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 600;
     margin-bottom: 10px;
-`;
-
-const Dot = styled.span`
-    width: 27px;
-    height: 27px;
-    border-radius: 50%;
-    background-color: #005AFF;
-    display: inline-block;
-    margin-right: 10px;
-    margin-bottom: 13px;
 `;
 
 const TitleText = styled.div`
@@ -163,7 +153,7 @@ const DetailContainer = styled.div`
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    padding-bottom: 18px;
+    padding-bottom: 11px;
     background: transparent;
 `;
 
