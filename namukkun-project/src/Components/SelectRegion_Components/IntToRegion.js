@@ -1,5 +1,6 @@
 import React from "react";
 
+//스트링을 숫자로
 export const regionToInt = {
   '경산시': 0, 
   '경주시': 1,
@@ -13,6 +14,7 @@ export const regionToInt = {
   '포항시': 9
 };
 
+//숫자를 스트링으로
 export const intToRegion = {
   0: '경산시', 
   1: '경주시',

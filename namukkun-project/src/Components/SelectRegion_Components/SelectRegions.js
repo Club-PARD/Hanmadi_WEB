@@ -5,23 +5,11 @@ import { myCode } from '../../Recoil/Atom';
 import { useRecoilState } from 'recoil';
 import { postRegisterRegion } from '../../API/AxiosAPI';
 import { useNavigate } from 'react-router-dom';
+import { regionToInt } from './IntToRegion';
 
 function SelectRegions() {
   const [selectedButton, setSelectedButton] = useState(null);
   const navigate = useNavigate();
-
-  const regionToInt = {
-    '경산시': 0, 
-    '경주시': 1,
-    '구미시': 2, 
-    '김천시': 3,
-    '문경시': 4, 
-    '상주시': 5, 
-    '안동시': 6, 
-    '영주시': 7, 
-    '영천시': 8, 
-    '포항시': 9
-  };
 
   //서버에 요청을 한번만 보내기 위함. 
   let state =1;

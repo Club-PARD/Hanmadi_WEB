@@ -8,27 +8,28 @@ import changeProfile from '../../Assets/Img/changeProfile.svg';
 import { userPofilePatchAPI } from '../../API/AxiosAPI';
 import { userinfo } from '../../Recoil/Atom';
 import { useRecoilState } from 'recoil';
+import { intToRegion } from '../SelectRegion_Components/IntToRegion';
 
 const RegionChangeModal = ({ isOpen, closeModal }) => {
-  const [selectedButton, setSelectedButton] = useState(null);
-  // const navigate = useNavigate();
-  const imageInput =useRef();
   //기본적으로 보여줄 유저 데이터
   const [userData, setUserData] = useRecoilState(userinfo);
+  const [selectedButton, setSelectedButton] = useState(intToRegion[userData.local]);
+  // const navigate = useNavigate();
+  const imageInput =useRef();
 
   //프로필 인풋값 입력 및 변경을 위함
   const [info, setInfo] =useState({
     id : 4, //나중에 서버 연결 후 수정 필요
     nickName: userData.nickName,
-    local: userData.local,
+    local: intToRegion[userData.local],
     profileImage : userData.profileImage
     });
 
   //지역 선택 버튼
-  const handleButtonClick = (e, index) => {
+  const handleButtonClick = (e, local) => {
     e.stopPropagation();
     e.preventDefault()
-    setSelectedButton((prevSelected) => (prevSelected === index ? null : index));
+    setSelectedButton((prevSelected) => (prevSelected === local ? null : local));
   };
 
   //이벤트 핸들러 
@@ -109,11 +110,11 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
             <NameInput type='text' onChange={handleInputName} value={info.nickName}></NameInput>
             <RegionChagne>지역 변경하기</RegionChagne>
             <ButtonContainer>
-            {['경산시', '경주시', '구미시', '김천시', '문경시', '상주시', '안동시', '영주시', '영천시', '포항시'].map((local, index) => (
+            {['경산시', '경주시', '구미시', '김천시', '문경시', '상주시', '안동시', '영주시', '영천시', '포항시'].map((local) => (
               <LocalButton
                 key={local}
-                onClick={(e) => handleButtonClick(e, index)}
-                selected={selectedButton === index}
+                onClick={(e) => handleButtonClick(e, local)}
+                selected={selectedButton === local}
               >
                 {local}
               </LocalButton>
