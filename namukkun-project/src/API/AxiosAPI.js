@@ -80,3 +80,17 @@ export const submitPostAPI = async (postData) => {
     throw error;
   }
 };
+
+export const deleteFileAPI = async (fileName) => {
+  try {
+    const response = await axios.post(`${post}/post/delete/file?fileName=${encodeURIComponent(fileName)}`, null, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('File deletion failed:', error);
+    throw error;
+  }
+};
