@@ -2,7 +2,7 @@ import { atom } from "recoil";
 
 //recoil Atom 관리 파일
 
-//listall / lista 이동을 위함
+//listall / list 이동을 위함
 export const stateListCategory = atom({
   key : 'stateListCategory',
   default: "recent"
@@ -17,4 +17,11 @@ export const pagenation = atom({
 export const fileState = atom({
   key: 'fileState',
   default: [],
+});
+
+// 로그인 테스트 
+
+export const loginTestState = atom({
+  key: 'loginTestState',
+  default: false,
 });
