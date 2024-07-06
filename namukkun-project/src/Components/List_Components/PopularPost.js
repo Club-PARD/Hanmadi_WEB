@@ -93,7 +93,7 @@ function PopularPost() {
             <GlobalStyle />
             <GreatContentContainer>
                 <IntroContainer>
-                    <MainTitle>가장 인기있는{' '}<MainTitle $color='#005AFF'>한마디 💬 </MainTitle></MainTitle>
+                    <MainTitle>우리 지역의 가장 인기있는{' '}<MainTitle $color='#005AFF'>한마디 💬 </MainTitle></MainTitle>
                     <SubTitle>의견만 있다면, 어느 지역이든 한마디 남겨주세요!</SubTitle>
                 </IntroContainer>
 
@@ -157,6 +157,7 @@ const Container = styled.div`
     align-items: center;
     background: transparent;
     position: relative;
+    margin-top: 70px;
 `;
 
 const GreatContentContainer = styled.div`
@@ -185,7 +186,8 @@ const MainTitle = styled.span`
     font-style: normal;
     font-weight: 700;
     line-height: 30px; /* 83.333% */
-    padding-bottom: 17px;
+    padding-bottom: 10px;
+    white-space: nowrap;
 `;
 
 const SubTitle = styled.div`
@@ -268,13 +270,14 @@ const StatusBar = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    margin-top: -30px;
 `;
 
 const StatusButton = styled.button`
     width: 85px;
     height: 36.5px;
     font-size: 22px;
-    font-weight: 400;
+    font-weight: 600;
     padding-bottom: 20.5px;
     border: none;
     font-family: 'Min Sans';
