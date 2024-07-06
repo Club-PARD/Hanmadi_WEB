@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import imgcontent from '../../Assets/Img/imgcontent.svg';
+import Bigdefault from '../../Assets/Img/Bigdefault.svg';
 import sendbrave from '../../Assets/Img/sendbrave.svg';
 import onclicksendbrave from '../../Assets/Img/onclicksendbrave.svg';
 import hoversendbrave from '../../Assets/Img/hoversendbrave.svg';
@@ -27,7 +28,7 @@ function Contents({ content, isClicked, onClick }) {
 
   return (
     <Div>
-      <PostImg src={imgcontent} alt="content" /> {/* 이미지 placeholder */}
+      <PostImg src={Bigdefault} alt="content" /> {/* 이미지 placeholder */}
       <ContentsDiv >
         <TitleDiv>{truncateText(content.title, 23)}</TitleDiv> 
         <KeyValueWrapper>
@@ -73,7 +74,7 @@ const ContentsDiv =styled.div`
   flex-direction: column;
 `;
 
-const TitleDiv =styled.div`
+const TitleDiv =styled.button`
   display: flex;
   width: 539px;
   height: 27px;
@@ -87,6 +88,14 @@ const TitleDiv =styled.div`
   font-style: normal;
   font-weight: 600;
   line-height: 30px; /* 115.385% */
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  cursor: pointer;
+
+  &:hover{
+    color: #005AFF;
+  }
 `;
 
 const KeyValueWrapper =styled.div`
