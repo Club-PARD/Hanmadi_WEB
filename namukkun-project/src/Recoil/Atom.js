@@ -13,3 +13,8 @@ export const pagenation = atom({
   key : 'pagenation',
   default: 1
 });
+
+export const fileState = atom({
+  key: 'fileState',
+  default: [],
+});
