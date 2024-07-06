@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import ListSelectRegion from "../Components/List_Components/ListSelectRegion";
 import Header from "../Components/Layout_Components/Header";
@@ -8,6 +8,7 @@ import { GlobalStyle } from '../Assets/Style/theme';
 import FixList from "../Components/Layout_Components/FixList";
 
 function ListPage() {
+
   return (
     <Div>
       <GlobalStyle/>

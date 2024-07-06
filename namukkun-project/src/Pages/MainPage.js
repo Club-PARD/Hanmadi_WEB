@@ -8,9 +8,27 @@ import Header from "../Components/Layout_Components/Header";
 import GreatIdeaPage from "../Components/MainPage_Components/GreatIdeaPage";
 import onclickminilogo from '../Assets/Img/onclickminilogo.svg';
 import onclickpointer from '../Assets/Img/onclickpointer.svg';
+import { useRecoilState } from "recoil";
+import { loginTestState } from "../Recoil/Atom";
+import { useNavigate } from 'react-router-dom';
+import LoginModal from "../Components/Login_Components/LoginModal";
 
 function MainPage() {
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
+  //로그인 모달 상태 관리
+  const [showModal, setShowModal] = useState(false);
+  //로그인 테스트
+  const [isLogin, setIsLogin] = useRecoilState(loginTestState);
+
+  const writingBtn = () =>{
+    if(isLogin){
+      navigate('/writing');
+    }
+    else{
+      setShowModal(true);
+    }
+  }
 
   return (
     <div>
@@ -19,6 +37,7 @@ function MainPage() {
       <IdeaPage />
       <GreatIdeaPage />
       <FixedButton
+        onClick={writingBtn}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -30,6 +49,7 @@ function MainPage() {
           &nbsp;한마디 해보기
         </Container>
       </FixedButton>
+      <LoginModal show={showModal} onClose={() => setShowModal(false)} />
     </div>
   );
 }
