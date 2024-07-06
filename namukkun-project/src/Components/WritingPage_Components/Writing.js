@@ -6,7 +6,9 @@ import '../../Assets/Style/quill.snow.custom.css';
 import SideHint from '../../Assets/Img/SideHint.svg';
 import WritingModal from './WritingModal';
 import { GlobalStyle } from '../../Assets/Style/theme';
-import { uploadImageAPI, uploadFileAPI, submitPostAPI } from '../../API/AxiosAPI';
+import { useRecoilState } from 'recoil';
+import { fileState } from '../../Recoil/Atom.js';
+import { uploadImageAPI, uploadFileFetch, submitPostAPI } from '../../API/AxiosAPI.js';
 
 // Custom font
 const fonts = ['Min Sans-Regular'];
@@ -22,7 +24,6 @@ const handleImageUpload = async (quill, file) => {
   }
 };
 
-// Custom toolbar configuration
 const modules = {
   toolbar: {
     container: [
@@ -60,14 +61,11 @@ const Writing = () => {
   const [background, setBackground] = useState('');
   const [solution, setSolution] = useState('');
   const [effect, setEffect] = useState('');
-  const [attachments, setAttachments] = useState([]);
+  const [attachments, setAttachments] = useRecoilState(fileState);
 
-  // 모달창 끌지 켤지 다루는 usestate
   const [isWModalOpen, setIsWModalOpen] = useState(false);
-  // 모달 종류 확인
   const [modalMethod, setModalMethod] = useState('');
 
-  // 모달창 관리하는 함수
   const handleWModalOpen = (modalMethod) => {
     setModalMethod(modalMethod);
     setIsWModalOpen(!isWModalOpen);
@@ -75,6 +73,7 @@ const Writing = () => {
 
   const handleButtonClick = (region) => {
     setSelectedButton(region);
+    console.log('선택된 지역:', region);
   };
 
   const handleInputChange = (setter, limit) => (value) => {
@@ -88,8 +87,14 @@ const Writing = () => {
 
   const handleFileChange = async (e) => {
     const files = Array.from(e.target.files);
-    const uploadedFiles = await Promise.all(files.map(file => uploadFileAPI(file)));
-    setAttachments([...attachments, ...uploadedFiles]);
+    try {
+      const uploadedFiles = await Promise.all(files.map(file => uploadFileFetch(file)));
+      const validFiles = uploadedFiles.filter(file => file && file.fileName);
+      setAttachments([...attachments, ...validFiles]);
+      console.log('업로드된 파일:', validFiles);
+    } catch (error) {
+      console.error('파일 업로드 중 오류 발생:', error);
+    }
   };
 
   const handleFileRemove = (index) => {
@@ -110,6 +115,11 @@ const Writing = () => {
   };
 
   const handleSubmit = async () => {
+    if (selectedButton === null) {
+      console.error('지역을 선택하지 않았습니다.');
+      return;
+    }
+
     const postData = {
       title,
       postLocal: regionToInt[selectedButton],
@@ -117,14 +127,11 @@ const Writing = () => {
       solution,
       benefit: effect,
       fileName: attachments.map(file => file.fileName),
-      imageCreateDTOS: attachments.map(file => ({
-        imageName: file.fileName,
-        imageType: file.fileType,
-        base64Data: file.base64Data,
-      })),
-      userId: 0, // 예시로 설정, 실제로는 유저 정보를 받아와 설정
+      userId: 1,
       return: true,
     };
+
+    console.log('전송할 데이터:', postData);
 
     try {
       const response = await submitPostAPI(postData);
@@ -163,7 +170,7 @@ const Writing = () => {
           <TitleBox
             placeholder="제목을 입력해주세요"
             value={title}
-            onChange={(e) => handleInputChange(setTitle, 30)(e.target.value)} // 제목 글자수 제한 (30자)
+            onChange={(e) => handleInputChange(setTitle, 30)(e.target.value)}
           />
         </Section>
         <Section>
@@ -174,7 +181,7 @@ const Writing = () => {
             <StyledQuill
               theme="snow"
               value={background}
-              onChange={handleInputChange(setBackground, 250)} // 제안배경 글자수 제한 (250자)
+              onChange={handleInputChange(setBackground, 250)}
               modules={modules}
               formats={formats}
             />
@@ -188,7 +195,7 @@ const Writing = () => {
             <StyledQuill
               theme="snow"
               value={solution}
-              onChange={handleInputChange(setSolution, 250)} // 해결방안 글자수 제한 (250자)
+              onChange={handleInputChange(setSolution, 250)}
               modules={modules}
               formats={formats}
             />
@@ -200,7 +207,7 @@ const Writing = () => {
             <StyledQuill
               theme="snow"
               value={effect}
-              onChange={handleInputChange(setEffect, 250)} // 기대효과 글자수 제한 (250자)
+              onChange={handleInputChange(setEffect, 250)}
               modules={modules}
               formats={formats}
             />
@@ -226,6 +233,10 @@ const Writing = () => {
         <ButtonSection>
           <PostButton onClick={handleSubmit}>게시하기</PostButton>
         </ButtonSection>
+        <Section>
+          <Label>Recoil 상태 확인:</Label>
+          <pre>{JSON.stringify(attachments, null, 2)}</pre>
+        </Section>
       </WritingBody>
       <WritingModal
         isOpen={isWModalOpen}
@@ -370,7 +381,7 @@ const WritingBody = styled.div`
   width: 921px;
   margin-top: 20px;
   gap: 84px;
-  margin-bottom: 200px; /* 추가된 코드 */
+  margin-bottom: 200px;
 `;
 
 const Section = styled.div`
@@ -396,7 +407,7 @@ const Label = styled.label`
   font-size: 26px;
   font-style: normal;
   font-weight: 600;
-  line-height: 20px; /* 76.923% */
+  line-height: 20px;
   margin-bottom: 9px;
 `;
 
@@ -428,14 +439,14 @@ const TitleBox = styled.input`
 const QuillContainer = styled.div`
   width: 920px;
   .ql-container {
-    height: 250px; /* Box의 높이에 맞춤 */
+    height: 250px;
     border-radius: 20px;
   }
 `;
 
 const StyledQuill = styled(ReactQuill)`
   .ql-container {
-    height: 250px; /* Box의 높이에 맞춤 */
+    height: 250px;
     border-radius: 10px;
     width: 920px;
   }
@@ -488,8 +499,8 @@ const FileBox = styled.div`
   border: 1px solid var(--gray-001, #E0E0E0);
   border-radius: 10px;
   background: var(--white-004, #FDFDFD);
-  max-height: 150px; /* 최대 높이를 설정 */
-  overflow-y: auto; /* 내용이 넘칠 경우 스크롤 */
+  max-height: 150px;
+  overflow-y: auto;
 `;
 
 const FileInputWrapper = styled.div`
@@ -546,6 +557,10 @@ export default Writing;
 
 
 
+
+
+
+
 // import React, { useState } from 'react';
 // import styled from 'styled-components';
 // import ReactQuill, { Quill } from 'react-quill';
@@ -554,7 +569,7 @@ export default Writing;
 // import SideHint from '../../Assets/Img/SideHint.svg';
 // import WritingModal from './WritingModal';
 // import { GlobalStyle } from '../../Assets/Style/theme';
-// import { uploadImageAPI, uploadFileAPI, submitPostAPI } from '../../API/AxiosAPI';
+// import { uploadImageAPI, uploadFileAPI, submitPostAPI } from '../../API/AxiosAPI.js';
 
 // // Custom font
 // const fonts = ['Min Sans-Regular'];
@@ -562,18 +577,14 @@ export default Writing;
 // Font.whitelist = fonts;
 // Quill.register(Font, true);
 
-// const handleImageUpload = (quill, file) => {
-//   const reader = new FileReader();
-//   reader.onload = (e) => {
+// const handleImageUpload = async (quill, file) => {
+//   const imageUrl = await uploadImageAPI(file);
+//   if (imageUrl) {
 //     const range = quill.getSelection();
-//     if (file.type.startsWith('image/')) {
-//       quill.insertEmbed(range.index, 'image', e.target.result);
-//     }
-//   };
-//   reader.readAsDataURL(file);
+//     quill.insertEmbed(range.index, 'image', imageUrl);
+//   }
 // };
 
-// // Custom toolbar configuration
 // const modules = {
 //   toolbar: {
 //     container: [
@@ -586,7 +597,7 @@ export default Writing;
 //         const input = document.createElement('input');
 //         input.setAttribute('type', 'file');
 //         input.setAttribute('accept', 'image/*');
-//         input.onchange = () => {
+//         input.onchange = async () => {
 //           const file = input.files[0];
 //           if (file) {
 //             handleImageUpload(this.quill, file);
@@ -613,12 +624,9 @@ export default Writing;
 //   const [effect, setEffect] = useState('');
 //   const [attachments, setAttachments] = useState([]);
 
-//   // 모달창 끌지 켤지 다루는 usestate
 //   const [isWModalOpen, setIsWModalOpen] = useState(false);
-//   // 모달 종류 확인
 //   const [modalMethod, setModalMethod] = useState('');
 
-//   // 모달창 관리하는 함수
 //   const handleWModalOpen = (modalMethod) => {
 //     setModalMethod(modalMethod);
 //     setIsWModalOpen(!isWModalOpen);
@@ -626,6 +634,7 @@ export default Writing;
 
 //   const handleButtonClick = (region) => {
 //     setSelectedButton(region);
+//     console.log('선택된 지역:', region); // 선택된 지역 로그 출력
 //   };
 
 //   const handleInputChange = (setter, limit) => (value) => {
@@ -637,8 +646,16 @@ export default Writing;
 //     }
 //   };
 
-//   const handleFileChange = (e) => {
-//     setAttachments([...attachments, ...Array.from(e.target.files)]);
+//   const handleFileChange = async (e) => {
+//     const files = Array.from(e.target.files);
+//     try {
+//       const uploadedFiles = await Promise.all(files.map(file => uploadFileAPI(file)));
+//       const validFiles = uploadedFiles.filter(file => file && file.fileName);
+//       setAttachments([...attachments, ...validFiles]);
+//       console.log('업로드된 파일:', validFiles); // 업로드된 파일 정보 로그 출력
+//     } catch (error) {
+//       console.error('파일 업로드 중 오류 발생:', error);
+//     }
 //   };
 
 //   const handleFileRemove = (index) => {
@@ -646,21 +663,48 @@ export default Writing;
 //   };
 
 //   const regionToInt = {
-//     '경산시' : 0, 
+//     '경산시': 0,
 //     '경주시': 1,
-//     '구미시':2, 
-//     '김천시':3,
-//     '문경시':4, 
-//     '상주시': 5, 
-//     '안동시' : 6, 
-//     '영주시' : 7, 
-//     '영천시': 8, 
+//     '구미시': 2,
+//     '김천시': 3,
+//     '문경시': 4,
+//     '상주시': 5,
+//     '안동시': 6,
+//     '영주시': 7,
+//     '영천시': 8,
 //     '포항시': 9
+//   };
+
+//   const handleSubmit = async () => {
+//     if (selectedButton === null) {
+//       console.error('지역을 선택하지 않았습니다.');
+//       return;
+//     }
+
+//     const postData = {
+//       title,
+//       postLocal: regionToInt[selectedButton], // 선택된 지역을 숫자로 매핑
+//       proBackground: background,
+//       solution,
+//       benefit: effect,
+//       fileName: attachments.map(file => file.fileName),
+//       userId: 1, // 예시로 설정, 실제로는 유저 정보를 받아와 설정
+//       return: true,
+//     };
+
+//     console.log('전송할 데이터:', postData); // 콘솔에 전송할 데이터 로그 출력
+
+//     try {
+//       const response = await submitPostAPI(postData);
+//       console.log('서버 응답:', response.data);
+//     } catch (error) {
+//       console.error('서버로 값을 보내는 중 오류 발생:', error);
+//     }
 //   };
 
 //   return (
 //     <Container>
-//       <GlobalStyle/>
+//       <GlobalStyle />
 //       <Intro>
 //         <TopButtonContainer>
 //           <BackButton onClick={() => handleWModalOpen('out')}>나가기</BackButton>
@@ -738,7 +782,7 @@ export default Writing;
 //                 <FileInput type="file" multiple onChange={handleFileChange} id="file-upload" />
 //                 {attachments.map((file, index) => (
 //                   <FileItem key={index}>
-//                     <FileName>{file.name}</FileName>
+//                     <FileName>{file.fileName}</FileName>
 //                     <RemoveButton onClick={() => handleFileRemove(index)}>제거</RemoveButton>
 //                   </FileItem>
 //                 ))}
@@ -748,13 +792,13 @@ export default Writing;
 //           </FileWrapper>
 //         </Section>
 //         <ButtonSection>
-//           <PostButton>게시하기</PostButton>
+//           <PostButton onClick={handleSubmit}>게시하기</PostButton>
 //         </ButtonSection>
 //       </WritingBody>
 //       <WritingModal
-//           isOpen={isWModalOpen}
-//           closeModal={() => handleWModalOpen(modalMethod)}
-//           method={modalMethod}
+//         isOpen={isWModalOpen}
+//         closeModal={() => handleWModalOpen(modalMethod)}
+//         method={modalMethod}
 //       ></WritingModal>
 //     </Container>
 //   );
@@ -884,8 +928,7 @@ export default Writing;
 //     &:hover {
 //       background: rgba(236, 236, 236, 0.60);
 //       border: 1px solid #D6D6D6;
-//     }
-//   `}
+//     `}
 // `;
 
 // const WritingBody = styled.div`
@@ -895,7 +938,7 @@ export default Writing;
 //   width: 921px;
 //   margin-top: 20px;
 //   gap: 84px;
-//   margin-bottom: 200px; /* 추가된 코드 */
+//   margin-bottom: 200px;
 // `;
 
 // const Section = styled.div`
@@ -921,7 +964,7 @@ export default Writing;
 //   font-size: 26px;
 //   font-style: normal;
 //   font-weight: 600;
-//   line-height: 20px; /* 76.923% */
+//   line-height: 20px;
 //   margin-bottom: 9px;
 // `;
 
@@ -953,14 +996,14 @@ export default Writing;
 // const QuillContainer = styled.div`
 //   width: 920px;
 //   .ql-container {
-//     height: 250px; /* Box의 높이에 맞춤 */
+//     height: 250px;
 //     border-radius: 20px;
 //   }
 // `;
 
 // const StyledQuill = styled(ReactQuill)`
 //   .ql-container {
-//     height: 250px; /* Box의 높이에 맞춤 */
+//     height: 250px;
 //     border-radius: 10px;
 //     width: 920px;
 //   }
@@ -1013,8 +1056,8 @@ export default Writing;
 //   border: 1px solid var(--gray-001, #E0E0E0);
 //   border-radius: 10px;
 //   background: var(--white-004, #FDFDFD);
-//   max-height: 150px; /* 최대 높이를 설정 */
-//   overflow-y: auto; /* 내용이 넘칠 경우 스크롤 */
+//   max-height: 150px;
+//   overflow-y: auto;
 // `;
 
 // const FileInputWrapper = styled.div`

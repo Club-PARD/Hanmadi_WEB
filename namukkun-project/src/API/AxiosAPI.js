@@ -38,9 +38,9 @@ export const postRegisterRegion = async (region) =>{
 export const uploadImageAPI = async (file) => {
   try {
     const formData = new FormData();
-    formData.append('image', file);
+    formData.append('files', file);
 
-    const response = await axios.post(`${post}/post/uploadimg`, formData, {
+    const response = await axios.post(`${post}/post/upload/img`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -53,20 +53,25 @@ export const uploadImageAPI = async (file) => {
 };
 
 // 첨부파일 보냈다가 다시 돌려받음
-export const uploadFileAPI = async (file) => {
-  try {
-    const formData = new FormData();
-    formData.append('file', file);
+export const uploadFileFetch = async (file) => {
+  const formData = new FormData();
+  formData.append('files', file);
 
-    const response = await axios.post(`${post}/post/uploadfile`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+  try {
+    const response = await fetch(`${post}/post/upload/file`, {
+      method: 'POST',
+      body: formData,
     });
+
+    if (!response.ok) {
+      throw new Error('File upload failed');
+    }
+
+    const data = await response.json();
     return {
-      fileName: response.data.fileName,
-      filtType: response.data.fileType,
-      base64Data: response.data.base64Data
+      fileName: data.fileName,
+      fileType: data.fileType,
+      base64Data: data.base64Data,
     };
   } catch (error) {
     console.error('File upload failed:', error);
@@ -74,10 +79,31 @@ export const uploadFileAPI = async (file) => {
   }
 };
 
+// export const uploadFileFetch = async (file) => {
+//   try {
+//     const formData = new FormData();
+//     formData.append('files', file);
+
+//     const response = await axios.post(`${post}/post/upload/file`, formData, {
+//       headers: {
+//         'Content-Type': 'multipart/form-data',
+//       },
+//     });
+//     return {
+//       fileName: response.data.fileName,
+//       filtType: response.data.fileType,
+//       base64Data: response.data.base64Data
+//     };
+//   } catch (error) {
+//     console.error('File upload failed:', error);
+//     return null;
+//   }
+// };
+
 // '게시하기' 버튼을 눌렀을 때, 서버로 전송.
 export const submitPostAPI = async (postData) => {
   try {
-    const response = await axios.post(`${post}/post/uploadpost`, postData, {
+    const response = await axios.post(`${post}/post/upload/post`, postData, {
       headers: {
         'Content-Type': 'application/json',
       },
