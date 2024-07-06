@@ -115,21 +115,6 @@ export const submitPostAPI = async (postData) => {
   }
 };
 
-export const deleteFileAPI = async (fileName) => {
-  try {
-    const response = await axios.post(`${post}/post/delete/file?fileName=${encodeURIComponent(fileName)}`, null, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('File deletion failed:', error);
-    throw error;
-  }
-};
-
-
 //comment 읽어오기
 export const fetchComments = async (postId) => {
     try {
