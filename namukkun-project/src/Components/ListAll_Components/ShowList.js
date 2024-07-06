@@ -6,6 +6,7 @@ import arrowright from '../../Assets/Img/Arrowright.svg';
 import { useRecoilState } from "recoil";
 import { loginTestState, pagenation, stateListCategory } from "../../Recoil/Atom";
 import LoginModal from "../Login_Components/LoginModal";
+import Bigdefault from '../../Assets/Img/Bigdefault.svg';
 
 function ShowList() {
   // 필터 버튼 값 설정 [추천/최신]
@@ -39,19 +40,19 @@ function ShowList() {
 
   // 컨텐츠 데이터 배열 - 임시 데이터
   const contents = [
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" }
+    { postImage: Bigdefault,title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
+    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
+    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
+    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
+    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
+    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
+    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
+    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
+    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
+    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
+    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
+    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
+    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" }
   ];
 
   const itemsPerPage = 6; //한 페이지당 보여지는 컨텐츠 갯수

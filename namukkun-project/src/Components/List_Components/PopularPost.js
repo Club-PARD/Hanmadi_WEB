@@ -29,26 +29,31 @@ function PopularPost() {
     // 더미 데이터 생성
     const dummyData = [
         {
+        postImage: defaultwhite,
         title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요.",
         author: "김**님",
         endDate: "D-7"
         },
         {
+        postImage: defaultwhite,
         title: "학교에 자전거 보관소 설치를 요청합니다.",
         author: "이**님",
         endDate: "D-10"
         },
         {
+        postImage: defaultwhite,
         title: "도서관에 신간 도서 추가를 부탁드립니다.",
         author: "박**님",
         endDate: "D-5"
         },
         {
+        postImage: defaultwhite,
         title: "공원에 더 많은 벤치를 설치해 주세요.",
         author: "최**님",
         endDate: "D-15"
         },
         {
+        postImage: defaultwhite,
         title: "지역 주민을 위한 헬스장 건립을 건의합니다.",
         author: "정**님",
         endDate: "D-20"
@@ -86,7 +91,7 @@ function PopularPost() {
 
     const goToListall = () =>{
         navigate('/listall');
-    }
+    };
 
     return (
         <Container>
@@ -118,7 +123,7 @@ function PopularPost() {
             {popularData.slice(0, 4).map((item, index) => (
                 <ContentImageContainer key={index}>
                 <ImageContainer>
-                    <img src={defaultwhite} alt="content image" style={{ width: '209px', height: '134px' }} />
+                    <img src={item.postImage} alt="content image" style={{ width: '209px', height: '134px' }} />
                     <ContentTextContainer>
                     <ContentTitleText>
                         {truncateText(item.title, 52)}
