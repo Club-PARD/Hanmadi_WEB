@@ -74,7 +74,7 @@ const ContentsDiv =styled.div`
   flex-direction: column;
 `;
 
-const TitleDiv =styled.div`
+const TitleDiv =styled.button`
   display: flex;
   width: 539px;
   height: 27px;
@@ -88,6 +88,14 @@ const TitleDiv =styled.div`
   font-style: normal;
   font-weight: 600;
   line-height: 30px; /* 115.385% */
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  cursor: pointer;
+
+  &:hover{
+    color: #005AFF;
+  }
 `;
 
 const KeyValueWrapper =styled.div`

@@ -70,19 +70,10 @@ function Header() {
     <Container>
       <Head> 
         <Logo onClick={handleLogoClick}>
-          <img width='94px' height='46px' src={logo} alt="Logo" />
+          <img src={logo} alt="Logo" />
         </Logo>
         <Menu>
           <MenuButton>
-            <MenuTextContainer>
-              <MenuText
-                onClick={() => handleMenuClick('board')}
-                isActive={routeStyle&&activeMenu === 'board'}
-              >
-                제안게시판
-              </MenuText>
-              <Underline isActive={routeStyle&&activeMenu === 'board'} />
-            </MenuTextContainer>
             <MenuTextContainer>
               <MenuText
                 onClick={() => handleMenuClick('about')}
@@ -90,7 +81,16 @@ function Header() {
               >
                 사이트소개
               </MenuText>
-              <Underline isActive={ routeStyle &&activeMenu === 'about'}  />
+              <Underline isActive={routeStyle&&activeMenu === 'about'} />
+            </MenuTextContainer>
+            <MenuTextContainer>
+              <MenuText
+                onClick={() => handleMenuClick('board')}
+                isActive={routeStyle&&activeMenu === 'board'}
+              >
+                제안게시판
+              </MenuText>
+              <Underline isActive={ routeStyle &&activeMenu === 'board'}  />
             </MenuTextContainer>
           </MenuButton>
         </Menu>
