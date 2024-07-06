@@ -9,6 +9,7 @@ import face from '../Assets/Img/face.svg';
 import advisepen from '../Assets/Img/advisepen.svg';
 import WritingModal from "../Components/WritingPage_Components/WritingModal";
 import RegionChangeModal from "../Components/Mypage_Components/RegionChangeModal";
+import { userInfoGetAPI } from "../API/AxiosAPI";
 
 function MyPage() {
   const [isSticky, setIsSticky] = useState(false);
@@ -35,6 +36,17 @@ function MyPage() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  //유저 데이터 불러오는 함수 
+  const getUserInfo = async () =>{
+    const response =await userInfoGetAPI();
+    console.log(response);
+  };
+
+  useEffect(()=>{
+    const response =getUserInfo();
+    console.log(response);
+  },[])
 
   return (
     <div>

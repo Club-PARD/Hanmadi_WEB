@@ -308,10 +308,11 @@ const BackButton = styled.button`
   color: var(--Main-001, #005AFF);
   text-align: center;
   font-family: "MinSans-Regular";
-  font-size: 13.558px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 500;
-  line-height: 29.054px; /* 214.286% */
+  line-height: 150%;
+  white-space: nowrap;
 
   border-radius: 6.623px;
   border: 1px solid var(--Main-001, #005AFF);
@@ -321,7 +322,7 @@ const BackButton = styled.button`
 
 const SaveButton = styled.button`
   display: flex;
-  width: 70px;
+  width: 78px;
   height: 36px;
   padding: 10px;
   justify-content: center;
@@ -331,10 +332,11 @@ const SaveButton = styled.button`
   color: var(--white-001, #FFF);
   text-align: center;
   font-family: "MinSans-Regular";
-  font-size: 13.558px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 500;
-  line-height: 29.054px; /* 214.286% */
+  line-height: 150%;
+  white-space: nowrap;
 
   border-radius: 6.623px;
   background: var(--Main-001, #005AFF);
@@ -381,7 +383,7 @@ const LocalButton = styled.button`
 
   color: ${({ selected }) => (selected ? '#005AFF' : '#707070')};
   font-family: "MinSans-Regular";
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
   line-height: 30px; /* 214.286% */
 
@@ -491,22 +493,28 @@ const HintWrapper = styled.div`
 
 const PostButton = styled.button`
   display: flex;
-  width: 100px;
-  height: 36px;
+  width: 120px;
+  height: 50px;
   justify-content: center;
   align-items: center;
   padding: 10px;
   border-radius: 6px;
   background: #005AFF;
+
   color: #FFF;
   font-family: "MinSans-Regular";
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: 600;
   line-height: 20px;
+
   cursor: pointer;
   border: none;
   margin-top: 20px;
   align-self: flex-end;
+
+  &:hover {
+    background: #004EDC;
+  }
 `;
 
 const FileWrapper = styled.div`
@@ -541,14 +549,14 @@ const FileInput = styled.input`
 const FileInputLabel = styled.label`
   display: flex;
   width: 72px;
-  height: 36px;
+  height: 50px;
   justify-content: center;
   align-items: center;
   border-radius: 6px;
   background: #005AFF;
   color: #FFF;
   font-family: "MinSans-Regular";
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 500;
   line-height: 20px;
   cursor: pointer;
