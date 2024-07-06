@@ -8,9 +8,10 @@ import { pagenation, stateListCategory } from "../../Recoil/Atom";
 
 function ShowList() {
   // 필터 버튼 값 설정 [추천/최신]
-  const [filter, setFilter] = useRecoilState(stateListCategory);
+  const [filter, setFilter] = useState('recent');
   const [currentPage, setCurrentPage] =useRecoilState(pagenation);
   const onClickFilterBtn = (filterValue) => {
+    setCurrentPage(1);
     setFilter(filterValue);
   }
 
