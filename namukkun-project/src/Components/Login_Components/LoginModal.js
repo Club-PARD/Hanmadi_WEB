@@ -6,6 +6,7 @@ import Ellipse from '../../Assets/Img/EllipseLogin.svg';
 
 const LoginModal = ({ show, onClose}) => {
 
+
   useEffect(() => {
     if(show) {
       document.body.style.overflow = 'hidden';
@@ -125,7 +126,7 @@ const ModalTitle = styled.div`
   color: #191919;
   text-align: center;
   font-family: "Min Sans";
-  font-size: 28px;
+  font-size: 32px;
   font-style: normal;
   font-weight: 700;
   line-height: 28.008px;

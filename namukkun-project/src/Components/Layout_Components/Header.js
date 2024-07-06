@@ -16,8 +16,6 @@ function Header() {
   //로그인 테스트 상태 -추후 서버랑 연결해야함.
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);
 
-  // const [routeStyle ,setRouteStyle ] =useState(true);
-
   const path = new URL(document.location.toString()).pathname;
 
   //로그인  - 이거 추후 서버 연결 후수정 필요함. 로그인 눌렀을 때 바로 로그아웃 상태 뜨지 않게.
@@ -29,6 +27,8 @@ function Header() {
   //로그아웃
   const handleLogoutClick = () => {
     setIsLogin(false);
+    //로그아웃 했을 때 로컬 스토리지에 있는 유저의 정보를 제거함. 
+    localStorage.removeItem("userData");
   };
 
   //제안 게시판 클릭 -> 제안 게시판 페이지로 이동
