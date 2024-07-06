@@ -110,7 +110,7 @@ const LineTextContainer = styled.div`
 
 const TopicText = styled.span`
     color: #005AFF;
-    font-family: "Min Sans";
+    font-family: 'MinSans-Regular';
     font-size: 22px;
     font-style: normal;
     font-weight: 500;
@@ -129,7 +129,7 @@ const Dot = styled.span`
 
 const TitleText = styled.div`
     color: #191919;
-    font-family: "Min Sans";
+    font-family: 'MinSans-Regular';
     font-size: 36px;
     font-style: normal;
     font-weight: 600;
@@ -151,7 +151,7 @@ const ContentImageContainer = styled.div`
 
 const DetailText = styled.span`
     color: ${(props) => props.$color || '#9D9D9D'};
-    font-family: "Min Sans";
+    font-family: 'MinSans-Regular';
     font-size: 20px;
     font-style: normal;
     font-weight: 500;
@@ -169,7 +169,7 @@ const DetailContainer = styled.div`
 
 const ContentTitleText = styled.div`
     color: #191919;
-    font-family: "Min Sans";
+    font-family: 'MinSans-Regular';
     font-size: 26px;
     font-style: normal;
     font-weight: 600;

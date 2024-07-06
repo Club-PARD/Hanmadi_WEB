@@ -115,6 +115,82 @@ export const submitPostAPI = async (postData) => {
   }
 };
 
+<<<<<<< HEAD
+//comment 읽어오기
+export const fetchComments = async (postId) => {
+    try {
+        const response = await axios.get(`${server}/post/comment?postid=${postId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching comments:', error);
+        throw error;
+    }
+};
+
+//comment 삭제
+export const deleteComment = async (userid, commentid) => {
+    try {
+        await axios.delete(`${server}/post/comment`, {
+            params: {
+                userid,
+                commentid
+            }
+        });
+    } catch (error) {
+        console.error('Error deleting comment:', error);
+        throw error;
+    }
+};
+
+// comment 생성
+export const createComment = async (postid, userid, content) => {
+  try {
+      const response = await axios.post(`${server}/post/comment`, { userId: userid, content: content }, {
+          params: {
+              postid,
+              userid
+          }
+      });
+      return response.data;
+  } catch (error) {
+      console.error('Error creating comment:', error);
+      throw error;
+  }
+};
+
+//comment 좋아요
+export const toggleLikeComment = async (commentid, userid) => {
+  try {
+      const response = await axios.patch(`${server}/post/comment/up`, null, {
+          params: {
+              commentid,
+              userid
+          }
+      });
+      return response.data;
+  } catch (error) {
+      console.error('Error toggling like comment:', error);
+      throw error;
+  }
+};
+
+//comment 채택
+export const toggleTakeComment = async (commentid, userid, take) => {
+  try {
+      const response = await axios.patch(`${server}/post/comment/take`, null, {
+          params: {
+              commentid,
+              userid,
+              take
+          }
+      });
+      return response.data;
+  } catch (error) {
+      console.error('Error toggling take comment:', error);
+      throw error;
+  }
+};
+=======
 
 // 유저 프로필 수정
 export const userPofilePatchAPI = async(data) =>{
@@ -141,3 +217,4 @@ export const userInfoGetAPI = async() =>{
     throw err ;
   }
 }
+>>>>>>> develop
