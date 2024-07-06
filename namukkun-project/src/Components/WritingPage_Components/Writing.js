@@ -6,8 +6,6 @@ import '../../Assets/Style/quill.snow.custom.css';
 import SideHint from '../../Assets/Img/SideHint.svg';
 import WritingModal from './WritingModal';
 import { GlobalStyle } from '../../Assets/Style/theme';
-import { useRecoilState } from 'recoil';
-import { fileState } from '../../Recoil/Atom.js';
 import { uploadImageAPI, uploadFileFetch, submitPostAPI } from '../../API/AxiosAPI.js';
 
 // Custom font
@@ -17,10 +15,16 @@ Font.whitelist = fonts;
 Quill.register(Font, true);
 
 const handleImageUpload = async (quill, file) => {
-  const imageUrl = await uploadImageAPI(file);
-  if (imageUrl) {
+  const imageUrls = await uploadImageAPI(file);
+  if (imageUrls && imageUrls.length > 0) {
     const range = quill.getSelection();
-    quill.insertEmbed(range.index, 'image', imageUrl);
+    imageUrls.forEach((url) => {
+      quill.insertEmbed(range.index, 'image', url);
+      range.index += 1; // Move the cursor to insert the next image after the current one
+    });
+    console.log('Uploaded image URLs:', imageUrls);
+  } else {
+    console.error('Image upload failed or no image URLs returned');
   }
 };
 
@@ -61,7 +65,8 @@ const Writing = () => {
   const [background, setBackground] = useState('');
   const [solution, setSolution] = useState('');
   const [effect, setEffect] = useState('');
-  const [attachments, setAttachments] = useRecoilState(fileState);
+  const [fileNames, setFileNames] = useState([]);  // 화면에 표시될 파일 이름
+  const [fileRandomStrings, setFileRandomStrings] = useState([]);  // 서버에 전송될 랜덤 문자열
 
   const [isWModalOpen, setIsWModalOpen] = useState(false);
   const [modalMethod, setModalMethod] = useState('');
@@ -76,29 +81,29 @@ const Writing = () => {
     console.log('선택된 지역:', region);
   };
 
-  const handleInputChange = (setter, limit) => (value) => {
-    if (value.replace(/<\/?[^>]+(>|$)/g, "").length <= limit) {
-      setter(value);
-    } else {
-      const limitedValue = value.replace(/<\/?[^>]+(>|$)/g, "").substring(0, limit);
-      setter(limitedValue);
-    }
+  const handleInputChange = (setter) => (value) => {
+    setter(value);
   };
 
   const handleFileChange = async (e) => {
     const files = Array.from(e.target.files);
+    const fileNamesArray = files.map(file => file.name);
+    setFileNames([...fileNames, ...fileNamesArray]);  // 화면에 표시될 파일 이름 설정
+
     try {
       const uploadedFiles = await Promise.all(files.map(file => uploadFileFetch(file)));
-      const validFiles = uploadedFiles.filter(file => file && file.fileName);
-      setAttachments([...attachments, ...validFiles]);
-      console.log('업로드된 파일:', validFiles);
+      const validFiles = uploadedFiles.filter(file => file && file.length > 0);
+      const newFileRandomStrings = validFiles.flat();
+      setFileRandomStrings([...fileRandomStrings, ...newFileRandomStrings]);
+      console.log('업로드된 파일 랜덤 문자열:', newFileRandomStrings);
     } catch (error) {
       console.error('파일 업로드 중 오류 발생:', error);
     }
   };
 
   const handleFileRemove = (index) => {
-    setAttachments(attachments.filter((_, i) => i !== index));
+    setFileNames(fileNames.filter((_, i) => i !== index));
+    setFileRandomStrings(fileRandomStrings.filter((_, i) => i !== index));
   };
 
   const regionToInt = {
@@ -126,12 +131,12 @@ const Writing = () => {
       proBackground: background,
       solution,
       benefit: effect,
-      fileName: attachments.map(file => file.fileName),
+      fileNames: fileRandomStrings,  // 서버에 보낼 때 파일 랜덤 문자열 리스트를 포함
       userId: 1,
       return: true,
     };
 
-    console.log('전송할 데이터:', postData);
+    console.log('전송할 데이터:', JSON.stringify(postData));
 
     try {
       const response = await submitPostAPI(postData);
@@ -170,7 +175,7 @@ const Writing = () => {
           <TitleBox
             placeholder="제목을 입력해주세요"
             value={title}
-            onChange={(e) => handleInputChange(setTitle, 30)(e.target.value)}
+            onChange={(e) => handleInputChange(setTitle)(e.target.value)}
           />
         </Section>
         <Section>
@@ -181,7 +186,7 @@ const Writing = () => {
             <StyledQuill
               theme="snow"
               value={background}
-              onChange={handleInputChange(setBackground, 250)}
+              onChange={setBackground}
               modules={modules}
               formats={formats}
             />
@@ -195,7 +200,7 @@ const Writing = () => {
             <StyledQuill
               theme="snow"
               value={solution}
-              onChange={handleInputChange(setSolution, 250)}
+              onChange={setSolution}
               modules={modules}
               formats={formats}
             />
@@ -207,7 +212,7 @@ const Writing = () => {
             <StyledQuill
               theme="snow"
               value={effect}
-              onChange={handleInputChange(setEffect, 250)}
+              onChange={setEffect}
               modules={modules}
               formats={formats}
             />
@@ -219,9 +224,9 @@ const Writing = () => {
             <FileBox>
               <FileInputWrapper>
                 <FileInput type="file" multiple onChange={handleFileChange} id="file-upload" />
-                {attachments.map((file, index) => (
+                {fileNames.map((name, index) => (
                   <FileItem key={index}>
-                    <FileName>{file.fileName}</FileName>
+                    <FileName>{name}</FileName>
                     <RemoveButton onClick={() => handleFileRemove(index)}>제거</RemoveButton>
                   </FileItem>
                 ))}
@@ -234,8 +239,8 @@ const Writing = () => {
           <PostButton onClick={handleSubmit}>게시하기</PostButton>
         </ButtonSection>
         <Section>
-          <Label>Recoil 상태 확인:</Label>
-          <pre>{JSON.stringify(attachments, null, 2)}</pre>
+          <Label>파일 랜덤 문자열 상태 확인:</Label>
+          <pre>{JSON.stringify(fileRandomStrings, null, 2)}</pre>
         </Section>
       </WritingBody>
       <WritingModal

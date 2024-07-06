@@ -6,11 +6,11 @@ import { pagenation, stateListCategory } from "../../Recoil/Atom";
 
 function FixList(){
   const navigate = useNavigate();
-  const [filter, setFilter] = useRecoilState(stateListCategory);
+  const [chagnePage, setChagnePage] = useRecoilState(stateListCategory);
   const [currentPage, setCurrentPage] =useRecoilState(pagenation);
 
   const onClcikListMenu = (category)=>{
-    setFilter(category);
+    setChagnePage(category);
 
     window.scrollTo({
       top: 0,
@@ -18,7 +18,12 @@ function FixList(){
     });
     setCurrentPage(1);
 
-    navigate('/listall');
+    if(category ==='recent'){
+      navigate('/listall');
+    }
+    else if('popular'){
+      navigate('/list');
+    }
   }
 
   return(
@@ -26,7 +31,7 @@ function FixList(){
       <FixedButton onClick={()=>onClcikListMenu('recent')}>
         ✏️ 전체글 모아보기
       </FixedButton>
-      <FixedButton onClick={()=>onClcikListMenu('recommend')}>
+      <FixedButton onClick={()=>onClcikListMenu('popular')}>
         🌟 인기글 모아보기
       </FixedButton>
   </FixedButtonContainer>

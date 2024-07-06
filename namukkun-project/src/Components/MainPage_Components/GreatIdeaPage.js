@@ -12,10 +12,10 @@ function GreatIdeaPage() {
             <GreatContentContainer>
                 <TextContainer>
                     <LineTextContainer>
-                        <Dot></Dot><TopicText>우수사례</TopicText>
+                        <Dot></Dot><TopicText>지역 한마디</TopicText>
                     </LineTextContainer>
                     <LineTextContainer>
-                        <TitleText>과거의 성공한 한마디를 확인해보세요.</TitleText>
+                        <TitleText>다른 지역의 한마디도 함께</TitleText>
                     </LineTextContainer>
                 </TextContainer>
                 <ContentImageContainer>

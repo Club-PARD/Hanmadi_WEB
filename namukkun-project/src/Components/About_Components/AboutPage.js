@@ -8,6 +8,7 @@ import Mail from "../../Assets/Img/Mail.svg";
 import Arrow from "../../Assets/Img/Arrow.svg";
 import HowAbout from "../../Assets/Img/HowAbout.svg";
 import SupportYonggil from "../../Assets/Img/SupportYou.svg";
+import TextAnimation from './TextAnimation';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -25,14 +26,24 @@ function AboutPage() {
         <ContentWrapper>
           <Logo src={BlackLogo} alt="Black Logo" />
           <Title>
-            <ColoredText>한마디</ColoredText>가 <ColoredText>두마디</ColoredText>로 <br />
-            내 의견에 확신을 얻는,
+            <TextAnimation fadeinTime={1}>
+              <ColoredText>한마디</ColoredText>가 <ColoredText>두마디</ColoredText>로 <br />
+            </TextAnimation>
+            <TextAnimation fadeinTime={1.5}>
+              <span>
+              내 의견에 확신을 얻는,
+              </span>
+            </TextAnimation>
           </Title>
           <Body>
-            한마디는 지역발전과 활성화를 꿈꾸는 사람들이 <br />자신있게 아이디어를 제안할 수 있는 공간을 제공합니다.
-            <br />
+            <TextAnimation fadeinTime={2}>
+              한마디는 지역발전과 활성화를 꿈꾸는 사람들이 <br />자신있게 아이디어를 제안할 수 있는 공간을 제공합니다.
+              <br />
+            </TextAnimation>
+            <TextAnimation fadeinTime={2.5}>
             <br />
             한마디가 두마디로, 두마디가 세마디로, <br />우리는 지역을 위한 '한마디'의 힘을 믿습니다.
+            </TextAnimation>
           </Body>
         </ContentWrapper>
       </Intro>
