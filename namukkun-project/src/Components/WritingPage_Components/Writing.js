@@ -22,7 +22,7 @@ const Writing = () => {
   const [effect, setEffect] = useState('');
   const [fileNames, setFileNames] = useState([]);  // 화면에 표시될 파일 이름
   const [fileRandomStrings, setFileRandomStrings] = useState([]);  // 서버에 전송될 랜덤 문자열
-  const [imageUrls, setImageUrls] = useState([]);  // 서버에 전송될 이미지 URL
+  const [uploadedImageNames, setUploadedImageNames] = useState([]);  // 서버에 업로드된 이미지 파일 이름
 
   const [isWModalOpen, setIsWModalOpen] = useState(false);
   const [modalMethod, setModalMethod] = useState('');
@@ -92,21 +92,12 @@ const Writing = () => {
       quill.insertEmbed(range.index, 'image', localUrl);
 
       try {
-        // 서버로 이미지 전송 및 URL 응답 받기
-        const serverUrl = await uploadImageAPI(file);
+        // 서버로 이미지 전송
+        await uploadImageAPI(file);
 
-        if (serverUrl) {
-          // 서버에서 반환된 URL을 에디터에 추가
-          quill.deleteText(range.index, 1);
-          quill.insertEmbed(range.index, 'image', serverUrl);
-          quill.setSelection(range.index + 1);
-
-          // 서버에서 반환된 URL을 별도로 상태로 저장
-          setImageUrls((prev) => [...prev, serverUrl]);
-          console.log('Uploaded image URL:', serverUrl);
-        } else {
-          throw new Error('Image upload failed or no image URL returned');
-        }
+        // 이미지 파일 이름을 상태로 저장
+        setUploadedImageNames((prev) => [...prev, file.name]);
+        console.log('Uploaded image file name:', file.name);
       } catch (error) {
         console.error('Image upload failed:', error);
       }
@@ -165,12 +156,23 @@ const Writing = () => {
       return;
     }
 
+    const replaceImageSrc = (html) => {
+      const div = document.createElement('div');
+      div.innerHTML = html;
+      const images = div.getElementsByTagName('img');
+      Array.from(images).forEach((img, index) => {
+        const fileName = uploadedImageNames[index];
+        img.setAttribute('src', fileName);
+      });
+      return div.innerHTML;
+    };
+
     const postData = {
       title,
       postLocal: regionToInt[selectedButton],
-      proBackground: addImageUrlsToContent(background),
-      solution: addImageUrlsToContent(solution),
-      benefit: addImageUrlsToContent(effect),
+      proBackground: replaceImageSrc(background),
+      solution: replaceImageSrc(solution),
+      benefit: replaceImageSrc(effect),
       fileNames: fileRandomStrings,  // 서버에 보낼 때 파일 랜덤 문자열 리스트를 포함
       userId: 1,
       return: true,
@@ -184,18 +186,6 @@ const Writing = () => {
     } catch (error) {
       console.error('서버로 값을 보내는 중 오류 발생:', error);
     }
-  };
-
-  const addImageUrlsToContent = (content) => {
-    if (!content) return content;
-
-    let updatedContent = content;
-    imageUrls.forEach(url => {
-      const imgTag = `<img src="${url}">`;
-      updatedContent = updatedContent.replace('<img>', imgTag);
-    });
-
-    return updatedContent;
   };
 
   return (
@@ -295,8 +285,8 @@ const Writing = () => {
           <pre>{JSON.stringify(fileRandomStrings, null, 2)}</pre>
         </Section>
         <Section>
-          <Label>이미지 URL 상태 확인:</Label>
-          <pre>{JSON.stringify(imageUrls, null, 2)}</pre>
+          <Label>이미지 파일 이름 상태 확인:</Label>
+          <pre>{JSON.stringify(uploadedImageNames, null, 2)}</pre>
         </Section>
       </WritingBody>
       <WritingModal
