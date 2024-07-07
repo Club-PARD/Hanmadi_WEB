@@ -39,11 +39,13 @@ export const uploadImageAPI = async (file) => {
     const formData = new FormData();
     formData.append('img', file);
 
-    await axios.post(`${post}/post/upload/img`, formData, {
+    const response = await axios.post(`${post}/post/upload/img`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
+
+    return response;
   } catch (error) {
     console.error('Image upload failed:', error);
   }
