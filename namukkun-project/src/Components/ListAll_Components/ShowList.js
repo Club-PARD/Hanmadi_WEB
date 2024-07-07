@@ -4,7 +4,7 @@ import Contents from "./Contents";
 import arrowleft from '../../Assets/Img/Arrowleft.svg';
 import arrowright from '../../Assets/Img/Arrowright.svg';
 import { useRecoilState } from "recoil";
-import { loginTestState, pagenation, stateListCategory, userinfo } from "../../Recoil/Atom";
+import { loginTestState, pagenation, postLikeBtn, stateListCategory, userinfo } from "../../Recoil/Atom";
 import LoginModal from "../Login_Components/LoginModal";
 import Bigdefault from '../../Assets/Img/Bigdefault.svg';
 import { useLocation } from "react-router-dom";
@@ -20,8 +20,7 @@ function ShowList() {
   const gerPathRegion = location.search;
   //기본적으로 보여줄 유저 데이터
   const [userData, setUserData] = useRecoilState(userinfo);
-
-  console.log("Path 위치", location.search);
+  const [postLike, setPostLike] = useRecoilState(postLikeBtn);
 
   //로그인 테스트 상태 -추후 서버랑 연결해야함.
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
@@ -48,31 +47,34 @@ function ShowList() {
     return response.data;
   }
 
-  // 버튼 클릭 상태 관리 (버튼 수를 초기값 false로 설정) - 13은 임시 버튼 수
-  const [sendBraveClicked, setSendBraveClicked] = useState(Array(getpostData.length).fill(false));
+  // 버튼 클릭 상태 관리 
+  const [sendBraveClicked, setSendBraveClicked] = useState(postLike);
 
-  console.log("버튼 상태", sendBraveClicked);
+
+  console.log("버튼 상태", userData.postUpList);
 
   //유저가 클릭한 포스트와 비교후 setSendBraveClicked 일부 true로 변경
 
   // 버튼 클릭 이벤트 핸들러
-  const handleSendBraveClick = async (index, content) => {
+  const handleSendBraveClick = async (postId, content) => {
     if (isLogin) {
-      const newSendBraveClicked = [...sendBraveClicked];
-      newSendBraveClicked[index] = !newSendBraveClicked[index];
+      const newSendBraveClicked = {
+        ...sendBraveClicked,
+        [postId]: !sendBraveClicked[postId]
+      };
       setSendBraveClicked(newSendBraveClicked);
   
       try {
         let response;
-        if (newSendBraveClicked[index]) {
+        if (newSendBraveClicked[postId]) {
           response = await checkPostIncrease(content.postId); // 좋아요 증가 API 호출
         } else {
           response = await checkPostDecrease(content.postId); // 좋아요 감소 API 호출
         }
   
         // 포스트 데이터 업데이트
-        const updatedPostData = getpostData.map((post, idx) => {
-          if (idx === index) {
+        const updatedPostData = getpostData.map(post => {
+          if (post.postId === postId) {
             return {
               ...post,
               upCountPost: response.upCount
@@ -109,16 +111,14 @@ function ShowList() {
       postUpList: response.data.postUpList,
       commentUpList: response.data.commentUpList
     })
-    console.log(response.data);
+    return response.data;
   };
   
   useEffect(()=>{
-    //로그인이 됐을 때 유저 정보를 불러옴.
-    if(isLogin){
-      const response =getUserInfo();
-      console.log(isLogin, response.data);
-    }
-  },[sendBraveClicked, getpostData]);
+    const response = getUserInfo();
+    console.log("유저 데이터", response);
+    setPostLike(sendBraveClicked);
+  },[sendBraveClicked]);
 
 
   //지역별 최신순
@@ -173,8 +173,8 @@ function ShowList() {
           <Contents
             key={index}
             content={content}
-            isClicked={sendBraveClicked[(currentPage - 1) * itemsPerPage + index]}
-            onClick={() => handleSendBraveClick((currentPage - 1) * itemsPerPage + index, content)}
+            isClicked={sendBraveClicked[content.postId]}
+            onClick={() => handleSendBraveClick(content.postId, content)}
           />
         ))}
       </PostListContentsDiv>

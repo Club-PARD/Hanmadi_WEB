@@ -9,7 +9,7 @@ import GreatIdeaPage from "../Components/MainPage_Components/GreatIdeaPage";
 import onclickminilogo from '../Assets/Img/onclickminilogo.svg';
 import onclickpointer from '../Assets/Img/onclickpointer.svg';
 import { useRecoilState } from "recoil";
-import { loginTestState, userinfo } from "../Recoil/Atom";
+import { loginTestState, postLikeBtn, userinfo } from "../Recoil/Atom";
 import { useNavigate } from 'react-router-dom';
 import LoginModal from "../Components/Login_Components/LoginModal";
 import { userInfoGetAPI } from "../API/AxiosAPI";

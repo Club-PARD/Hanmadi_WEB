@@ -54,3 +54,9 @@ export const userinfo = atom({
       }
   ]
 });
+
+//포스트 좋아요 버튼 상태
+export const postLikeBtn = atom({
+  key: 'postLikeBtn',
+  default: {},
+});
