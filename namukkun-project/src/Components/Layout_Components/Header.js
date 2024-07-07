@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
 import { useRecoilState } from 'recoil';
 import { intToRegion } from '../SelectRegion_Components/IntToRegion';
-import { userInfoGetAPI } from '../../API/AxiosAPI';
+import { recentRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
 
 
 function Header() {
@@ -55,6 +55,8 @@ function Header() {
     //제안 게시판
     if(menu==='board'){
     navigate('/listall');
+    recentRegionPostGetAPI('?localPageId=0');
+
     }
     //사이트 소개
     else if (menu ==='about'){

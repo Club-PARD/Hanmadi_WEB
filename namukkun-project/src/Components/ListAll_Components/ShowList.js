@@ -4,56 +4,52 @@ import Contents from "./Contents";
 import arrowleft from '../../Assets/Img/Arrowleft.svg';
 import arrowright from '../../Assets/Img/Arrowright.svg';
 import { useRecoilState } from "recoil";
-import { loginTestState, pagenation, postLikeBtn, stateListCategory, userinfo } from "../../Recoil/Atom";
+import { loginTestState, pagenation, postLikeBtn, userinfo } from "../../Recoil/Atom";
 import LoginModal from "../Login_Components/LoginModal";
-import Bigdefault from '../../Assets/Img/Bigdefault.svg';
 import { useLocation } from "react-router-dom";
-import { intToRegion } from "../SelectRegion_Components/IntToRegion";
 import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
 
 function ShowList() {
   // 필터 버튼 값 설정 [추천/최신]
   const [filter, setFilter] = useState('recent');
-  const [currentPage, setCurrentPage] =useRecoilState(pagenation);
-  //선택한 지역별 상태 확인
+  const [currentPage, setCurrentPage] = useRecoilState(pagenation);
+  // 선택한 지역별 상태 확인
   const location = useLocation();
   const gerPathRegion = location.search;
-  //기본적으로 보여줄 유저 데이터
+  // 기본적으로 보여줄 유저 데이터
   const [userData, setUserData] = useRecoilState(userinfo);
   const [postLike, setPostLike] = useRecoilState(postLikeBtn);
 
-  //로그인 테스트 상태 -추후 서버랑 연결해야함.
+  // 로그인 테스트 상태 - 추후 서버랑 연결해야 함.
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
   const [showModal, setShowModal] = useState(false);
 
-  //포스트 데이터 저장
+  // 포스트 데이터 저장
   const [getpostData, setGetPostData] = useState([]);
 
-  //전체글에 대한 추천/최신 필터 버튼
+  // 전체 글에 대한 추천/최신 필터 버튼
   const onClickFilterBtn = (filterValue) => {
     setCurrentPage(1);
     setFilter(filterValue);
   }
 
-  //포스트 채택
-  const checkPostIncrease = async(postId) =>{
+  // 포스트 채택
+  const checkPostIncrease = async (postId) => {
     const response = await checkPostPostAPI(postId);
     return response.data;
   }
 
-  //포스트 채택 삭제
-  const checkPostDecrease = async(postId) =>{
+  // 포스트 채택 삭제
+  const checkPostDecrease = async (postId) => {
     const response = await checkPostDeleteAPI(postId);
     return response.data;
   }
 
-  // 버튼 클릭 상태 관리 
-  const [sendBraveClicked, setSendBraveClicked] = useState(postLike);
+  // 버튼 클릭 상태 관리
+  const [sendBraveClicked, setSendBraveClicked] = useState(postLike)
+  ;
 
-
-  console.log("버튼 상태", userData.postUpList);
-
-  //유저가 클릭한 포스트와 비교후 setSendBraveClicked 일부 true로 변경
+  // 유저가 클릭한 포스트와 비교 후 setSendBraveClicked 일부 true로 변경
 
   // 버튼 클릭 이벤트 핸들러
   const handleSendBraveClick = async (postId, content) => {
@@ -71,17 +67,20 @@ function ShowList() {
         } else {
           response = await checkPostDecrease(content.postId); // 좋아요 감소 API 호출
         }
-  
-        // 포스트 데이터 업데이트
-        const updatedPostData = getpostData.map(post => {
-          if (post.postId === postId) {
-            return {
-              ...post,
-              upCountPost: response.upCount
-            };
-          }
-          return post;
-        });
+
+      // postId에 해당하는 포스트의 upCount 추출
+      const upcount = response.find(post => post.postId === postId)?.postUpCount;
+
+      // 포스트 데이터 업데이트
+      const updatedPostData = getpostData.map(post => {
+        if (post.postId === postId) {
+          return {
+            ...post,
+            upCountPost: upcount || 0
+          };
+        }
+        return post;
+      });
   
         setGetPostData(updatedPostData);
   
@@ -98,11 +97,11 @@ function ShowList() {
     }
   };
 
-  //버튼 상태 변화시 서버에서 유저 데이터를 가져옴
-  //유저 데이터 불러오는 함수 
-  const getUserInfo = async () =>{
-    const response =await userInfoGetAPI();
-    //아톰에 유저 정보 저장
+  // 버튼 상태 변화 시 서버에서 유저 데이터를 가져옴
+  // 유저 데이터 불러오는 함수 
+  const getUserInfo = async () => {
+    const response = await userInfoGetAPI();
+    // 아톰에 유저 정보 저장
     setUserData({
       ...userData,
       nickName: response.data.nickName,
@@ -110,25 +109,24 @@ function ShowList() {
       profileImage: response.data.profileImage,
       postUpList: response.data.postUpList,
       commentUpList: response.data.commentUpList
-    })
+    });
     return response.data;
   };
   
-  useEffect(()=>{
+  useEffect(() => {
     const response = getUserInfo();
     console.log("유저 데이터", response);
     setPostLike(sendBraveClicked);
-  },[sendBraveClicked]);
+  }, [sendBraveClicked]);
 
-
-  //지역별 최신순
+  // 지역별 최신순
   const getPostsListallrecent = async (gerPathRegion) => {
     const response = await recentRegionPostGetAPI(gerPathRegion);
     setGetPostData(response.data);
     console.log("데이터 확인", getpostData);
   }
 
-  //지역별 인기순
+  // 지역별 인기순
   const getPostsListallPopular = async (gerPathRegion) => {
     const response = await popularRegionPostGetAPI(gerPathRegion);
     setGetPostData(response.data);
@@ -145,8 +143,8 @@ function ShowList() {
     }
   }, [gerPathRegion, filter]);
 
-  const itemsPerPage = 6; //한 페이지당 보여지는 컨텐츠 갯수
-  //총 페이지 갯수
+  const itemsPerPage = 6; // 한 페이지당 보여지는 컨텐츠 갯수
+  // 총 페이지 갯수
   const totalPages = Math.ceil(getpostData.length / itemsPerPage);
 
   // 페이지 변경 핸들러
@@ -154,10 +152,8 @@ function ShowList() {
     setCurrentPage(newPage);
   };
 
-
   // 현재 페이지에 해당하는 콘텐츠 배열
   const paginatedContents = getpostData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
 
   return (
     <Div>
