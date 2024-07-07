@@ -5,8 +5,9 @@ import LoginModal from '../Login_Components/LoginModal';
 import ProfileImg from '../../Assets/Img/ProfileImg.svg';
 import { Outlet } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { loginTestState } from '../../Recoil/Atom';
+import { loginTestState, userinfo } from '../../Recoil/Atom';
 import { useRecoilState } from 'recoil';
+import { intToRegion } from '../SelectRegion_Components/IntToRegion';
 
 
 function Header() {
@@ -15,6 +16,8 @@ function Header() {
   const navigate = useNavigate();
   //로그인 테스트 상태 - 추후 서버랑 연결해야함.
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);
+  //유저 기본 정보 아톰에 저장
+  const [userData, setUserData] = useRecoilState(userinfo);
 
   const path = new URL(document.location.toString()).pathname;
 
@@ -29,6 +32,9 @@ function Header() {
     setIsLogin(false);
     //로그아웃 했을 때 로컬 스토리지에 있는 유저의 정보를 제거함. 
     localStorage.removeItem("userData");
+    if(path ==='/mypage'||path==='/writing'){
+    navigate('/');
+    }
   };
 
   //제안 게시판 클릭 -> 제안 게시판 페이지로 이동
@@ -94,8 +100,8 @@ function Header() {
             <LoggedInContainer>
               <ProposalButton onClick={handleWriting}>제안하러가기</ProposalButton>
               <UserInfo>
-                <ProfileImage src={ProfileImg} alt="Profile" />
-                나무꾼님 / 포항시
+                <ProfileImage src={userData.profileImage} alt="Profile" />
+                {userData.nickName}님 / {intToRegion[userData.local]}
               </UserInfo>
               <MyPage onClick={handleMypage}>
                 마이페이지
@@ -277,6 +283,7 @@ const ProfileImage = styled.img`
   width: 29px;
   height: 29px;
   cursor: pointer;
+  border-radius:50%;
 `;
 
 const MyPage = styled.button`
