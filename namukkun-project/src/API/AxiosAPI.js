@@ -223,3 +223,31 @@ export const popularRegionPostGetAPI =async (gerPathRegion) =>{
     console.error(err);
   }
 }
+
+//게시물 채택
+export const checkPostPostAPI =async (postId) =>{
+  try{
+
+    const userid =1; //디버그용
+
+    const response = await axios.post(`${server}/post/increase/UpCount?postId=${postId}&userId=${userid}`);
+    return response;
+  }
+  catch(err){
+    console.error(err);
+  }
+}
+
+//게시물 채택 삭제
+export const checkPostDeleteAPI =async (postId) =>{
+  try{
+
+    const userid =1; //디버그용
+
+    const response = await axios.post(`${server}/post/decrease/UpCount?postId=${postId}&userId=${userid}`);
+    return response;
+  }
+  catch(err){
+    console.error(err);
+  }
+}

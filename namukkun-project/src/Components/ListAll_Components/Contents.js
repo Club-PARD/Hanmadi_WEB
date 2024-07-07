@@ -9,21 +9,9 @@ import { loginTestState } from "../../Recoil/Atom";
 import { useRecoilState } from "recoil";
 
 function Contents({ content, isClicked, onClick }) {
-  const [likeCount, setLikeCount] = useState(content.upCountPost);
+  // const [likeCount, setLikeCount] = useState();
   //로그인 테스트 상태 -추후 서버랑 연결해야함.
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
-  const handleClick = () => {
-
-    if(isLogin){
-      if (isClicked) {
-        setLikeCount(likeCount - 1);
-      } else {
-        setLikeCount(likeCount + 1);
-      }
-    }
-    onClick(); // onClick 함수 호출
-    
-  };
 
   // 글자 컷 함수
   const truncateText = (text, maxLength) => {
@@ -60,14 +48,14 @@ function Contents({ content, isClicked, onClick }) {
           </KeyValueDiv>
           <KeyValueDiv style={{marginLeft:"16px"}}>
             <ValueTextDiv>{content.userName}</ValueTextDiv> 
-            <ValueTextDiv>{likeCount}</ValueTextDiv>
+            <ValueTextDiv>{content.upCountPost}</ValueTextDiv>
             <ValueTextDiv>{content.comments.length}</ValueTextDiv> 
             <ValueTextDiv>{formatDateString(content.postTime)}</ValueTextDiv>
           </KeyValueDiv>
         </KeyValueWrapper>
       </ContentsDiv>
       <SendBraveButton
-        onClick={handleClick} // 버튼 클릭 이벤트 처리
+        onClick={onClick} // 버튼 클릭 이벤트 처리
         isClicked={isClicked} // 버튼 클릭 상태 전달
       >
         <img src={isClicked ? onclicksendbrave : sendbrave} alt="send brave" /> {/* 클릭 상태에 따라 이미지 변경 */}

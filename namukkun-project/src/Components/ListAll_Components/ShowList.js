@@ -9,7 +9,7 @@ import LoginModal from "../Login_Components/LoginModal";
 import Bigdefault from '../../Assets/Img/Bigdefault.svg';
 import { useLocation } from "react-router-dom";
 import { intToRegion } from "../SelectRegion_Components/IntToRegion";
-import { popularRegionPostGetAPI, recentRegionPostGetAPI } from "../../API/AxiosAPI";
+import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
 
 function ShowList() {
   // 필터 버튼 값 설정 [추천/최신]
@@ -17,17 +17,17 @@ function ShowList() {
   const [currentPage, setCurrentPage] =useRecoilState(pagenation);
   //선택한 지역별 상태 확인
   const location = useLocation();
-  const gerPathRegion =location.search;
+  const gerPathRegion = location.search;
   //기본적으로 보여줄 유저 데이터
   const [userData, setUserData] = useRecoilState(userinfo);
 
-  console.log("Path 위치",location.search);
+  console.log("Path 위치", location.search);
 
-   //로그인 테스트 상태 -추후 서버랑 연결해야함.
-   const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
-   const [showModal, setShowModal] = useState(false);
+  //로그인 테스트 상태 -추후 서버랑 연결해야함.
+  const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
+  const [showModal, setShowModal] = useState(false);
 
-   //포스트 데이터 저장
+  //포스트 데이터 저장
   const [getpostData, setGetPostData] = useState([]);
 
   //전체글에 대한 추천/최신 필터 버튼
@@ -36,57 +36,128 @@ function ShowList() {
     setFilter(filterValue);
   }
 
- // 버튼 클릭 상태 관리 (버튼 수를 초기값 false로 설정) - 13은 임시 버튼 수
-  const [sendBraveClicked, setSendBraveClicked] = useState(Array(13).fill(false));
+  //포스트 채택
+  const checkPostIncrease = async(postId) =>{
+    const response = await checkPostPostAPI(postId);
+    return response.data;
+  }
+
+  //포스트 채택 삭제
+  const checkPostDecrease = async(postId) =>{
+    const response = await checkPostDeleteAPI(postId);
+    return response.data;
+  }
+
+  // 버튼 클릭 상태 관리 (버튼 수를 초기값 false로 설정) - 13은 임시 버튼 수
+  const [sendBraveClicked, setSendBraveClicked] = useState(Array(getpostData.length).fill(false));
+
+  console.log("버튼 상태", sendBraveClicked);
+
+  //유저가 클릭한 포스트와 비교후 setSendBraveClicked 일부 true로 변경
 
   // 버튼 클릭 이벤트 핸들러
-  const handleSendBraveClick = (index) => {
-    if(isLogin){
+  const handleSendBraveClick = async (index, content) => {
+    if (isLogin) {
       const newSendBraveClicked = [...sendBraveClicked];
       newSendBraveClicked[index] = !newSendBraveClicked[index];
       setSendBraveClicked(newSendBraveClicked);
-    }
-    else{
+  
+      try {
+        let response;
+        if (newSendBraveClicked[index]) {
+          response = await checkPostIncrease(content.postId); // 좋아요 증가 API 호출
+        } else {
+          response = await checkPostDecrease(content.postId); // 좋아요 감소 API 호출
+        }
+  
+        // 포스트 데이터 업데이트
+        const updatedPostData = getpostData.map((post, idx) => {
+          if (idx === index) {
+            return {
+              ...post,
+              upCountPost: response.upCount
+            };
+          }
+          return post;
+        });
+  
+        setGetPostData(updatedPostData);
+  
+        // 유저 데이터 업데이트
+        setUserData({
+          ...userData,
+          postUpList: response.upList
+        });
+      } catch (error) {
+        console.error("Error updating post:", error);
+      }
+    } else {
       setShowModal(true);
     }
   };
 
+  //버튼 상태 변화시 서버에서 유저 데이터를 가져옴
+  //유저 데이터 불러오는 함수 
+  const getUserInfo = async () =>{
+    const response =await userInfoGetAPI();
+    //아톰에 유저 정보 저장
+    setUserData({
+      ...userData,
+      nickName: response.data.nickName,
+      local: response.data.local,
+      profileImage: response.data.profileImage,
+      postUpList: response.data.postUpList,
+      commentUpList: response.data.commentUpList
+    })
+    console.log(response.data);
+  };
+  
+  useEffect(()=>{
+    //로그인이 됐을 때 유저 정보를 불러옴.
+    if(isLogin){
+      const response =getUserInfo();
+      console.log(isLogin, response.data);
+    }
+  },[sendBraveClicked, getpostData]);
+
+
   //지역별 최신순
-  const getPostsListallrecent = async(gerPathRegion) =>{
+  const getPostsListallrecent = async (gerPathRegion) => {
     const response = await recentRegionPostGetAPI(gerPathRegion);
     setGetPostData(response.data);
-    console.log(response.data);
+    console.log("데이터 확인", getpostData);
   }
 
   //지역별 인기순
-  const getPostsListallPopular = async(gerPathRegion) =>{
+  const getPostsListallPopular = async (gerPathRegion) => {
     const response = await popularRegionPostGetAPI(gerPathRegion);
     setGetPostData(response.data);
     console.log(response.data);
   }
 
-  useEffect(()=>{
-    if (filter ==='recent'){
+  useEffect(() => {
+    if (filter === 'recent') {
       console.log("최신");
       getPostsListallrecent(gerPathRegion);
-    }
-    else{
+    } else if (filter === 'recommend') {
       console.log("인기");
       getPostsListallPopular(gerPathRegion);
     }
-  },[gerPathRegion, filter]);
+  }, [gerPathRegion, filter]);
 
   const itemsPerPage = 6; //한 페이지당 보여지는 컨텐츠 갯수
   //총 페이지 갯수
   const totalPages = Math.ceil(getpostData.length / itemsPerPage);
 
-   // 페이지 변경 핸들러
+  // 페이지 변경 핸들러
   const handleChangePage = (newPage) => {
     setCurrentPage(newPage);
   };
 
-   // 현재 페이지에 해당하는 콘텐츠 배열
+
+  // 현재 페이지에 해당하는 콘텐츠 배열
   const paginatedContents = getpostData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
 
   return (
     <Div>
@@ -103,7 +174,7 @@ function ShowList() {
             key={index}
             content={content}
             isClicked={sendBraveClicked[(currentPage - 1) * itemsPerPage + index]}
-            onClick={() => handleSendBraveClick((currentPage - 1) * itemsPerPage + index)}
+            onClick={() => handleSendBraveClick((currentPage - 1) * itemsPerPage + index, content)}
           />
         ))}
       </PostListContentsDiv>
