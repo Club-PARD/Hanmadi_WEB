@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -15,6 +15,8 @@ Font.whitelist = fonts;
 Quill.register(Font, true);
 
 const Writing = () => {
+  const quillRef = useRef(null);
+
   const [selectedButton, setSelectedButton] = useState(null);
   const [title, setTitle] = useState('');
   const [background, setBackground] = useState('');
@@ -106,6 +108,23 @@ const Writing = () => {
     reader.readAsDataURL(file);
   }, []);
 
+  const handleTextChange = (content, delta, source, editor) => {
+    if (source === 'user') {
+      const currentContents = editor.getContents();
+      const newImageNames = [];
+      currentContents.ops.forEach(op => {
+        if (op.insert && op.insert.image) {
+          const src = op.insert.image;
+          const imageName = uploadedImageNames.find(name => src.includes(name));
+          if (imageName) {
+            newImageNames.push(imageName);
+          }
+        }
+      });
+      setUploadedImageNames(newImageNames);
+    }
+  };
+
   const modules = useMemo(() => ({
     toolbar: {
       container: [
@@ -117,7 +136,7 @@ const Writing = () => {
         image: function() {
           const input = document.createElement('input');
           input.setAttribute('type', 'file');
-          input.setAttribute('accept', 'image/*');
+          input.setAttribute('accept', 'image/jpeg, image/jpg, image/png'); // 허용할 이미지 파일 형식 설정
           input.onchange = async () => {
             const file = input.files[0];
             if (file) {
@@ -226,9 +245,13 @@ const Writing = () => {
           </Label>
           <QuillContainer>
             <StyledQuill
+              ref={quillRef}
               theme="snow"
               value={background}
-              onChange={setBackground}
+              onChange={(content, delta, source, editor) => {
+                setBackground(content);
+                handleTextChange(content, delta, source, editor);
+              }}
               modules={modules}
               formats={formats}
             />
@@ -242,7 +265,10 @@ const Writing = () => {
             <StyledQuill
               theme="snow"
               value={solution}
-              onChange={setSolution}
+              onChange={(content, delta, source, editor) => {
+                setSolution(content);
+                handleTextChange(content, delta, source, editor);
+              }}
               modules={modules}
               formats={formats}
             />
@@ -254,7 +280,10 @@ const Writing = () => {
             <StyledQuill
               theme="snow"
               value={effect}
-              onChange={setEffect}
+              onChange={(content, delta, source, editor) => {
+                setEffect(content);
+                handleTextChange(content, delta, source, editor);
+              }}
               modules={modules}
               formats={formats}
             />
@@ -265,7 +294,7 @@ const Writing = () => {
           <FileWrapper>
             <FileBox>
               <FileInputWrapper>
-                <FileInput type="file" multiple onChange={handleFileChange} id="file-upload" />
+                <FileInput type="file" multiple onChange={handleFileChange} id="file-upload" accept="image/jpeg, image/jpg, image/png" /> {/* 허용할 이미지 파일 형식 설정 */}
                 {fileNames.map((name, index) => (
                   <FileItem key={index}>
                     <FileName>{name}</FileName>
@@ -280,14 +309,14 @@ const Writing = () => {
         <ButtonSection>
           <PostButton onClick={handleSubmit}>게시하기</PostButton>
         </ButtonSection>
-        <Section>
+        <HiddenSection>
           <Label>파일 랜덤 문자열 상태 확인:</Label>
           <pre>{JSON.stringify(fileRandomStrings, null, 2)}</pre>
-        </Section>
-        <Section>
+        </HiddenSection>
+        <HiddenSection>
           <Label>이미지 파일 이름 상태 확인:</Label>
           <pre>{JSON.stringify(uploadedImageNames, null, 2)}</pre>
-        </Section>
+        </HiddenSection>
       </WritingBody>
       <WritingModal
         isOpen={isWModalOpen}
@@ -445,6 +474,10 @@ const Section = styled.div`
   margin-bottom: 20px;
   position: relative;
 ;`
+
+const HiddenSection = styled(Section)`
+  display: none;
+`;
 
 const ButtonSection = styled.div`
   display: flex;
