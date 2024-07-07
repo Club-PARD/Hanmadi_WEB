@@ -4,12 +4,21 @@ import { GlobalStyle } from '../../Assets/Style/theme';
 import rightpagearrow from '../../Assets/Img/rightpagearrow.svg';
 import leftpagearrow from '../../Assets/Img/leftpagearrow.svg';
 import defaultblue from '../../Assets/Img/defaultblue.svg';
+import { useRecoilState } from 'recoil';
+import { loginTestState } from '../../Recoil/Atom';
+import LoginModal from '../Login_Components/LoginModal';
 
 function PopularPost() {
     const [isClicked, setIsClicked] = useState(false);
-    const [activeButton, setActiveButton] = useState('진행중'); // 진행중이 기본값
-    const [sendBraveClicked, setSendBraveClicked] = useState([false, false, false]); // sendbravebutton 클릭 상태
+    // 진행중이 기본값
+    const [activeButton, setActiveButton] = useState('진행중'); 
+    // sendbravebutton 클릭 상태
+    const [sendBraveClicked, setSendBraveClicked] = useState([false, false, false, false, false, false]);
     const [activeDot, setActiveDot] = useState(0); // pagination 상태
+
+    //로그인 테스트 상태 -추후 서버랑 연결해야함.
+    const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
+    const [showModal, setShowModal] = useState(false);
 
     const handleDotClick = (index) => {
         setActiveDot(index);
@@ -30,6 +39,40 @@ function PopularPost() {
         return text;
     };
 
+    // 더미 데이터 - 서버 연결 후 삭제
+    const newposts = [
+        { postImage: defaultblue, title: "포항시 생태공원조성 사업 제안합니다. 포항시 생태공원조성 사업 제안합니다. 어디까지가 끝일까요", author: "김**님", due: "D-1", likes: 143 },
+        { postImage: defaultblue, title: "포항시 생태공원조성 사업 제안합니다.", author: "김**님", due: "D-1", likes: 143 },
+        { postImage: defaultblue,  title: "학교에 자전거 보관소 설치를 요청합니다.", author: "이**님", due: "D-10", likes: 200 },
+        { postImage: defaultblue, title: "도서관에 신간 도서 추가를 부탁드립니다.", author: "박**님", due: "D-5", likes: 98 },
+        { postImage: defaultblue, title: "공원에 더 많은 벤치를 설치해 주세요.", author: "최**님", due: "D-15", likes: 75 },
+        { postImage: defaultblue,  title: "지역 주민을 위한 헬스장 건립을 건의합니다.", author: "정**님", due: "D-20", likes: 120 },
+        { postImage: defaultblue,  title: "지역 주민을 위한 헬스장 건립을 건의합니다.", author: "정**님", due: "D-20", likes: 120 },
+        { postImage: defaultblue,  title: "지역 주민을 위한 헬스장 건립을 건의합니다.", author: "정**님", due: "D-20", likes: 120 },
+    ];
+
+    // 현재 페이지에 해당하는 게시글들만 선택
+    const postsToDisplay = newposts.slice(activeDot * 2, activeDot * 2 + 2);
+
+    const handleLike = (index) => {
+        if (isLogin) {
+            // sendBraveClicked 배열에서 클릭된 버튼의 상태를 토글
+            const updatedClicked = [...sendBraveClicked];
+            updatedClicked[activeDot * 2 + index] = !updatedClicked[activeDot * 2 + index];
+            setSendBraveClicked(updatedClicked);
+
+            // 좋아요 수 증가/감소 처리
+            const updatedPosts = [...newposts];
+            updatedPosts[activeDot * 2 + index] = {
+                ...updatedPosts[activeDot * 2 + index],
+                likes: updatedPosts[activeDot * 2 + index].likes + (updatedClicked[index] ? 1 : -1)
+            };
+            // setNewPosts(updatedPosts); // 실제 서버 연결 후 업데이트하는 방식으로 변경
+        } else {
+            setShowModal(true);
+        }
+    };
+        
     return (
         <Container>
             <GlobalStyle />
@@ -56,8 +99,21 @@ function PopularPost() {
                         </PaginationDotContainer>
                     </Pagination>
                     <TwoContentContainer>
-                        <ImageContent title="포항시 생태공원조성 사업 제안합니다. 포항시 생태공원조성 사업 제안합니다. 어디까지가 끝일까요" author="김**님" due="D-1" initialLikes={143} truncateText={truncateText} />
-                        <ImageContent title="포항시 생태공원조성 사업 제안합니다." author="김**님" due="D-1" initialLikes={143} truncateText={truncateText} />
+                        {postsToDisplay.map((post, index) => (
+                            <ImageContent
+                                key={index}
+                                postImage= {post.postImage}
+                                title={post.title}
+                                author={post.author}
+                                due={post.due}
+                                initialLikes={post.likes}
+                                truncateText={truncateText}
+                                isLogin ={isLogin}
+                                setShowModal ={setShowModal}
+                                handleLike={() => handleLike(index)} 
+                                isLiked={sendBraveClicked[activeDot * 2 + index]} 
+                            />
+                        ))}
                     </TwoContentContainer>
                 </PopularContentContainer>
                 <RightArrowContainer>
@@ -66,28 +122,24 @@ function PopularPost() {
                     </RightArrowButton>
                 </RightArrowContainer>
             </PageMoveContent>
+            <LoginModal show={showModal} onClose={() => setShowModal(false)} />
         </Container>
     );
 }
 
 export default PopularPost;
 
-const ImageContent = ({ title, author, due, initialLikes, truncateText }) => {
+const ImageContent = ({ postImage, title, author, due, initialLikes, truncateText,handleLike, isLiked }) => {
     const [likeCount, setLikeCount] = useState(initialLikes);
-    const [isLiked, setIsLiked] = useState(false);
 
-    const handleLike = () => {
-        if (isLiked) {
-            setLikeCount(likeCount - 1);
-        } else {
-            setLikeCount(likeCount + 1);
-        }
-        setIsLiked(!isLiked);
+    const handleButtonClick = () => {
+        handleLike();
+        setLikeCount((prevCount) => prevCount + (isLiked ? -1 : 1));
     };
 
     return (
         <ImageContentContainer>
-            <img src={defaultblue} alt="content image" style={{ width: '424px', height: '300px' }} />
+            <img src={postImage} alt="content image" style={{ width: '424px', height: '300px' }} />
             <ContentTitleText>
                 {truncateText(title, 43)} {/* title을 truncateText로 잘라내기 */}
             </ContentTitleText>
@@ -103,7 +155,7 @@ const ImageContent = ({ title, author, due, initialLikes, truncateText }) => {
                 <DetailText>공감수</DetailText>
                 <DetailText $color="#5A5A5A">{likeCount}</DetailText>
             </DetailContainer>
-            <BraveButton onClick={handleLike} isLiked={isLiked}>
+            <BraveButton onClick={handleButtonClick} isLiked={isLiked}>
                 {isLiked ? '용길이 보내기' : '용길이 보내기'}
             </BraveButton>
         </ImageContentContainer>
@@ -180,7 +232,7 @@ const MainTitle = styled.span`
     font-style: normal;
     font-weight: 700;
     line-height: 30px; /* 83.333% */
-    padding-bottom: 17px;
+    padding-bottom: 10px;
 `;
 
 const SubTitle = styled.div`
@@ -217,6 +269,9 @@ const Dot = styled.span`
 `;
 
 const ContentTitleText = styled.div`
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     height: 49px;
     color: #191919;
     font-family: "Min Sans";
@@ -270,7 +325,8 @@ const BraveButton = styled.button`
     color: ${(props) => (props.isLiked ? '#246BEB' : 'white')};
     border: none;
     align-self: stretch;
-    font-family: 'UhBeeJJIBBABBA';
+    font-family: "Min Sans-Regular";
+    font-weight: 600;
     cursor: pointer;
 
     &:hover {

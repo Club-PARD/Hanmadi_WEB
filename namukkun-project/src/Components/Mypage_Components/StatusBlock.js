@@ -15,7 +15,7 @@ function Banner() {
                         </StatusBlock>
                         <StatusBlock>
                             <StatusNumber number={3}>3</StatusNumber>
-                            <StatusTitle>진행중</StatusTitle>
+                            <StatusTitle>종료</StatusTitle>
                         </StatusBlock>
                         <StatusBlock>
                             <StatusNumber number={0}>0</StatusNumber>

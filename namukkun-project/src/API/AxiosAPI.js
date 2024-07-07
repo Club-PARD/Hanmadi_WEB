@@ -6,13 +6,13 @@ const server = process.env.REACT_APP_SERVER;
 const post = process.env.REACT_APP_SERVER3;
 
 // CORS 요청 시 쿠키를 포함하도록 설정
-//로그인시 서버로부터 쿠키를 받음
+// 로그인시 서버로부터 쿠키를 받음
 axios.defaults.withCredentials = true; 
 
-//로그인 성공/실패 했을 때 페이지 이동이 필요함
+// 로그인 성공/실패 했을 때 페이지 이동이 필요함
 export const getSendCodeAPI = async (code) => {
   try {
-    const response = await axios.get(`${kakaoserver}?code=${code}`,{withCredentials: true,});
+    const response = await axios.get(`${kakaoserver}?code=${code}`, { withCredentials: true });
     return response;
   } catch (err) {
     console.error(err);
@@ -21,11 +21,10 @@ export const getSendCodeAPI = async (code) => {
   }
 };
 
-//회원가입하고 서버에 쿠키를 받음
+// 회원가입하고 서버에 쿠키를 받음
 export const postRegisterRegion = async (region) =>{
   try{
-    const response = await axios.get(`${server}/login/create/user?local=${region}`, { withCredentials: true } 
-    ); 
+    const response = await axios.get(`${server}/login/create/user?local=${region}`, { withCredentials: true }); 
     
     return response;
   }
@@ -34,71 +33,42 @@ export const postRegisterRegion = async (region) =>{
   }
 }
 
-// 이미지를 보냈다가 Url로 return 받음
+// 이미지를 먼저 서버로 보냄
 export const uploadImageAPI = async (file) => {
   try {
     const formData = new FormData();
-    formData.append('files', file);
+    formData.append('img', file);
 
     const response = await axios.post(`${post}/post/upload/img`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
-    return response.data.imageUrl;
+
+    return response;
   } catch (error) {
     console.error('Image upload failed:', error);
-    return null;
   }
 };
 
 // 첨부파일 보냈다가 다시 돌려받음
 export const uploadFileFetch = async (file) => {
-  const formData = new FormData();
-  formData.append('files', file);
-
   try {
-    const response = await fetch(`${post}/post/upload/file`, {
-      method: 'POST',
-      body: formData,
+    const formData = new FormData();
+    formData.append('files', file);
+
+    const response = await axios.post(`${post}/post/upload/file`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     });
 
-    if (!response.ok) {
-      throw new Error('File upload failed');
-    }
-
-    const data = await response.json();
-    return {
-      fileName: data.fileName,
-      fileType: data.fileType,
-      base64Data: data.base64Data,
-    };
+    return response.data.fileNames;
   } catch (error) {
     console.error('File upload failed:', error);
     return null;
   }
 };
-
-// export const uploadFileFetch = async (file) => {
-//   try {
-//     const formData = new FormData();
-//     formData.append('files', file);
-
-//     const response = await axios.post(`${post}/post/upload/file`, formData, {
-//       headers: {
-//         'Content-Type': 'multipart/form-data',
-//       },
-//     });
-//     return {
-//       fileName: response.data.fileName,
-//       filtType: response.data.fileType,
-//       base64Data: response.data.base64Data
-//     };
-//   } catch (error) {
-//     console.error('File upload failed:', error);
-//     return null;
-//   }
-// };
 
 // '게시하기' 버튼을 눌렀을 때, 서버로 전송.
 export const submitPostAPI = async (postData) => {
@@ -115,9 +85,28 @@ export const submitPostAPI = async (postData) => {
   }
 };
 
+<<<<<<< HEAD
 //댓글 부분
 
 //comment 읽어오기
+=======
+// 첨부파일 '제거' 버튼을 눌렀을 때, 제거하기
+export const deleteFileAPI = async (fileName) => {
+  try {
+    const response = await axios.post(`${post}/post/delete/file?fileName=${encodeURIComponent(fileName)}`, null, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('File deletion failed:', error);
+    throw error;
+  }
+};
+
+// comment 읽어오기
+>>>>>>> develop
 export const fetchComments = async (postId) => {
     try {
         const response = await axios.get(`${server}/post/comment?postid=${postId}`);
@@ -128,7 +117,7 @@ export const fetchComments = async (postId) => {
     }
 };
 
-//comment 삭제
+// comment 삭제
 export const deleteComment = async (userid, commentid) => {
   try {
     const response = await axios.delete(`${server}/post/comment`, {
@@ -190,9 +179,14 @@ export const createComment = async (postid, userid, content) => {
   }
 };
 
+<<<<<<< HEAD
 
 // comment 좋아요
 export const toggleLikeComment = async (commentid, userid, up) => {
+=======
+// comment 좋아요
+export const toggleLikeComment = async (commentid, userid) => {
+>>>>>>> develop
   try {
     const response = await axios.patch(`${server}/post/comment/up`, null, {
       params: {
@@ -208,8 +202,12 @@ export const toggleLikeComment = async (commentid, userid, up) => {
   }
 };
 
+<<<<<<< HEAD
 
 //comment 채택
+=======
+// comment 채택
+>>>>>>> develop
 export const toggleTakeComment = async (commentid, userid, take) => {
   try {
       const response = await axios.patch(`${server}/post/comment/take`, null, {
@@ -226,6 +224,7 @@ export const toggleTakeComment = async (commentid, userid, take) => {
       throw error;
   }
 };
+<<<<<<< HEAD
 
 // 포스티잇 부분
 
@@ -314,11 +313,13 @@ export const movePostitSection = async (userId, postitId, section) => {
       throw error;
   }
 };
+=======
+>>>>>>> develop
 
 // 유저 프로필 수정
 export const userPofilePatchAPI = async(data) =>{
   try {
-    const userid =4; //디버그용
+    const userid = 1; // 디버그용
 
     const response = await axios.patch(`${server}/user/update?userid=${userid}`, data);
     return response;
@@ -331,7 +332,7 @@ export const userPofilePatchAPI = async(data) =>{
 // 유저 정보 전달
 export const userInfoGetAPI = async() =>{
   try {
-    const userid =4; //디버그용
+    const userid = 1; // 디버그용
 
     const response = await axios.get(`${server}/user/info?userid=${userid}`);
     return response;

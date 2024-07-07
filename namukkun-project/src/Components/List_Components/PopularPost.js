@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import sendbrave from '../../Assets/Img/sendbrave.svg';
@@ -7,21 +7,79 @@ import hoversendbrave from '../../Assets/Img/hoversendbrave.svg';
 import rightarrow from '../../Assets/Img/rightarrow.svg';
 import defaultwhite from '../../Assets/Img/defaultwhite.svg';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { loginTestState } from '../../Recoil/Atom';
+import LoginModal from '../Login_Components/LoginModal';
 
 function PopularPost() {
     const navigate = useNavigate();
     const [isClicked, setIsClicked] = useState(false);
-    const [activeButton, setActiveButton] = useState('진행중'); // 진행중이 기본값
-    const [sendBraveClicked, setSendBraveClicked] = useState([false, false, false, false]); // sendbravebutton 클릭 상태
+    //진행중/ 종료 필터 상태 관리 // 진행중이 기본값
+    const [activeButton, setActiveButton] = useState('진행중');
+    // sendbravebutton 클릭 상태
+    const [sendBraveClicked, setSendBraveClicked] = useState([false, false, false, false]); 
+
+    //로그인 테스트 상태 -추후 서버랑 연결해야함.
+    const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
+    const [showModal, setShowModal] = useState(false);
+
+    //인기글 포스트 
+    const [popularData, setPopularData] = useState([]);
+
+    // 더미 데이터 생성 -추후 서버연결 후 제거 예정
+    const dummyData = [
+        {
+        postImage: defaultwhite,
+        title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요.",
+        author: "김**님",
+        endDate: "D-7"
+        },
+        {
+        postImage: defaultwhite,
+        title: "학교에 자전거 보관소 설치를 요청합니다.",
+        author: "이**님",
+        endDate: "D-10"
+        },
+        {
+        postImage: defaultwhite,
+        title: "도서관에 신간 도서 추가를 부탁드립니다.",
+        author: "박**님",
+        endDate: "D-5"
+        },
+        {
+        postImage: defaultwhite,
+        title: "공원에 더 많은 벤치를 설치해 주세요.",
+        author: "최**님",
+        endDate: "D-15"
+        },
+        {
+        postImage: defaultwhite,
+        title: "지역 주민을 위한 헬스장 건립을 건의합니다.",
+        author: "정**님",
+        endDate: "D-20"
+        }
+    ];
+  
+    useEffect(() => {
+      // 더미 데이터를 상태에 설정 -추후 서버 연결 후 수정 예정
+      setPopularData(dummyData);
+      //버튼 상태 설정
+      setSendBraveClicked(new Array(dummyData.length).fill(false));
+    }, []);
 
     const handleButtonClick = (button) => {
         setActiveButton(button);
     };
 
     const handleSendBraveClick = (index) => {
+        if(isLogin){
         const newSendBraveClicked = [...sendBraveClicked];
         newSendBraveClicked[index] = !newSendBraveClicked[index];
         setSendBraveClicked(newSendBraveClicked);
+        }
+        else{
+            setShowModal(true)
+        }
     };
 
     const truncateText = (text, maxLength) => {
@@ -33,14 +91,14 @@ function PopularPost() {
 
     const goToListall = () =>{
         navigate('/listall');
-    }
+    };
 
     return (
         <Container>
             <GlobalStyle />
             <GreatContentContainer>
                 <IntroContainer>
-                    <MainTitle>가장 인기있는{' '}<MainTitle $color='#005AFF'>한마디 💬 </MainTitle></MainTitle>
+                    <MainTitle>우리 지역의 가장 인기있는{' '}<MainTitle $color='#005AFF'>한마디 💬 </MainTitle></MainTitle>
                     <SubTitle>의견만 있다면, 어느 지역이든 한마디 남겨주세요!</SubTitle>
                 </IntroContainer>
 
@@ -61,103 +119,35 @@ function PopularPost() {
                     </StatBtuContainer>
                     <AllButton onClick={goToListall}>전체글 보러가기<img src={rightarrow} style={{ width: '6px', height: '12px' }} /></AllButton>
                 </StatusBar>
-                <ContentImageContainer>
-                    <ImageContainer>
-                        <img src={defaultwhite} alt="content image" style={{ width: '209px', height: '134px' }} />
-                        <ContentTextContainer>
-                            <ContentTitleText>
-                                {truncateText("포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요.", 52)}
-                            </ContentTitleText>
-                            <DetailContainer>
-                                <DetailText>작성자</DetailText>
-                                <DetailText $color="#5A5A5A">김**님</DetailText>
-                            </DetailContainer>
-                            <DetailContainer>
-                                <DetailText>종료일</DetailText>
-                                <DetailText $color="#5A5A5A">D-7</DetailText>
-                            </DetailContainer>
-                        </ContentTextContainer>
-                    </ImageContainer>
-                    <SendBraveButton
-                        onClick={() => handleSendBraveClick(0)}
-                        isClicked={sendBraveClicked[0]}
-                    >
-                        <img src={sendBraveClicked[0] ? onclicksendbrave : sendbrave} alt="send brave" />
-                    </SendBraveButton>
+
+            {popularData.slice(0, 4).map((item, index) => (
+                <ContentImageContainer key={index}>
+                <ImageContainer>
+                    <img src={item.postImage} alt="content image" style={{ width: '209px', height: '134px' }} />
+                    <ContentTextContainer>
+                    <ContentTitleText>
+                        {truncateText(item.title, 52)}
+                    </ContentTitleText>
+                    <DetailContainer>
+                        <DetailText>작성자</DetailText>
+                        <DetailText $color="#5A5A5A">{item.author}</DetailText>
+                    </DetailContainer>
+                    <DetailContainer>
+                        <DetailText>종료일</DetailText>
+                        <DetailText $color="#5A5A5A">{item.endDate}</DetailText>
+                    </DetailContainer>
+                    </ContentTextContainer>
+                </ImageContainer>
+                <SendBraveButton
+                    onClick={() => handleSendBraveClick(index)}
+                    isClicked={sendBraveClicked[index]}
+                >
+                    <img src={sendBraveClicked[index] ? onclicksendbrave : sendbrave} alt="send brave" />
+                </SendBraveButton>
                 </ContentImageContainer>
-                <ContentImageContainer>
-                    <ImageContainer>
-                        <img src={defaultwhite} alt="content image" style={{ width: '209px', height: '134px' }} />
-                        <ContentTextContainer>
-                            <ContentTitleText>
-                                {truncateText("포항시 버스정류장에 공유", 52)}
-                            </ContentTitleText>
-                            <DetailContainer>
-                                <DetailText>작성자</DetailText>
-                                <DetailText $color="#5A5A5A">박**님</DetailText>
-                            </DetailContainer>
-                            <DetailContainer>
-                                <DetailText>종료일</DetailText>
-                                <DetailText $color="#5A5A5A">D-6</DetailText>
-                            </DetailContainer>
-                        </ContentTextContainer>
-                    </ImageContainer>
-                    <SendBraveButton
-                        onClick={() => handleSendBraveClick(1)}
-                        isClicked={sendBraveClicked[1]}
-                    >
-                        <img src={sendBraveClicked[1] ? onclicksendbrave : sendbrave} alt="send brave" />
-                    </SendBraveButton>
-                </ContentImageContainer>
-                <ContentImageContainer>
-                    <ImageContainer>
-                        <img src={defaultwhite} alt="content image" style={{ width: '209px', height: '134px' }} />
-                        <ContentTextContainer>
-                            <ContentTitleText>
-                                {truncateText("포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요.그렇게 생각하고 싶지 않지만 많아요", 52)}
-                            </ContentTitleText>
-                            <DetailContainer>
-                                <DetailText>작성자</DetailText>
-                                <DetailText $color="#5A5A5A">박**님</DetailText>
-                            </DetailContainer>
-                            <DetailContainer>
-                                <DetailText>종료일</DetailText>
-                                <DetailText $color="#5A5A5A">D-2</DetailText>
-                            </DetailContainer>
-                        </ContentTextContainer>
-                    </ImageContainer>
-                    <SendBraveButton
-                        onClick={() => handleSendBraveClick(2)}
-                        isClicked={sendBraveClicked[2]}
-                    >
-                        <img src={sendBraveClicked[2] ? onclicksendbrave : sendbrave} alt="send brave" />
-                    </SendBraveButton>
-                </ContentImageContainer>
-                <ContentImageContainer>
-                    <ImageContainer>
-                        <img src={defaultwhite} alt="content image" style={{ width: '209px', height: '134px' }} />
-                        <ContentTextContainer>
-                            <ContentTitleText>
-                                {truncateText("포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요.그렇게 생각하고 싶지 않지만 많아요", 52)}
-                            </ContentTitleText>
-                            <DetailContainer>
-                                <DetailText>작성자</DetailText>
-                                <DetailText $color="#5A5A5A">박**님</DetailText>
-                            </DetailContainer>
-                            <DetailContainer>
-                                <DetailText>종료일</DetailText>
-                                <DetailText $color="#5A5A5A">D-2</DetailText>
-                            </DetailContainer>
-                        </ContentTextContainer>
-                    </ImageContainer>
-                    <SendBraveButton
-                        onClick={() => handleSendBraveClick(3)}
-                        isClicked={sendBraveClicked[3]}
-                    >
-                        <img src={sendBraveClicked[3] ? onclicksendbrave : sendbrave} alt="send brave" />
-                    </SendBraveButton>
-                </ContentImageContainer>
+            ))}
             </GreatContentContainer>
+            <LoginModal show={showModal} onClose={() => setShowModal(false)} />
         </Container>
     );
 }
@@ -172,6 +162,7 @@ const Container = styled.div`
     align-items: center;
     background: transparent;
     position: relative;
+    margin-top: 70px;
 `;
 
 const GreatContentContainer = styled.div`
@@ -200,7 +191,8 @@ const MainTitle = styled.span`
     font-style: normal;
     font-weight: 700;
     line-height: 30px; /* 83.333% */
-    padding-bottom: 17px;
+    padding-bottom: 10px;
+    white-space: nowrap;
 `;
 
 const SubTitle = styled.div`
@@ -283,13 +275,14 @@ const StatusBar = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    margin-top: -30px;
 `;
 
 const StatusButton = styled.button`
     width: 85px;
     height: 36.5px;
     font-size: 22px;
-    font-weight: 400;
+    font-weight: 600;
     padding-bottom: 20.5px;
     border: none;
     font-family: 'Min Sans';
