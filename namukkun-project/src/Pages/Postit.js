@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import Draggable from 'react-draggable';
-import Header from "../Components/Layout_Components/Header";
 import DetailContent from "../Components/Postit_Components/DetailContent";
 import sendcomment from '../Assets/Img/sendcomment.svg';
 import commentlike from '../Assets/Img/commentlike.svg';
@@ -14,7 +13,7 @@ import bluebackground from '../Assets/Img/bluebackground.svg';
 import yellowbackground from '../Assets/Img/yellowbackground.svg';
 import brownbackground from '../Assets/Img/brownbackground.svg';
 import aftertaken from '../Assets/Img/aftertaken.svg';
-import { fetchComments, deleteComment, createComment, toggleLikeComment, toggleTakeComment } from '../API/AxiosAPI'; // Axios API 코드 임포트
+import { fetchComments, deleteComment, createComment, toggleLikeComment, toggleTakeComment, fetchPostits, createPostit, deletePostit, movePostit, movePostitSection } from '../API/AxiosAPI';
 
 const intToRegion = {
     0: '경산시',
@@ -34,68 +33,70 @@ function Postit() {
     const [newComment, setNewComment] = useState('');
     const [leftPostits, setLeftPostits] = useState([]);
     const [rightPostits, setRightPostits] = useState([]);
+    const [recentPostit, setRecentPostit] = useState(null);
     const commentInputRef = useRef(null);
     const leftPostitsRef = useRef(null);
     const rightPostitsRef = useRef(null);
-    const commentRefs = useRef([]); // 각 댓글에 대한 ref를 저장할 배열
+    const commentRefs = useRef([]);
     const [designIndex, setDesignIndex] = useState(0);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLimitModalOpen, setIsLimitModalOpen] = useState(false);
-    const [isTakeModalOpen, setIsTakeModalOpen] = useState(false); // 새로운 모달 상태 추가
+    const [isTakeModalOpen, setIsTakeModalOpen] = useState(false);
     const [postitToDelete, setPostitToDelete] = useState(null);
     const [commentToDelete, setCommentToDelete] = useState(null);
-    const [commentToTake, setCommentToTake] = useState(null); // 새로운 상태 추가
+    const [commentToTake, setCommentToTake] = useState(null);
     const [highestZIndex, setHighestZIndex] = useState(1000);
-    const userId = 4; // 실제 사용자 ID를 여기에 설정합니다.
+    const userId = 1;
 
     useEffect(() => {
-        const postId = 1; // 여기에 실제 postId를 넣어야 합니다.
-        const loadComments = async () => {
+        const loadCommentsAndPostits = async () => {
             try {
-                const commentsData = await fetchComments(postId, userId);
-                setComments(commentsData);
-                const initialZIndex = Math.max(...commentsData.map(comment => comment.zIndex)) + 1;
+                const [commentsData, postitsData] = await Promise.all([
+                    fetchComments(1), // postId를 1로 고정
+                    fetchPostits(1) // postId를 1로 고정
+                ]);
+
+                // 댓글을 commentId 내림차순으로 정렬하여 최신 댓글이 위로 오게 함
+                const sortedComments = commentsData.sort((a, b) => b.commentId - a.commentId);
+                setComments(sortedComments);
+
+                const sortedPostits = postitsData.sort((a, b) => a.z - b.z);
+                const initialZIndex = sortedPostits.length > 0 ? Math.max(...sortedPostits.map(postit => postit.z)) + 1 : 1000;
                 setHighestZIndex(initialZIndex);
 
-                setLeftPostits(commentsData.filter(comment => comment.section === 'left' && comment.isTaken));
-                setRightPostits(commentsData.filter(comment => comment.section === 'right' && comment.isTaken));
+                setLeftPostits(sortedPostits.filter(postit => postit.section === 'left'));
+                setRightPostits(sortedPostits.filter(postit => postit.section === 'right'));
             } catch (error) {
-                console.error('Error loading comments:', error);
+                console.error('Error loading comments and postits:', error);
             }
         };
 
-        loadComments();
-    }, []);
+        loadCommentsAndPostits();
+    }, [userId]);
 
-    const handleAddComment = async () => {
+    const addComment = async () => {
         if (newComment.trim()) {
-            const postId = 1; // 여기에 실제 postId를 넣어야 합니다.
             try {
-                const newCommentData = await createComment(postId, userId, newComment);
-                // 서버에서 받은 newCommentData를 수정해 상태 업데이트
-                const updatedNewComment = {
-                    id: newCommentData.id,
-                    name: "사용자",
-                    region: 9,
-                    date: new Date().toLocaleString(),
-                    upCounter: 0,
-                    content: newComment, // 새로운 댓글 내용을 직접 설정
-                    position: { x: 0, y: 0 },
-                    design: designIndex,
-                    isTaken: false,
-                    zIndex: highestZIndex,
-                    section: "left",
-                    liked: false // 초기 liked 상태를 false로 설정
-                };
-                setComments([...comments, updatedNewComment]);
-                setNewComment('');
-                setDesignIndex((designIndex + 1) % 3);
-                setHighestZIndex(highestZIndex + 1);
-                // 새로운 포스티잇이 추가된 위치로 스크롤 이동
-                if (updatedNewComment.section === "left") {
-                    leftPostitsRef.current.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                    rightPostitsRef.current.scrollIntoView({ behavior: 'smooth' });
+                const newCommentData = await createComment(1, userId, newComment); // postId를 1로 고정
+                if (newCommentData && newCommentData.commentId) {
+                    const updatedNewComment = {
+                        id: newCommentData.commentId,
+                        name: "사용자",
+                        region: 9,
+                        date: new Date().toLocaleString(),
+                        upCounter: 0,
+                        content: newComment,
+                        position: { x: 0, y: 0 },
+                        design: designIndex,
+                        isTaken: false,
+                        zIndex: highestZIndex,
+                        section: "right",
+                        liked: false
+                    };
+                    setComments([updatedNewComment, ...comments]); // 최신 댓글을 가장 위에 추가
+                    setNewComment('');
+                    setDesignIndex((designIndex + 1) % 3);
+                    setHighestZIndex(highestZIndex + 1);
                 }
             } catch (error) {
                 console.error('Error adding comment:', error);
@@ -110,16 +111,12 @@ function Postit() {
 
     const handleUp = async (index) => {
         const commentId = comments[index].id;
+        const newLikedStatus = !comments[index].liked;
         try {
-            await toggleLikeComment(commentId, userId);
-            const updatedComments = [...comments];
-            if (updatedComments[index].liked) {
-                updatedComments[index].upCounter -= 1;
-                updatedComments[index].liked = false;
-            } else {
-                updatedComments[index].upCounter += 1;
-                updatedComments[index].liked = true;
-            }
+            await toggleLikeComment(commentId, userId, newLikedStatus);
+            const updatedComments = comments.map(comment => 
+                comment.id === commentId ? { ...comment, liked: newLikedStatus } : comment
+            );
             setComments(updatedComments);
         } catch (error) {
             console.error('Error toggling like comment:', error);
@@ -133,6 +130,15 @@ function Postit() {
         }
     }, [newComment]);
 
+    useEffect(() => {
+        if (recentPostit) {
+            const postitElement = document.getElementById(recentPostit.id);
+            if (postitElement) {
+                postitElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    }, [recentPostit]);
+
     const handleTakeButtonClick = (comment) => {
         setCommentToTake(comment);
         setIsTakeModalOpen(true);
@@ -142,48 +148,98 @@ function Postit() {
         const comment = commentToTake;
         setIsTakeModalOpen(false);
 
+        if (comment.isTaken) {
+            const postitToRemove = [...leftPostits, ...rightPostits].find(postit => postit.commentId === comment.id);
+            if (postitToRemove) {
+                await deletePostit(userId, postitToRemove.postItId);
+                setLeftPostits(leftPostits.filter(postit => postit.postItId !== postitToRemove.postItId));
+                setRightPostits(rightPostits.filter(postit => postit.postItId !== postitToRemove.postItId));
+            }
+        } else {
+            const designIndex = Math.floor(Math.random() * 3); // 0부터 2까지의 랜덤 숫자 생성
+            const newPostit = {
+                userId: userId,
+                commentId: comment.id,
+                design: designIndex,
+                section: "right",
+                x: 0,
+                y: 0,
+                z: highestZIndex,
+                postId: 1 // postId를 1로 고정
+            };
+
+            console.log('New postit data:', newPostit);
+
+            try {
+                const createdPostit = await createPostit(newPostit, userId);
+
+                if (createdPostit.postItId === null) {
+                    setIsLimitModalOpen(true);
+                    return;
+                }
+
+                const updatedNewPostit = {
+                    ...comment,
+                    design: designIndex,
+                    isTaken: true,
+                    zIndex: highestZIndex,
+                    postItId: createdPostit.postItId,
+                    x: newPostit.x,
+                    y: newPostit.y,
+                    z: newPostit.z,
+                    postId: newPostit.postId,
+                    commentId: newPostit.commentId
+                };
+
+                console.log('Newly created postit:', updatedNewPostit);
+
+                if (updatedNewPostit.section === "left") {
+                    setLeftPostits([...leftPostits, updatedNewPostit]);
+                    if (leftPostitsRef.current) {
+                        leftPostitsRef.current.scrollIntoView({ behavior: 'smooth' });
+                    }
+                } else {
+                    setRightPostits([...rightPostits, updatedNewPostit]);
+                    if (rightPostitsRef.current) {
+                        rightPostitsRef.current.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+                setRecentPostit(updatedNewPostit);
+                setHighestZIndex(highestZIndex + 1);
+            } catch (error) {
+                console.error('Error creating postit:', error);
+            }
+        }
+
         try {
             await toggleTakeComment(comment.id, userId, !comment.isTaken);
-            const updatedComments = comments.map((c) => 
+            const updatedComments = comments.map(c => 
                 c.id === comment.id ? { ...c, isTaken: !c.isTaken } : c
             );
-
             setComments(updatedComments);
-
-            if (comment.isTaken) {
-                // 포스티잇 삭제
-                setLeftPostits(leftPostits.filter(postit => postit.id !== comment.id));
-                setRightPostits(rightPostits.filter(postit => postit.id !== comment.id));
-            } else {
-                // 포스티잇 추가
-                const newPostit = { ...comment, design: designIndex, isTaken: true, zIndex: highestZIndex };
-                if (newPostit.section === "left") {
-                    setLeftPostits([...leftPostits, newPostit]);
-                    leftPostitsRef.current.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                    setRightPostits([...rightPostits, newPostit]);
-                    rightPostitsRef.current.scrollIntoView({ behavior: 'smooth' });
-                }
-                setDesignIndex((designIndex + 1) % 3);
-                setHighestZIndex(highestZIndex + 1);
-            }
         } catch (error) {
             console.error('Error toggling take comment:', error);
         }
     };
 
-    const movePostit = (id, fromLeftToRight) => {
-        if (fromLeftToRight) {
-            const postitToMove = leftPostits.find(postit => postit.id === id);
-            if (postitToMove) {
-                setLeftPostits(leftPostits.filter(postit => postit.id !== id));
-                setRightPostits([...rightPostits, { ...postitToMove, section: "right" }]);
-            }
-        } else {
-            const postitToMove = rightPostits.find(postit => postit.id === id);
-            if (postitToMove) {
-                setRightPostits(rightPostits.filter(postit => postit.id !== id));
-                setLeftPostits([...leftPostits, { ...postitToMove, section: "left" }]);
+    const movePostitSectionHandler = async (id, fromLeftToRight) => {
+        const postitToMove = fromLeftToRight
+            ? leftPostits.find(postit => postit.postItId === id)
+            : rightPostits.find(postit => postit.postItId === id);
+
+        if (postitToMove) {
+            const newSection = fromLeftToRight ? 'right' : 'left';
+            try {
+                await movePostitSection(userId, postitToMove.postItId, newSection);
+                if (fromLeftToRight) {
+                    setLeftPostits(leftPostits.filter(postit => postit.postItId !== id));
+                    setRightPostits([...rightPostits, { ...postitToMove, section: newSection }]);
+                } else {
+                    setRightPostits(rightPostits.filter(postit => postit.postItId !== id));
+                    setLeftPostits([...leftPostits, { ...postitToMove, section: newSection }]);
+                }
+            } catch (error) {
+                console.error('Error moving postit section:', error);
             }
         }
     };
@@ -203,26 +259,55 @@ function Postit() {
         setIsLimitModalOpen(false);
     };
 
-    const confirmDeletePostit = () => {
+    const confirmDeletePostit = async () => {
         if (postitToDelete) {
-            setLeftPostits(leftPostits.filter(postit => postit.id !== postitToDelete.id));
-            setRightPostits(rightPostits.filter(postit => postit.id !== postitToDelete.id));
+            try {
+                console.log('Deleting postit:', postitToDelete);
+                await deletePostit(userId, postitToDelete.postItId);
 
-            setComments(comments.map(comment => 
-                comment.id === postitToDelete.id ? { ...comment, isTaken: false, section: "left" } : comment
-            ));
+                setLeftPostits(leftPostits.filter(postit => postit.postItId !== postitToDelete.postItId));
+                setRightPostits(rightPostits.filter(postit => postit.postItId !== postitToDelete.postItId));
+
+                setComments(comments.map(comment => 
+                    comment.id === postitToDelete.commentId ? { ...comment, isTaken: false } : comment
+                ));
+                await toggleTakeComment(postitToDelete.commentId, userId, false);
+                closeDeleteModal();
+            } catch (error) {
+                console.error('Error deleting postit:', error);
+            }
         }
-        closeDeleteModal();
     };
 
-    const bringToFront = (id) => {
-        setLeftPostits(leftPostits.map(postit => 
-            postit.id === id ? { ...postit, zIndex: highestZIndex } : postit
-        ));
-        setRightPostits(rightPostits.map(postit => 
-            postit.id === id ? { ...postit, zIndex: highestZIndex } : postit
-        ));
-        setHighestZIndex(highestZIndex + 1);
+    const bringToFront = async (id) => {
+        const postitToFront = [...leftPostits, ...rightPostits].find(postit => postit.postItId === id);
+
+        if (postitToFront) {
+            const newZIndex = highestZIndex + 1;
+            postitToFront.z = newZIndex;
+            setHighestZIndex(newZIndex);
+
+            try {
+                await movePostit(postitToFront.userId, {
+                    postItId: postitToFront.postItId,
+                    postId: 1, // postId를 1로 고정
+                    commentId: postitToFront.commentId,
+                    userId: postitToFront.userId,
+                    x: postitToFront.x,
+                    y: postitToFront.y,
+                    z: newZIndex
+                });
+
+                setLeftPostits(leftPostits.map(postit => 
+                    postit.postItId === id ? { ...postit, z: newZIndex } : postit
+                ));
+                setRightPostits(rightPostits.map(postit => 
+                    postit.postItId === id ? { ...postit, z: newZIndex } : postit
+                ));
+            } catch (error) {
+                console.error('Error bringing postit to front:', error);
+            }
+        }
     };
 
     const handleCommentDelete = (userid, commentid) => {
@@ -234,7 +319,10 @@ function Postit() {
         if (commentToDelete) {
             try {
                 await deleteComment(commentToDelete.userid, commentToDelete.commentid);
-                setComments(comments.filter(comment => comment.id !== commentToDelete.commentid));
+                const updatedComments = comments.filter(comment => comment.id !== commentToDelete.commentid);
+                setComments(updatedComments);
+                setLeftPostits(updatedComments.filter(comment => comment.section === 'left' && comment.isTaken));
+                setRightPostits(updatedComments.filter(comment => comment.section === 'right' && comment.isTaken));
                 setCommentToDelete(null);
                 closeDeleteModal();
             } catch (error) {
@@ -257,12 +345,13 @@ function Postit() {
                     <PostitSection>
                         {leftPostits.map((postit) => (
                             <DraggablePostit
-                                key={postit.id}
+                                key={postit.postItId}
                                 postit={postit}
-                                onMove={() => movePostit(postit.id, true)}
+                                onMove={() => movePostitSectionHandler(postit.postItId, true)}
                                 onDelete={() => openDeleteModal(postit)}
-                                onStart={() => bringToFront(postit.id)}
-                                onScrollToComment={() => handleScrollToComment(comments.findIndex(comment => comment.id === postit.id))}
+                                onStart={() => bringToFront(postit.postItId)}
+                                onScrollToComment={() => handleScrollToComment(comments.findIndex(comment => comment.id === postit.commentId))}
+                                bringToFront={bringToFront}
                             />
                         ))}
                     </PostitSection>
@@ -279,7 +368,7 @@ function Postit() {
                             placeholder="작성한 댓글이 해당 글 작성자에 의해 채택될 경우, 삭제가 불가능하니 따뜻한 댓글 부탁해요!"
                             rows={1}
                         />
-                        <CommentButton onClick={handleAddComment}>
+                        <CommentButton onClick={addComment}>
                             <img src={sendcomment} alt='sendcomment' style={{ width: '40px', height: '40px' }} />
                         </CommentButton>
                     </CommentInputContainer>
@@ -329,12 +418,13 @@ function Postit() {
                     <PostitSection>
                         {rightPostits.map((postit) => (
                             <DraggablePostit
-                                key={postit.id}
+                                key={postit.postItId}
                                 postit={postit}
-                                onMove={() => movePostit(postit.id, false)}
+                                onMove={() => movePostitSectionHandler(postit.postItId, false)}
                                 onDelete={() => openDeleteModal(postit)}
-                                onStart={() => bringToFront(postit.id)}
-                                onScrollToComment={() => handleScrollToComment(comments.findIndex(comment => comment.id === postit.id))}
+                                onStart={() => bringToFront(postit.postItId)}
+                                onScrollToComment={() => handleScrollToComment(comments.findIndex(comment => comment.id === postit.commentId))}
+                                bringToFront={bringToFront}
                             />
                         ))}
                     </PostitSection>
@@ -349,7 +439,7 @@ function Postit() {
                         <ModalSubText>
                             {commentToDelete 
                                 ? "삭제된 댓글은 되돌릴 수 없어요."
-                                : <>채택이 해제된 댓글은 <br />댓글창에서 그대로 확인할 수 있어요."</>
+                                : <>채택이 해제된 댓글은<br/> 댓글창에서 그대로 확인할 수 있어요.</>
                             }
                         </ModalSubText>
                         <ModalButtonContainer>
@@ -382,8 +472,8 @@ function Postit() {
                         </ModalTitle>
                         <ModalSubText>
                             {commentToTake.isTaken 
-                                ? "채택이 해제된 댓글은 댓글창에서 그대로 확인할 수 있어요."
-                                : "채택이 해제된 댓글은 댓글창에서 그대로 확인할 수 있어요."
+                                ? <>채택이 해제된 댓글은<br/> 댓글창에서 그대로 확인할 수 있어요.</>
+                                : <>채택한 댓글은 포스티잇으로 만들어져요.<br/> 포스티잇을 자유롭게 움직여보세요!</>
                             }
                         </ModalSubText>
                         <ModalButtonContainer>
@@ -397,13 +487,39 @@ function Postit() {
     );
 }
 
-const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment }) => {
-    const [position, setPosition] = useState(postit.position);
+const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment, bringToFront }) => {
+    const [position, setPosition] = useState({ x: postit.x, y: postit.y });
 
-    const handleStop = (e, data) => {
+    const handleStop = async (e, data) => {
         const newPosition = { x: data.x, y: data.y };
         setPosition(newPosition);
         postit.position = newPosition;
+        postit.x = newPosition.x;
+        postit.y = newPosition.y;
+
+        console.log('Moving postit:', {
+            postItId: postit.postItId,
+            postId: 1,
+            commentId: postit.commentId,
+            userId: postit.userId,
+            x: newPosition.x,
+            y: newPosition.y,
+            z: postit.z
+        });
+
+        try {
+            await movePostit(postit.userId, {
+                postItId: postit.postItId,
+                postId: 1,
+                commentId: postit.commentId,
+                userId: postit.userId,
+                x: newPosition.x,
+                y: newPosition.y,
+                z: postit.z
+            });
+        } catch (error) {
+            console.error('Error moving postit:', error);
+        }
     };
 
     let PostitStyledContainer;
@@ -422,14 +538,19 @@ const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment 
             break;
     }
 
+    console.log("Rendering Postit:", postit);
+
     return (
         <Draggable
             bounds="parent"
             position={position}
-            onStart={onStart}
+            onStart={() => {
+                bringToFront(postit.postItId);
+                onStart();
+            }}
             onStop={handleStop}
         >
-            <PostitStyledContainer style={{ zIndex: postit.zIndex }}>
+            <PostitStyledContainer id={postit.postItId} style={{ zIndex: postit.z }}>
                 <AllPostitContainer>
                     <PostitWriteButtonContainer>
                         <PostitContent>
@@ -456,24 +577,23 @@ const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment 
 
 export default Postit;
 
-// 스타일 컴포넌트는 기존 코드 그대로 사용
-// 아래 생략된 코드에서는 기존에 제공된 스타일 컴포넌트를 사용하세요.
 
 const ScrollButton = styled.button`
+    color: var(--white-006, #E8E8E8);
+    font-family: "UhBeeJJIBBABBA";
     width: 109px;
-    font-family: 'UhBeeJJIBBABBA';
-    height: 24px;
-    flex-shrink: 0;
-    margin-left: 11px;
-    color: #ffffff;
+    height: 25px;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; /* 142.857% */
+    margin-left: 13px;
     border: none;
     cursor: pointer;
     border-radius: 25px;
     background: var(--Main-001, #005AFF);
     box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.10);
 `;
-
-
 
 // 전체 컨테이너 스타일
 const MainContainer = styled.div`
@@ -507,8 +627,10 @@ const PostitContainerBase = styled.div`
     position: absolute;
     cursor: move;
     z-index: 1000; // z-index 값을 1000으로 설정하여 모달보다 낮게 유지
+    background-color: #f0f0f0; /* 배경색 추가 */
 `;
 
+// 각 색상의 포스티잇 스타일
 const BlueContainer = styled(PostitContainerBase)`
     background: url(${bluebackground}) no-repeat center center;
     background-size: cover;
@@ -640,7 +762,6 @@ const CommentInput = styled.textarea`
     &::placeholder {
         font-family: "MinSans-Regular";
         color: #A0AEC9;
-        font-family: "Min Sans";
         font-size: 15px;
         font-style: normal;
         font-weight: 500;
