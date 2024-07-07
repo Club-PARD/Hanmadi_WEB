@@ -59,9 +59,10 @@ function MyPage() {
     //로그인이 됐을 때 유저 정보를 불러옴.
     if(isLogin){
       const response =getUserInfo();
-      console.log(isLogin,response.data);
+      console.log(isLogin, response.data);
     }
   },[isLogin]);
+
 
   return (
     <div>

@@ -8,7 +8,7 @@ import changeProfile from '../../Assets/Img/changeProfile.svg';
 import { userPofilePatchAPI } from '../../API/AxiosAPI';
 import { userinfo } from '../../Recoil/Atom';
 import { useRecoilState } from 'recoil';
-import { intToRegion } from '../SelectRegion_Components/IntToRegion';
+import { intToRegion, regionToInt } from '../SelectRegion_Components/IntToRegion';
 
 const RegionChangeModal = ({ isOpen, closeModal }) => {
   //기본적으로 보여줄 유저 데이터
@@ -19,11 +19,20 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
 
   //프로필 인풋값 입력 및 변경을 위함
   const [info, setInfo] =useState({
-    id : 4, //나중에 서버 연결 후 수정 필요
+    id : 1, //나중에 서버 연결 후 수정 필요
     nickName: userData.nickName,
-    local: intToRegion[userData.local],
+    local: selectedButton,
     profileImage : userData.profileImage
     });
+
+  useEffect(()=>{
+    setInfo({
+      ...info,
+      nickName: userData.nickName,
+      local: intToRegion[userData.local],
+      profileImage : userData.profileImage
+    })
+  },[userData])
 
   //지역 선택 버튼
   const handleButtonClick = (e, local) => {
@@ -78,7 +87,19 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
 
   //유저 데이터 수정하는 함수 
   const patchUserInfo = async () =>{
-    const response =await userPofilePatchAPI(info);
+    const data ={
+      id : 1, //나중에 서버 연결 후 수정 필요
+      nickName: userData.nickName,
+      local: regionToInt[selectedButton],
+      profileImage : userData.profileImage
+    }
+    const response =await userPofilePatchAPI(data);
+    setUserData({
+      ...userData,
+        nickName: info.nickName,
+        local: regionToInt[selectedButton],
+        profileImage : info.profileImage
+    })
     console.log(response);
   };
 

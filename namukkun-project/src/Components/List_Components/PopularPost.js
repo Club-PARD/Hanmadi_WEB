@@ -26,7 +26,7 @@ function PopularPost() {
     //인기글 포스트 
     const [popularData, setPopularData] = useState([]);
 
-    // 더미 데이터 생성
+    // 더미 데이터 생성 -추후 서버연결 후 제거 예정
     const dummyData = [
         {
         postImage: defaultwhite,
@@ -61,7 +61,7 @@ function PopularPost() {
     ];
   
     useEffect(() => {
-      // 더미 데이터를 상태에 설정
+      // 더미 데이터를 상태에 설정 -추후 서버 연결 후 수정 예정
       setPopularData(dummyData);
       //버튼 상태 설정
       setSendBraveClicked(new Array(dummyData.length).fill(false));
