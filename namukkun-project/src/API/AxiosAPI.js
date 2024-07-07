@@ -179,7 +179,7 @@ export const toggleTakeComment = async (commentid, userid, take) => {
 // 유저 프로필 수정
 export const userPofilePatchAPI = async(data) =>{
   try {
-    const userid =4; //디버그용
+    const userid =1; //디버그용
 
     const response = await axios.patch(`${server}/user/update?userid=${userid}`, data);
     return response;
@@ -192,7 +192,7 @@ export const userPofilePatchAPI = async(data) =>{
 // 유저 정보 전달
 export const userInfoGetAPI = async() =>{
   try {
-    const userid =4; //디버그용
+    const userid =1; //디버그용
 
     const response = await axios.get(`${server}/user/info?userid=${userid}`);
     return response;
