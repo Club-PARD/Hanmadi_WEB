@@ -5,23 +5,40 @@ import Cancel from '../../Assets/Img/Cancel.svg';
 import { useNavigate } from 'react-router-dom';
 import test1 from '../../Assets/Img/test1.png';
 import changeProfile from '../../Assets/Img/changeProfile.svg';
+import { userPofilePatchAPI } from '../../API/AxiosAPI';
+import { userinfo } from '../../Recoil/Atom';
+import { useRecoilState } from 'recoil';
+import { intToRegion, regionToInt } from '../SelectRegion_Components/IntToRegion';
 
 const RegionChangeModal = ({ isOpen, closeModal }) => {
-  const [selectedButton, setSelectedButton] = useState(null);
+  //기본적으로 보여줄 유저 데이터
+  const [userData, setUserData] = useRecoilState(userinfo);
+  const [selectedButton, setSelectedButton] = useState(intToRegion[userData.local]);
   // const navigate = useNavigate();
   const imageInput =useRef();
 
   //프로필 인풋값 입력 및 변경을 위함
   const [info, setInfo] =useState({
-    name: '김영채',
-    region: '포항시',
-    profileimg : test1
+    id : 1, //나중에 서버 연결 후 수정 필요
+    nickName: userData.nickName,
+    local: selectedButton,
+    profileImage : userData.profileImage
     });
 
-  const handleButtonClick = (e, region) => {
+  useEffect(()=>{
+    setInfo({
+      ...info,
+      nickName: userData.nickName,
+      local: intToRegion[userData.local],
+      profileImage : userData.profileImage
+    })
+  },[userData])
+
+  //지역 선택 버튼
+  const handleButtonClick = (e, local) => {
     e.stopPropagation();
     e.preventDefault()
-    setSelectedButton((prevSelected) => (prevSelected === region ? null : region));
+    setSelectedButton((prevSelected) => (prevSelected === local ? null : local));
   };
 
   //이벤트 핸들러 
@@ -29,7 +46,7 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
     e.stopPropagation();
     setInfo({
       ...info,
-      name: e.target.value
+      nickName: e.target.value
     });
   }
 
@@ -41,13 +58,13 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
       const imgURL = URL.createObjectURL(file);
       setInfo({
         ...info,
-        profileimg: imgURL
+        profileImage: imgURL
       })
     }
   }
 
+  //파일 입력을 위함
   const onClickBtn = (e) =>{
-
     e.preventDefault()
     imageInput.current.click();
   }
@@ -68,8 +85,27 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
     return null;
   }
 
+  //유저 데이터 수정하는 함수 
+  const patchUserInfo = async () =>{
+    const data ={
+      id : 1, //나중에 서버 연결 후 수정 필요
+      nickName: userData.nickName,
+      local: regionToInt[selectedButton],
+      profileImage : userData.profileImage
+    }
+    const response =await userPofilePatchAPI(data);
+    setUserData({
+      ...userData,
+        nickName: info.nickName,
+        local: regionToInt[selectedButton],
+        profileImage : info.profileImage
+    })
+    console.log(response);
+  };
+
   const profileEditChagne =(e)=>{
     e.preventDefault();
+    patchUserInfo(info);
     closeModal();
     console.log(info);
   }
@@ -85,21 +121,23 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
             <ProfileBtn onClick={(e)=>onClickBtn(e)}>
               <img src={changeProfile} alt='이미지 변경 아이콘'></img>
             </ProfileBtn>
-            <img src={info.profileimg} style={{ width: '140px', height: '140px', borderRadius:'50%' }} alt="profile" />
+            <img src={info.profileImage} 
+            style={{ width: '140px', height: '140px', borderRadius:'50%' }} 
+            alt="profile" />
             <input type="file" accept='.png' ref={imageInput}  name="profileimg" onChange={handleProfileimg}></input>
           </ImgDiv>
           <div style={{margin: "0px", padding: "0"}}> 
             <NameChagne>이름 변경하기</NameChagne>
-            <NameInput type='text' onChange={handleInputName} value={info.name}></NameInput>
+            <NameInput type='text' onChange={handleInputName} value={info.nickName}></NameInput>
             <RegionChagne>지역 변경하기</RegionChagne>
             <ButtonContainer>
-            {['경산시', '경주시', '구미시', '김천시', '문경시', '상주시', '안동시', '영주시', '영천시', '포항시'].map((region) => (
+            {['경산시', '경주시', '구미시', '김천시', '문경시', '상주시', '안동시', '영주시', '영천시', '포항시'].map((local) => (
               <LocalButton
-                key={region}
-                onClick={(e) => handleButtonClick(e, region)}
-                selected={selectedButton === region}
+                key={local}
+                onClick={(e) => handleButtonClick(e, local)}
+                selected={selectedButton === local}
               >
-                {region}
+                {local}
               </LocalButton>
             ))}
           </ButtonContainer>

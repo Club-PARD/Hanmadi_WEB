@@ -28,7 +28,7 @@ function Contents({ content, isClicked, onClick }) {
 
   return (
     <Div>
-      <PostImg src={Bigdefault} alt="content" /> {/* 이미지 placeholder */}
+      <PostImg src={content.postImage} alt="content" /> {/* 이미지 placeholder */}
       <ContentsDiv >
         <TitleDiv>{truncateText(content.title, 23)}</TitleDiv> 
         <KeyValueWrapper>

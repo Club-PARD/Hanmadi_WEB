@@ -9,6 +9,7 @@ import Heart from '../../Assets/Img/Heart.svg';
 
 const LoginModal = ({ show, onClose}) => {
 
+
   useEffect(() => {
     if(show) {
       document.body.style.overflow = 'hidden';

@@ -9,9 +9,10 @@ import GreatIdeaPage from "../Components/MainPage_Components/GreatIdeaPage";
 import onclickminilogo from '../Assets/Img/onclickminilogo.svg';
 import onclickpointer from '../Assets/Img/onclickpointer.svg';
 import { useRecoilState } from "recoil";
-import { loginTestState } from "../Recoil/Atom";
+import { loginTestState, userinfo } from "../Recoil/Atom";
 import { useNavigate } from 'react-router-dom';
 import LoginModal from "../Components/Login_Components/LoginModal";
+import { userInfoGetAPI } from "../API/AxiosAPI";
 
 function MainPage() {
   const [isHovered, setIsHovered] = useState(false);
@@ -20,6 +21,8 @@ function MainPage() {
   const [showModal, setShowModal] = useState(false);
   //로그인 테스트
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);
+  //유저 기본 정보 아톰에 저장
+  const [userData, setUserData] = useRecoilState(userinfo);
 
   const writingBtn = () =>{
     if(isLogin){
@@ -29,6 +32,27 @@ function MainPage() {
       setShowModal(true);
     }
   }
+
+  //유저 데이터 불러오는 함수 
+  const getUserInfo = async () =>{
+    const response =await userInfoGetAPI();
+    //아톰에 유저 정보 저장
+    setUserData({
+      ...userData,
+      nickName: response.data.nickName,
+      local: response.data.local,
+      profileImage: response.data.profileImage
+    })
+    console.log(response.data);
+  };
+
+  useEffect(()=>{
+    //로그인이 됐을 때 유저 정보를 불러옴.
+    if(isLogin){
+      const response =getUserInfo();
+      console.log(isLogin, response.data);
+    }
+  },[isLogin]);
 
   return (
     <div>

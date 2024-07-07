@@ -20,8 +20,33 @@ export const fileState = atom({
 });
 
 // 로그인 테스트 
-
 export const loginTestState = atom({
   key: 'loginTestState',
   default: false,
+});
+
+//서버에서 가져온 유저 정보 로컬스토리지에 저장
+export const userinfo = atom({
+  key : 'userinfo',
+  default:
+    {
+      nickName: "",
+      local: 0,
+      profileImage: ""
+    },
+
+  effects: [
+      ({setSelf, onSet}) => {
+          const saveSessionData =localStorage.getItem("userData");
+          if(saveSessionData){
+              setSelf(JSON.parse(saveSessionData));
+          }
+
+          onSet((newValue, _, isReset) =>{
+              isReset
+              ? localStorage.removeItem("userData")
+              : localStorage.setItem("userData", JSON.stringify(newValue));
+          })
+      }
+  ]
 });
