@@ -4,15 +4,20 @@ import React, { useState } from 'react';
 import ListBanner from "../../Assets/Img/ListBanner.svg";
 import { useRecoilState } from 'recoil';
 import { userinfo } from '../../Recoil/Atom';
-import { intToRegion } from '../SelectRegion_Components/IntToRegion';
+import { intToRegion, regionToInt } from '../SelectRegion_Components/IntToRegion';
+import { useNavigate } from 'react-router-dom';
 
 function ListSelectRegion() {
   //기본적으로 보여줄 유저 데이터
   const [userData, setUserData] = useRecoilState(userinfo);
   const [selectedButton, setSelectedButton] = useState(intToRegion[userData.local]); 
+  const navigate =useNavigate();
 
   const handleButtonClick = (region) => {
     setSelectedButton((prevSelected) => (prevSelected === region ? null : region));
+    if (region) {
+      navigate(`?localPageId=${regionToInt[region]}`);
+    }
   };
 
   return (
