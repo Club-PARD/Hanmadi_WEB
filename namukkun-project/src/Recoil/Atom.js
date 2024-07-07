@@ -32,7 +32,11 @@ export const userinfo = atom({
     {
       nickName: "",
       local: 0,
-      profileImage: ""
+      profileImage: "",
+      postUpList: [
+      ],
+      commentUpList: [
+      ]
     },
 
   effects: [

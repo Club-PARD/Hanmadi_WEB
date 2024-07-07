@@ -1,21 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Contents from "./Contents";
 import arrowleft from '../../Assets/Img/Arrowleft.svg';
 import arrowright from '../../Assets/Img/Arrowright.svg';
 import { useRecoilState } from "recoil";
-import { loginTestState, pagenation, stateListCategory } from "../../Recoil/Atom";
+import { loginTestState, pagenation, stateListCategory, userinfo } from "../../Recoil/Atom";
 import LoginModal from "../Login_Components/LoginModal";
 import Bigdefault from '../../Assets/Img/Bigdefault.svg';
+import { useLocation } from "react-router-dom";
+import { intToRegion } from "../SelectRegion_Components/IntToRegion";
+import { popularRegionPostGetAPI, recentRegionPostGetAPI } from "../../API/AxiosAPI";
 
 function ShowList() {
   // 필터 버튼 값 설정 [추천/최신]
   const [filter, setFilter] = useState('recent');
   const [currentPage, setCurrentPage] =useRecoilState(pagenation);
+  //선택한 지역별 상태 확인
+  const location = useLocation();
+  const gerPathRegion =location.search;
+  //기본적으로 보여줄 유저 데이터
+  const [userData, setUserData] = useRecoilState(userinfo);
+
+  console.log("Path 위치",location.search);
 
    //로그인 테스트 상태 -추후 서버랑 연결해야함.
    const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
    const [showModal, setShowModal] = useState(false);
+
+   //포스트 데이터 저장
+  const [getpostData, setGetPostData] = useState([]);
 
   //전체글에 대한 추천/최신 필터 버튼
   const onClickFilterBtn = (filterValue) => {
@@ -38,26 +51,34 @@ function ShowList() {
     }
   };
 
-  // 컨텐츠 데이터 배열 - 임시 데이터
-  const contents = [
-    { postImage: Bigdefault,title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    {  postImage: Bigdefault, title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" }
-  ];
+  //지역별 최신순
+  const getPostsListallrecent = async(gerPathRegion) =>{
+    const response = await recentRegionPostGetAPI(gerPathRegion);
+    setGetPostData(response.data);
+    console.log(response.data);
+  }
+
+  //지역별 인기순
+  const getPostsListallPopular = async(gerPathRegion) =>{
+    const response = await popularRegionPostGetAPI(gerPathRegion);
+    setGetPostData(response.data);
+    console.log(response.data);
+  }
+
+  useEffect(()=>{
+    if (filter ==='recent'){
+      console.log("최신");
+      getPostsListallrecent(gerPathRegion);
+    }
+    else{
+      console.log("인기");
+      getPostsListallPopular(gerPathRegion);
+    }
+  },[gerPathRegion, filter]);
 
   const itemsPerPage = 6; //한 페이지당 보여지는 컨텐츠 갯수
   //총 페이지 갯수
-  const totalPages = Math.ceil(contents.length / itemsPerPage);
+  const totalPages = Math.ceil(getpostData.length / itemsPerPage);
 
    // 페이지 변경 핸들러
   const handleChangePage = (newPage) => {
@@ -65,7 +86,7 @@ function ShowList() {
   };
 
    // 현재 페이지에 해당하는 콘텐츠 배열
-  const paginatedContents = contents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const paginatedContents = getpostData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <Div>

@@ -201,3 +201,25 @@ export const userInfoGetAPI = async() =>{
     throw err ;
   }
 }
+
+// 선택된 지역 게시물 중 최신순으로 나열 
+export const recentRegionPostGetAPI =async (gerPathRegion) =>{
+  try{
+    const response = await axios.get(`${server}/post/read/by-local${gerPathRegion}`);
+    return response;
+  } 
+  catch(err){
+    console.error(err);
+  }
+}
+
+// 선택된 지역 게시물 중 인기순으로 나열 
+export const popularRegionPostGetAPI =async (gerPathRegion) =>{
+  try{
+    const response = await axios.get(`${server}/post/read/by-local/by-up-count${gerPathRegion}`);
+    return response;
+  }
+  catch(err){
+    console.error(err);
+  }
+}

@@ -41,7 +41,9 @@ function MainPage() {
       ...userData,
       nickName: response.data.nickName,
       local: response.data.local,
-      profileImage: response.data.profileImage
+      profileImage: response.data.profileImage,
+      postUpList: response.data.postUpList,
+      commentUpList: response.data.commentUpList
     })
     console.log(response.data);
   };

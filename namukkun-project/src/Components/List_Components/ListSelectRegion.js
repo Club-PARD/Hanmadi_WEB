@@ -1,24 +1,38 @@
 import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ListBanner from "../../Assets/Img/ListBanner.svg";
 import { useRecoilState } from 'recoil';
-import { userinfo } from '../../Recoil/Atom';
+import { loginTestState, userinfo } from '../../Recoil/Atom';
 import { intToRegion, regionToInt } from '../SelectRegion_Components/IntToRegion';
 import { useNavigate } from 'react-router-dom';
 
 function ListSelectRegion() {
   //기본적으로 보여줄 유저 데이터
   const [userData, setUserData] = useRecoilState(userinfo);
-  const [selectedButton, setSelectedButton] = useState(intToRegion[userData.local]); 
+  //로그인 테스트 상태 -추후 서버랑 연결해야함.
+  const [isLogin, setIsLogin] = useRecoilState(loginTestState); 
+  //로그인 했을 때 안 했을 때 디폴트 로그인상태 변화
+  const defaultRegion = isLogin? intToRegion[userData.local]: intToRegion[0]
+  const [selectedButton, setSelectedButton] = useState(defaultRegion); 
   const navigate =useNavigate();
 
   const handleButtonClick = (region) => {
-    setSelectedButton((prevSelected) => (prevSelected === region ? null : region));
+    setSelectedButton((prevSelected) => (prevSelected === region ? prevSelected : region));
     if (region) {
       navigate(`?localPageId=${regionToInt[region]}`);
     }
   };
+
+  useEffect(()=>{
+    //로그인 했을 때 안 했을 때 디폴트 로그인상태 변화
+    const defaultRegion = isLogin? intToRegion[userData.local]: intToRegion[0]
+    
+    setSelectedButton(defaultRegion);
+
+    navigate(`?localPageId=${regionToInt[defaultRegion]}`);
+
+  },[isLogin])
 
   return (
     <Container>
