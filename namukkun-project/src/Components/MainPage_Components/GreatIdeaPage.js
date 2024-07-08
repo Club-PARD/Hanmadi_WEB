@@ -6,10 +6,12 @@ import bottomwd from '../../Assets/Img/bottomwd.svg';
 import bottomimg from '../../Assets/Img/bottomimg.svg';
 import { useEffect, useState } from 'react';
 import { allPostsGetAPI } from '../../API/AxiosAPI';
+import { useNavigate } from 'react-router-dom';
 
 function GreatIdeaPage() {
 
     const [allPosts, setAllPosts] =useState([]);
+    const navigate = useNavigate();
 
     const allPostsFunc = async () =>{
         const response = await allPostsGetAPI();
@@ -46,6 +48,10 @@ function GreatIdeaPage() {
         return defaultblue;
     };
 
+    //상세페이지로 이동
+    const navigateToPost = (postId) => {
+        navigate(`/postit/${postId}`);
+    };
 
 
     return (
@@ -63,7 +69,7 @@ function GreatIdeaPage() {
                 {allPosts.slice(0, 2).map((content, index) => (
                     <ContentImageContainer key={index}>
                     <ContentTextContainer>
-                        <ContentTitleText>{truncateText(content.title,25)}</ContentTitleText>
+                        <ContentTitleText onClick={()=>navigateToPost(content.postId)}>{truncateText(content.title,25)}</ContentTitleText>
                         <DetailContainer>
                         <DetailText>작성자</DetailText>
                         <DetailText $color="#5A5A5A">{content.userName}</DetailText>
