@@ -223,17 +223,15 @@ function Postit() {
 
                 if (updatedNewPostit.section === "left") {
                     setLeftPostits([...leftPostits, updatedNewPostit]);
-                    if (leftPostitsRef.current) {
-                        leftPostitsRef.current.scrollIntoView({ behavior: 'smooth' });
-                    }
                 } else {
                     setRightPostits([...rightPostits, updatedNewPostit]);
-                    if (rightPostitsRef.current) {
-                        rightPostitsRef.current.scrollIntoView({ behavior: 'smooth' });
-                    }
                 }
+
                 setRecentPostit(updatedNewPostit);
                 setHighestZIndex(highestZIndex + 1);
+
+                // 스크롤을 화면 상단으로 이동
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (error) {
                 console.error('Error creating postit:', error);
             }
