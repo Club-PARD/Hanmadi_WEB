@@ -60,3 +60,10 @@ export const postLikeBtn = atom({
   key: 'postLikeBtn',
   default: {},
 });
+
+
+//인기글 포스트 get
+export const getPopularRegion = atom({
+  key: 'getPopularRegion',
+  default: [],
+});

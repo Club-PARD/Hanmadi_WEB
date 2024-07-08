@@ -55,8 +55,7 @@ function Header() {
     //제안 게시판
     if(menu==='board'){
     navigate('/listall');
-    recentRegionPostGetAPI('?localPageId=0');
-
+    recentRegionPostGetAPI('?localPageId=' + userData.local);
     }
     //사이트 소개
     else if (menu ==='about'){

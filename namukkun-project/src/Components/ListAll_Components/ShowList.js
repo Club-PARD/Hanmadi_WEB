@@ -4,7 +4,7 @@ import Contents from "./Contents";
 import arrowleft from '../../Assets/Img/Arrowleft.svg';
 import arrowright from '../../Assets/Img/Arrowright.svg';
 import { useRecoilState } from "recoil";
-import { loginTestState, pagenation, postLikeBtn, userinfo } from "../../Recoil/Atom";
+import { getPopularRegion, loginTestState, pagenation, postLikeBtn, userinfo } from "../../Recoil/Atom";
 import LoginModal from "../Login_Components/LoginModal";
 import { useLocation } from "react-router-dom";
 import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
@@ -26,6 +26,8 @@ function ShowList() {
 
   // 포스트 데이터 저장
   const [getpostData, setGetPostData] = useState([]);
+
+  const [PopularData, setPopularData] = useRecoilState(getPopularRegion);
 
   // 전체 글에 대한 추천/최신 필터 버튼
   const onClickFilterBtn = (filterValue) => {
@@ -67,6 +69,12 @@ function ShowList() {
         } else {
           response = await checkPostDecrease(content.postId); // 좋아요 감소 API 호출
         }
+      
+      // 유저 데이터 업데이트
+      setUserData({
+        ...userData,
+        postUpList: response.upList
+      });
 
       // postId에 해당하는 포스트의 upCount 추출
       const upcount = response.find(post => post.postId === postId)?.postUpCount;
@@ -82,13 +90,8 @@ function ShowList() {
         return post;
       });
   
-        setGetPostData(updatedPostData);
+      setGetPostData(updatedPostData);
   
-        // 유저 데이터 업데이트
-        setUserData({
-          ...userData,
-          postUpList: response.upList
-        });
       } catch (error) {
         console.error("Error updating post:", error);
       }
@@ -130,6 +133,7 @@ function ShowList() {
   const getPostsListallPopular = async (gerPathRegion) => {
     const response = await popularRegionPostGetAPI(gerPathRegion);
     setGetPostData(response.data);
+    setPopularData(response.data);
     console.log(response.data);
   }
 

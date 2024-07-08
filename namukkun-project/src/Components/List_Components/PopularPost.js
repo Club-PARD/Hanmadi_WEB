@@ -6,10 +6,11 @@ import onclicksendbrave from '../../Assets/Img/onclicksendbrave.svg';
 import hoversendbrave from '../../Assets/Img/hoversendbrave.svg';
 import rightarrow from '../../Assets/Img/rightarrow.svg';
 import defaultwhite from '../../Assets/Img/defaultwhite.svg';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { loginTestState } from '../../Recoil/Atom';
+import { getPopularRegion, loginTestState } from '../../Recoil/Atom';
 import LoginModal from '../Login_Components/LoginModal';
+import { popularRegionPostGetAPI } from '../../API/AxiosAPI';
 
 function PopularPost() {
     const navigate = useNavigate();
@@ -19,56 +20,55 @@ function PopularPost() {
     // sendbravebutton 클릭 상태
     const [sendBraveClicked, setSendBraveClicked] = useState([false, false, false, false]); 
 
+    const [PopData, setPopData] = useRecoilState(getPopularRegion);
+
     //로그인 테스트 상태 -추후 서버랑 연결해야함.
     const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
     const [showModal, setShowModal] = useState(false);
 
-    //인기글 포스트 
-    const [popularData, setPopularData] = useState([]);
+    //인기글 전체 포스트 
+    const [popularData, setPopularData] = useState(PopData);
+    //인기글 필터링 포스트
+    const [popularFilterData, setPopularFilterData] = useState([]);
 
-    // 더미 데이터 생성 -추후 서버연결 후 제거 예정
-    const dummyData = [
-        {
-        postImage: defaultwhite,
-        title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요.",
-        author: "김**님",
-        endDate: "D-7"
-        },
-        {
-        postImage: defaultwhite,
-        title: "학교에 자전거 보관소 설치를 요청합니다.",
-        author: "이**님",
-        endDate: "D-10"
-        },
-        {
-        postImage: defaultwhite,
-        title: "도서관에 신간 도서 추가를 부탁드립니다.",
-        author: "박**님",
-        endDate: "D-5"
-        },
-        {
-        postImage: defaultwhite,
-        title: "공원에 더 많은 벤치를 설치해 주세요.",
-        author: "최**님",
-        endDate: "D-15"
-        },
-        {
-        postImage: defaultwhite,
-        title: "지역 주민을 위한 헬스장 건립을 건의합니다.",
-        author: "정**님",
-        endDate: "D-20"
-        }
-    ];
+    const location = useLocation();
+    const getPathRegion = location.search;
+    console.log(getPathRegion)
   
+    const getPopularPostFunc = async(getPathRegion) =>{
+        const response = await popularRegionPostGetAPI(getPathRegion);
+        console.log(response);
+        setPopularData(response.data);
+    
+    }
+    
     useEffect(() => {
-      // 더미 데이터를 상태에 설정 -추후 서버 연결 후 수정 예정
-      setPopularData(dummyData);
-      //버튼 상태 설정
-      setSendBraveClicked(new Array(dummyData.length).fill(false));
-    }, []);
+        getPopularPostFunc(getPathRegion);
+    }, [getPathRegion]);
 
+    useEffect(() => {
+        // popularData 또는 activeButton이 변경될 때마다 필터링 로직 실행
+        if (activeButton === '진행중') {
+            let filteredData = popularData.filter(item => item.done === false);
+            setPopularFilterData(filteredData);
+        } else {
+            let filteredData = popularData.filter(item => item.done === true);
+            setPopularFilterData(filteredData);
+        }
+    }, [activeButton, popularData]);
+
+    //진행중, 종료 필터링 버튼
     const handleButtonClick = (button) => {
         setActiveButton(button);
+
+        if(activeButton==='진행중'){
+            let filteredData = popularData.filter(item => item.done === false);
+            setPopularFilterData(filteredData);
+        }
+        else{
+            let filteredData = popularData.filter(item => item.done === true);
+            setPopularFilterData(filteredData);
+        }
     };
 
     const handleSendBraveClick = (index) => {
@@ -120,21 +120,21 @@ function PopularPost() {
                     <AllButton onClick={goToListall}>전체글 보러가기<img src={rightarrow} style={{ width: '6px', height: '12px' }} /></AllButton>
                 </StatusBar>
 
-            {popularData.slice(0, 4).map((item, index) => (
+            {popularFilterData.slice(0, 4).map((item, index) => (
                 <ContentImageContainer key={index}>
                 <ImageContainer>
-                    <img src={item.postImage} alt="content image" style={{ width: '209px', height: '134px' }} />
+                    <img src={defaultwhite} alt="content image" style={{ width: '209px', height: '134px' }} />
                     <ContentTextContainer>
                     <ContentTitleText>
                         {truncateText(item.title, 52)}
                     </ContentTitleText>
                     <DetailContainer>
                         <DetailText>작성자</DetailText>
-                        <DetailText $color="#5A5A5A">{item.author}</DetailText>
+                        <DetailText $color="#5A5A5A">{item.userName}</DetailText>
                     </DetailContainer>
                     <DetailContainer>
                         <DetailText>종료일</DetailText>
-                        <DetailText $color="#5A5A5A">{item.endDate}</DetailText>
+                        <DetailText $color="#5A5A5A">D-{item.deadLine}</DetailText>
                     </DetailContainer>
                     </ContentTextContainer>
                 </ImageContainer>
