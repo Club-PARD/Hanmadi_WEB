@@ -4,64 +4,84 @@ import defaultblue from '../../Assets/Img/defaultblue.svg';
 import bottombd from '../../Assets/Img/bottombd.svg';
 import bottomwd from '../../Assets/Img/bottomwd.svg';
 import bottomimg from '../../Assets/Img/bottomimg.svg';
+import { useEffect, useState } from 'react';
+import { allPostsGetAPI } from '../../API/AxiosAPI';
 
 function GreatIdeaPage() {
+
+    const [allPosts, setAllPosts] =useState([]);
+
+    const allPostsFunc = async () =>{
+        const response = await allPostsGetAPI();
+        setAllPosts(response.data);
+        console.log(response);
+    }
+
+    useEffect(()=>{
+        allPostsFunc();
+    },[])
+
+    // 글자 컷 함수
+    const truncateText = (text, maxLength) => {
+        if (text.length > maxLength) {
+        return text.slice(0, maxLength) + '...';
+        }
+        return text;
+    };
+
+    // 이미지 링크 추출 함수
+    const extractImageLink = (postData) => {
+        const fields = ['proBackground', 'solution', 'benefit'];
+        
+        for (let field of fields) {
+        const value = postData[field];
+        if (value) { 
+            const match = value.match(/\[이미지:\s*(https?:\/\/[^\s\]]+)\]/);
+            if (match) {
+            return match[1];
+            }
+        }
+        }
+        
+        return defaultblue;
+    };
+
+
+
     return (
         <Container>
             <GlobalStyle/>
             <GreatContentContainer>
                 <TextContainer>
                     <LineTextContainer>
-                        <Dot></Dot><TopicText>지역 한마디</TopicText>
+                        <TopicText>지역 한마디</TopicText>
                     </LineTextContainer>
                     <LineTextContainer>
                         <TitleText>다른 지역의 한마디도 함께</TitleText>
                     </LineTextContainer>
                 </TextContainer>
-                <ContentImageContainer>
+                {allPosts.slice(0, 2).map((content, index) => (
+                    <ContentImageContainer key={index}>
                     <ContentTextContainer>
-                        <ContentTitleText>
-                            포항시 버스정류장에 공유우산서비스를 제안합니다.
-                        </ContentTitleText>
+                        <ContentTitleText>{truncateText(content.title,25)}</ContentTitleText>
                         <DetailContainer>
-                            <DetailText>작성자</DetailText>
-                            <DetailText $color="#5A5A5A">김**님</DetailText>
+                        <DetailText>작성자</DetailText>
+                        <DetailText $color="#5A5A5A">{content.userName}</DetailText>
                         </DetailContainer>
                         <DetailContainer>
-                            <DetailText>공감수</DetailText>
-                            <DetailText $color="#5A5A5A">1234</DetailText>
+                        <DetailText>공감수</DetailText>
+                        <DetailText $color="#5A5A5A">{content.upCountPost}</DetailText>
                         </DetailContainer>
                         <DetailContainer>
-                            <DetailText $paddingright='16px'>응원 한마디</DetailText>
-                            <DetailText $color="#5A5A5A">143</DetailText>
+                        <DetailText $paddingright='16px'>응원 한마디</DetailText>
+                        <DetailText $color="#5A5A5A">{content.comments.length}</DetailText>
                         </DetailContainer>
                     </ContentTextContainer>
                     <ImageContainer>
-                        <img src={defaultblue} alt="content image" style={{ width: '234px' }}/>
+                        <img src={extractImageLink(content)} alt="content image" style={{ width: '234px' }}/>
                     </ImageContainer>
-                </ContentImageContainer>
-                <ContentImageContainer>
-                    <ContentTextContainer>
-                        <ContentTitleText>
-                            포항시 버스정류장에 공유우산서비스를 제안합니다.
-                        </ContentTitleText>
-                        <DetailContainer>
-                            <DetailText>작성자</DetailText>
-                            <DetailText $color="#5A5A5A">김**님</DetailText>
-                        </DetailContainer>
-                        <DetailContainer>
-                            <DetailText>공감수</DetailText>
-                            <DetailText $color="#5A5A5A">1234</DetailText>
-                        </DetailContainer>
-                        <DetailContainer>
-                            <DetailText $paddingright='16px'>응원 한마디</DetailText>
-                            <DetailText $color="#5A5A5A">143</DetailText>
-                        </DetailContainer>
-                    </ContentTextContainer>
-                    <ImageContainer>
-                        <img src={defaultblue} alt="content image" style={{ width: '234px' }}/>
-                    </ImageContainer>
-                </ContentImageContainer>
+                    </ContentImageContainer>
+                ))}
             </GreatContentContainer>
             <DuckContainer>
                 {/* <BottomBlueDuck><img src={bottombd} alt="content image" style={{ width: '230px' }}/></BottomBlueDuck>
@@ -113,18 +133,8 @@ const TopicText = styled.span`
     font-family: 'MinSans-Regular';
     font-size: 22px;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 600;
     margin-bottom: 10px;
-`;
-
-const Dot = styled.span`
-    width: 27px;
-    height: 27px;
-    border-radius: 50%;
-    background-color: #005AFF;
-    display: inline-block;
-    margin-right: 10px;
-    margin-bottom: 13px;
 `;
 
 const TitleText = styled.div`
@@ -163,7 +173,7 @@ const DetailContainer = styled.div`
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    padding-bottom: 18px;
+    padding-bottom: 11px;
     background: transparent;
 `;
 

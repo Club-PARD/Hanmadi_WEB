@@ -1,6 +1,6 @@
 import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
-import BlackLogo from "../../Assets/Img/BlackLogo.svg";
+import logo from "../../Assets/Img/logo.svg";
 import AboutPageBG from "../../Assets/Img/AboutPageBG.svg";
 import Idea from "../../Assets/Img/Idea.svg";
 import Chat from "../../Assets/Img/Chat.svg";
@@ -24,7 +24,7 @@ function AboutPage() {
       <Intro>
         <BackgroundImage src={AboutPageBG} alt="Background" />
         <ContentWrapper>
-          <Logo src={BlackLogo} alt="Black Logo" />
+          <Logo src={logo} alt="logo" />
           <Title>
             <TextAnimation fadeinTime={1}>
               <ColoredText>한마디</ColoredText>가 <ColoredText>두마디</ColoredText>로 <br />
@@ -117,9 +117,9 @@ const ContentWrapper = styled.div`
 `;
 
 const Logo = styled.img`
-  width: 71px;
-  height: 41.611px;
-  margin-bottom: 32px;
+  width: 107px;
+  height: 88px;
+  margin-bottom: 7px;
 `;
 
 const Title = styled.div`

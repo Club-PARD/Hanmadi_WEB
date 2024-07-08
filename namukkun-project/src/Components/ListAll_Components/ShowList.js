@@ -1,63 +1,192 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Contents from "./Contents";
 import arrowleft from '../../Assets/Img/Arrowleft.svg';
 import arrowright from '../../Assets/Img/Arrowright.svg';
 import { useRecoilState } from "recoil";
-import { pagenation, stateListCategory } from "../../Recoil/Atom";
+import { getPopularRegion, getRecentRegion, loginTestState, pagenation, postLikeBtn, userinfo } from "../../Recoil/Atom";
+import LoginModal from "../Login_Components/LoginModal";
+import { useLocation } from "react-router-dom";
+import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
 
 function ShowList() {
   // 필터 버튼 값 설정 [추천/최신]
   const [filter, setFilter] = useState('recent');
-  const [currentPage, setCurrentPage] =useRecoilState(pagenation);
+  const [currentPage, setCurrentPage] = useRecoilState(pagenation);
+  // 선택한 지역별 상태 확인
+  const location = useLocation();
+  const gerPathRegion = location.search;
+  // 기본적으로 보여줄 유저 데이터
+  const [userData, setUserData] = useRecoilState(userinfo);
+  const [postLike, setPostLike] = useRecoilState(postLikeBtn);
+
+  // 로그인 테스트 상태 - 추후 서버랑 연결해야 함.
+  const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
+  const [showModal, setShowModal] = useState(false);
+
+  // 포스트 데이터 저장
+  const [getpostData, setGetPostData] = useState([]);
+
+  const [PopularData, setPopularData] = useRecoilState(getPopularRegion);
+  const [recentData, setRecentData] = useRecoilState(getRecentRegion); 
+
+    // 초기 sendBraveClicked 상태 설정
+    useEffect(() => {
+        getUserInfo().then(userInfo => {
+          console.log("유저 데이터", userInfo);
+    
+          const initialSendBraveClicked = {};
+          userInfo.postUpList.forEach(postId => {
+            initialSendBraveClicked[postId] = true;
+          });
+          setSendBraveClicked(initialSendBraveClicked);
+          setPostLike(initialSendBraveClicked);
+        });
+    }, []);
+
+  // 전체 글에 대한 추천/최신 필터 버튼
   const onClickFilterBtn = (filterValue) => {
     setCurrentPage(1);
     setFilter(filterValue);
   }
 
- // 버튼 클릭 상태 관리 (버튼 수를 초기값 false로 설정) - 13은 임시 버튼 수
-  const [sendBraveClicked, setSendBraveClicked] = useState(Array(13).fill(false));
+  // 포스트 채택
+  const checkPostIncrease = async (postId) => {
+    const response = await checkPostPostAPI(postId);
+    return response.data;
+  }
+
+  // 포스트 채택 삭제
+  const checkPostDecrease = async (postId) => {
+    const response = await checkPostDeleteAPI(postId);
+    return response.data;
+  }
+
+  // 버튼 클릭 상태 관리
+  const [sendBraveClicked, setSendBraveClicked] = useState(postLike)
+  ;
+
+  // 유저가 클릭한 포스트와 비교 후 setSendBraveClicked 일부 true로 변경
 
   // 버튼 클릭 이벤트 핸들러
-  const handleSendBraveClick = (index) => {
-    const newSendBraveClicked = [...sendBraveClicked];
-    newSendBraveClicked[index] = !newSendBraveClicked[index];
-    setSendBraveClicked(newSendBraveClicked);
+  const handleSendBraveClick = async (postId, content) => {
+    if (isLogin) {
+      const newSendBraveClicked = {
+        ...sendBraveClicked,
+        [postId]: !sendBraveClicked[postId]
+      };
+      setSendBraveClicked(newSendBraveClicked);
+  
+      try {
+        let response;
+        if (newSendBraveClicked[postId]) {
+          response = await checkPostIncrease(content.postId); // 좋아요 증가 API 호출
+        } else {
+          response = await checkPostDecrease(content.postId); // 좋아요 감소 API 호출
+        }
+      
+      if(response.postId ===postId){
+        // 유저 데이터 업데이트
+        setUserData({
+          ...userData,
+          postUpList: response.postId
+        });
+
+      }
+
+      // postId에 해당하는 포스트의 upCount 추출
+      const upcount = response.find(post => post.postId === postId)?.postUpCount;
+
+      // 포스트 데이터 업데이트
+      const updatedPostData = getpostData.map(post => {
+        if (post.postId === postId) {
+          return {
+            ...post,
+            upCountPost: upcount || 0
+          };
+        }
+        return post;
+      });
+  
+      setGetPostData(updatedPostData);
+      console.log("hi", sendBraveClicked);
+  
+      } catch (error) {
+        console.error("Error updating post:", error);
+      }
+    } else {
+      setShowModal(true);
+    }
+
   };
 
-  // 컨텐츠 데이터 배열 - 임시 데이터
-  const contents = [
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" },
-    { title: "포항시 버스정류장에 공유 우산서비스를 제안합니다 왜냐하면 버려지는 우산이 많아요. 그렇게 생각하...", like: 0, comment: 0, name: "김**님", date: "2024.07.02" }
-  ];
+  // 버튼 상태 변화 시 서버에서 유저 데이터를 가져옴
+  // 유저 데이터 불러오는 함수 
+  const getUserInfo = async () => {
+    const response = await userInfoGetAPI();
+    // 아톰에 유저 정보 저장
+    setUserData({
+      ...userData,
+      nickName: response.data.nickName,
+      local: response.data.local,
+      profileImage: response.data.profileImage,
+      postUpList: response.data.postUpList,
+      commentUpList: response.data.commentUpList
+    });
 
-  const itemsPerPage = 6; //한 페이지당 보여지는 컨텐츠 갯수
-  //총 페이지 갯수
-  const totalPages = Math.ceil(contents.length / itemsPerPage);
+    return response.data;
+  };
+  
+  useEffect(() => {
+    const response = getUserInfo();
+    console.log("유저 데이터", response);
+    setPostLike(sendBraveClicked);
 
-   // 페이지 변경 핸들러
+  }, [sendBraveClicked, postLike]);
+
+  // 지역별 최신순
+  const getPostsListallrecent = async (gerPathRegion) => {
+    const response = await recentRegionPostGetAPI(gerPathRegion);
+    setGetPostData(response.data);
+    setRecentData(response.data)
+    console.log("데이터 확인", getpostData);
+  }
+
+  // 지역별 인기순
+  const getPostsListallPopular = async (gerPathRegion) => {
+    const response = await popularRegionPostGetAPI(gerPathRegion);
+    setGetPostData(response.data);
+    setPopularData(response.data);
+    console.log(response.data);
+  }
+
+  useEffect(() => {
+
+    if (filter === 'recent') {
+      console.log("최신");
+      getPostsListallrecent(gerPathRegion);
+    } else if (filter === 'recommend') {
+      console.log("인기");
+      getPostsListallPopular(gerPathRegion);
+    }
+  }, [gerPathRegion, filter]);
+
+  const itemsPerPage = 6; // 한 페이지당 보여지는 컨텐츠 갯수
+  // 총 페이지 갯수
+  const totalPages = Math.ceil(getpostData.length / itemsPerPage);
+
+  // 페이지 변경 핸들러
   const handleChangePage = (newPage) => {
     setCurrentPage(newPage);
   };
 
-   // 현재 페이지에 해당하는 콘텐츠 배열
-  const paginatedContents = contents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  // 현재 페이지에 해당하는 콘텐츠 배열
+  const paginatedContents = getpostData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <Div>
       <TopHeader>
-        <Title>✏️{filter === 'recommend' ? '추천' : '전체'}글 모아보기</Title>
+        <Title>✏️ {filter === 'recommend' ? '추천' : '전체'}글 모아보기</Title>
         <BtnDiv>
           <FilterBtn onClick={() => onClickFilterBtn('recommend')} isSelected={filter === 'recommend'}>추천</FilterBtn>
           <FilterBtn onClick={() => onClickFilterBtn('recent')} isSelected={filter === 'recent'}>최신</FilterBtn>
@@ -68,24 +197,25 @@ function ShowList() {
           <Contents
             key={index}
             content={content}
-            isClicked={sendBraveClicked[(currentPage - 1) * itemsPerPage + index]}
-            onClick={() => handleSendBraveClick((currentPage - 1) * itemsPerPage + index)}
+            isClicked={sendBraveClicked[content.postId]}
+            onClick={() => handleSendBraveClick(content.postId, content)}
           />
         ))}
       </PostListContentsDiv>
-      <Pagination>
-        <PaginationButton onClick={() => handleChangePage(currentPage - 1)} disabled={currentPage === 1}>
+      <Pagenation>
+        <PagenationButton onClick={() => handleChangePage(currentPage - 1)} disabled={currentPage === 1}>
           <img src={arrowleft}></img>
-        </PaginationButton>
+        </PagenationButton>
         {[...Array(totalPages)].map((_, i) => (
-          <PaginationButton key={i} onClick={() => handleChangePage(i + 1)} isSelected={currentPage === i + 1}>
+          <PagenationButton key={i} onClick={() => handleChangePage(i + 1)} isSelected={currentPage === i + 1}>
             {i + 1}
-          </PaginationButton>
+          </PagenationButton>
         ))}
-        <PaginationButton onClick={() => handleChangePage(currentPage + 1)} disabled={currentPage === totalPages}>
+        <PagenationButton onClick={() => handleChangePage(currentPage + 1)} disabled={currentPage === totalPages}>
           <img src={arrowright}></img>
-        </PaginationButton>
-      </Pagination>
+        </PagenationButton>
+      </Pagenation>
+      <LoginModal show={showModal} onClose={() => setShowModal(false)} />
     </Div>
   );
 }
@@ -110,7 +240,6 @@ const Title = styled.div`
   font-size: 32px;
   font-style: normal;
   font-weight: 600;
-  line-height: 30px; /* 93.75% */
 `;
 
 const BtnDiv = styled.div`
@@ -129,7 +258,7 @@ const FilterBtn = styled.button`
   color: var(--Main-001, #005AFF);
   text-align: center;
   font-family: "Min Sans";
-  font-size: 13.558px;
+  font-size: 18px;
   font-style: normal;
   font-weight: 500;
   line-height: 29.054px; /* 214.286% */
@@ -145,7 +274,7 @@ const PostListContentsDiv = styled.div`
   gap: 40px;
 `;
 
-const Pagination = styled.div`
+const Pagenation = styled.div`
   display: flex;
   justify-content: center;
   margin-top: 69px;
@@ -153,7 +282,7 @@ const Pagination = styled.div`
   gap: 10px;
 `;
 
-const PaginationButton = styled.button`
+const PagenationButton = styled.button`
   display: flex;
   width: 31px;
   height: 31px;

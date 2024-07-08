@@ -2,15 +2,20 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from "recoil";
-import { pagenation, stateListCategory } from "../../Recoil/Atom";
+import { pagenation, stateListCategory, userinfo } from "../../Recoil/Atom";
+import { recentRegionPostGetAPI } from "../../API/AxiosAPI";
 
-function FixList(){
+function FixList() {
   const navigate = useNavigate();
   const [chagnePage, setChagnePage] = useRecoilState(stateListCategory);
-  const [currentPage, setCurrentPage] =useRecoilState(pagenation);
+  const [currentPage, setCurrentPage] = useRecoilState(pagenation);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  //유저 기본 정보 아톰에 저장
+  const [userData, setUserData] = useRecoilState(userinfo);
 
-  const onClcikListMenu = (category)=>{
+  const onClickListMenu = (category) => {
     setChagnePage(category);
+    setSelectedCategory(category);
 
     window.scrollTo({
       top: 0,
@@ -18,34 +23,41 @@ function FixList(){
     });
     setCurrentPage(1);
 
-    if(category ==='recent'){
-      navigate('/listall');
-    }
-    else if('popular'){
-      navigate('/list');
+    if (category === 'recent') {
+      navigate('/listall?localPageId='+ userData.local);
+      // recentRegionPostGetAPI('?localPageId=' + userData.local);
+    } else if (category === 'popular') {
+      navigate('/list?localPageId='+ userData.local);
     }
   }
 
-  return(
+  return (
     <FixedButtonContainer>
-      <FixedButton onClick={()=>onClcikListMenu('recent')}>
+      <FixedButton
+        onClick={() => onClickListMenu('recent')}
+        isSelected={selectedCategory === 'recent'}
+      >
         ✏️ 전체글 모아보기
       </FixedButton>
-      <FixedButton onClick={()=>onClcikListMenu('popular')}>
+      <FixedButton
+        onClick={() => onClickListMenu('popular')}
+        isSelected={selectedCategory === 'popular'}
+      >
         🌟 인기글 모아보기
       </FixedButton>
-  </FixedButtonContainer>
+    </FixedButtonContainer>
   );
 }
 
 const FixedButtonContainer = styled.div`
+  width: 180px;
   position: fixed;
   left: 60px;
   top: 448px;
   background-color: rgba(0, 90, 255, 0.06);
-  padding: 19px 7.5px 19px 8.5px;
-  justify-content: center;
+  padding: 16px 10px;
   align-items: center;
+  justify-content: center;
   display: flex;
   flex-direction: column;
   border: none;
@@ -56,19 +68,20 @@ const FixedButtonContainer = styled.div`
 `;
 
 const FixedButton = styled.button`
-  width: 129px;
+  width: 145px;
   height: 30px;
   align-items: center;
   border: none;
-  background: transparent;
+  background: ${({ isSelected }) => (isSelected ? 'rgba(0, 90, 255, 0.06)' : 'transparent')};
   border-radius: 5px;
   font-family: "Min Sans";
-  font-size: 14px;
+  font-size: 18px;
+  white-space: nowrap;
   color: #4B6FB2;
   cursor: pointer;
-  &:hover{
+  &:hover {
     background: rgba(0, 90, 255, 0.06);
   }
-`
+`;
 
 export default FixList;

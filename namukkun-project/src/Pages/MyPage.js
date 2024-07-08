@@ -5,19 +5,31 @@ import StatusBlock from '../Components/Mypage_Components/StatusBlock';
 import IngPost from '../Components/Mypage_Components/IngPost';
 import EndPost from '../Components/Mypage_Components/EndPost';
 import TempPost from '../Components/Mypage_Components/TempPost';
-import face from '../Assets/Img/face.svg';
 import advisepen from '../Assets/Img/advisepen.svg';
 import WritingModal from "../Components/WritingPage_Components/WritingModal";
 import RegionChangeModal from "../Components/Mypage_Components/RegionChangeModal";
-import { userInfoGetAPI } from "../API/AxiosAPI";
+import { getUserAllInfoAPI } from "../API/AxiosAPI";
+import { loginTestState, userinfo } from "../Recoil/Atom";
+import { useRecoilState } from "recoil";
+import { intToRegion } from "../Components/SelectRegion_Components/IntToRegion";
 
 function MyPage() {
   const [isSticky, setIsSticky] = useState(false);
+  // 유저 기본 정보 아톰에 저장
+  const [userData, setUserData] = useRecoilState(userinfo);
+  const [isLogin, setIsLogin] = useRecoilState(loginTestState);
+  
+  // New state to manage posts
+  const [posts, setPosts] = useState({
+    ingPosts: [],
+    endPosts: [],
+    tempPosts: [],
+  });
 
-  //모달창 끌지 켤지 다루는 usestate
+  // 모달창 끌지 켤지 다루는 usestate
   const [isWModalOpen, setIsWModalOpen] = useState(false);
 
-  //모달창 관리하는 함수
+  // 모달창 관리하는 함수
   const handleWModalOpen = () => {
     setIsWModalOpen(!isWModalOpen);
   };
@@ -37,33 +49,73 @@ function MyPage() {
     };
   }, []);
 
-  //유저 데이터 불러오는 함수 
-  const getUserInfo = async () =>{
-    const response =await userInfoGetAPI();
-    console.log(response);
+  // 유저 데이터 불러오는 함수 
+  const getUserInfo = async () => {
+    try {
+      const response = await getUserAllInfoAPI();
+      console.log('API Response:', response);
+      // 아톰에 유저 정보 저장
+      setUserData({
+        ...userData,
+        nickName: response.userInfoDTO.nickName,
+        local: response.userInfoDTO.local,
+        profileImage: response.userInfoDTO.profileImage
+      });
+
+      // Categorize posts based on their properties
+      const ingPosts = [];
+      const endPosts = [];
+      const tempPosts = [];
+
+      response.posts.forEach(post => {
+        console.log(post);  // 여기에서 post의 실제 값을 출력해봅시다.
+        if (!post.isReturn) {
+          tempPosts.push(post);
+        } else if (post.isReturn && !post.isDone) {
+          ingPosts.push(post);
+        } else if (post.isReturn && post.isDone) {
+          endPosts.push(post);
+        }
+      });
+
+      console.log('ingPosts:', ingPosts);
+      console.log('endPosts:', endPosts);
+      console.log('tempPosts:', tempPosts);
+
+      setPosts({ ingPosts, endPosts, tempPosts });
+      
+      console.log(response);
+    } catch (error) {
+      console.error('Error fetching user info:', error);
+    }
   };
 
-  useEffect(()=>{
-    const response =getUserInfo();
-    console.log(response);
-  },[])
+  useEffect(() => {
+    // 로그인이 됐을 때 유저 정보를 불러옴.
+    if (isLogin) {
+      getUserInfo();
+    }
+  }, [isLogin]);
 
   return (
     <div>
-      {/* <Header /> */}
-      <StatusBlock />
-      <IngPost />
-      <EndPost />
-      <TempPost />
+      <StatusBlock 
+        ingCount={posts.ingPosts.length} 
+        endCount={posts.endPosts.length} 
+        tempCount={posts.tempPosts.length} 
+      />
+      <IngPost posts={posts.ingPosts} />
+      <EndPost posts={posts.endPosts} />
+      <TempPost posts={posts.tempPosts} />
       <FixedButton $isSticky={isSticky}>
-        <img src={face} style={{ width: '144px', height: '144px', borderRadius:'50%' }} alt="face" />
+        <img src={userData.profileImage} style={{ width: '144px', height: '144px', borderRadius: '50%' }} alt="face" />
         <InfoContainer>
             <InfoName>이름</InfoName>
-            <InfoContent>나무꾼과선녀도끼와선</InfoContent>
+            <InfoContent>{userData.nickName}</InfoContent>
         </InfoContainer>
         <InfoContainer>
             <InfoName>지역</InfoName>
-            <InfoContent>포항시</InfoContent>
+            <InfoContent>{intToRegion[userData.local]}</InfoContent>
         </InfoContainer>
         <ProfileAdviseButton onClick={handleWModalOpen}>
             프로필 수정하기&nbsp;&nbsp;&nbsp;

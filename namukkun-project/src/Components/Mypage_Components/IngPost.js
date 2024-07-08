@@ -1,110 +1,114 @@
+import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import { BrowserRouter } from 'react-router-dom';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import mypageduck from '../../Assets/Img/mypageduck.svg';
 import uploadarrow from '../../Assets/Img/uploadarrow.svg';
 
-function IngPost() {
-    const truncateText = (text, maxLength) => {
-        if (text.length > maxLength) {
-            return text.slice(0, maxLength) + '...';
-        }
-        return text;
-    };
+function IngPost({ posts }) {
+  const truncateText = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.slice(0, maxLength) + '...';
+    }
+    return text;
+  };
 
-    return (
-        <>
-            <GlobalStyle />
-            <Container>
-                <IngContainer>
-                    <TotalIngContainer>
-                        <TotalTitleContainer>
-                            <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
-                            진행중인 한마디
-                        </TotalTitleContainer>
-                        <TotalContentContainer>
-                            <AllContentContainer>
-                                <ContentContainer>
-                                    <TitleInfoContainer>
-                                        <TitleFunctionContainer>
-                                            <IngButton>진행중</IngButton>
-                                            <ContentTitle>{truncateText('포항시 문화생태마을 조성', 13)}</ContentTitle>
-                                            <AdviseButton>수정</AdviseButton>
-                                            <DeleteButton>삭제</DeleteButton>
-                                        </TitleFunctionContainer>
-                                        <InfoContainer>
-                                            <InfoTextContainer>
-                                                <InfoText>용길이 수</InfoText>
-                                                <InfoText>15</InfoText>
-                                            </InfoTextContainer>
-                                            <InfoTextContainer>
-                                                <InfoText>한마디 수</InfoText>
-                                                <InfoText>6</InfoText>
-                                            </InfoTextContainer>
-                                            <InfoTextContainer>
-                                                <InfoText>남은 기간</InfoText>
-                                                <InfoText>D-5</InfoText>
-                                            </InfoTextContainer>
-                                            <InfoTextContainer>
-                                                <InfoText>작성일자</InfoText>
-                                                <InfoText>2024.07.02</InfoText>
-                                            </InfoTextContainer>
-                                        </InfoContainer>
-                                    </TitleInfoContainer>
-                                    <UploadButton>
-                                        국민신문고
-                                        <img src={uploadarrow} style={{ width: '14.4px', height: '4.9px' }} ></img>
-                                    </UploadButton>
-                                </ContentContainer>
-                                <SeeAllRecContainer>
-                                    <SeeAllRecord>
-                                        1 / 1&nbsp;&nbsp;&nbsp;&nbsp;전체글 보러가기 --> 
-                                    </SeeAllRecord>
-                                </SeeAllRecContainer>
-                            </AllContentContainer>
-                        </TotalContentContainer>
-                    </TotalIngContainer>
-                </IngContainer>
-            </Container>
-        </>
-    );
+  return (
+    <>
+			<GlobalStyle />
+				<Container>
+					<IngContainer>
+            <TotalIngContainer>
+              <TotalTitleContainer>
+                <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
+                  진행중인 한마디
+									</TotalTitleContainer>
+                  <TotalContentContainer>
+                    <AllContentContainer>
+                      {posts.map(post => (
+											<ContentContainer key={post.postId}>
+												<TitleInfoContainer>
+                          <TitleFunctionContainer>
+                            <IngButton>진행중</IngButton>
+                            <ContentTitle>{truncateText(post.title, 11)}</ContentTitle>
+                            <AdviseButton>수정</AdviseButton>
+                            <DeleteButton>삭제</DeleteButton>
+                          </TitleFunctionContainer>
+                          <InfoContainer>
+                            <InfoTextContainer>
+															<InfoText>용길이 수</InfoText>
+                              <InfoText>{post.upCountPost}</InfoText>
+														</InfoTextContainer>
+                            <InfoTextContainer>
+															<InfoText>한마디 수</InfoText>
+                              <InfoText>{post.postitCount}</InfoText>
+                            </InfoTextContainer>
+														<InfoTextContainer>
+															<InfoText>남은 기간</InfoText>
+															<InfoText>{post.deadline}</InfoText>
+														</InfoTextContainer>
+														<InfoTextContainer>
+															<InfoText>작성일자</InfoText>
+															<InfoText>{post.postTime}</InfoText>
+                            </InfoTextContainer>
+                          </InfoContainer>
+                        </TitleInfoContainer>
+                        <UploadButton>
+                          국민신문고
+                          <img src={uploadarrow} style={{ width: '14.4px', height: '4.9px' }} ></img>
+                        </UploadButton>
+                      </ContentContainer>
+											))}
+											<SeeAllRecContainer>
+                        <SeeAllRecord>
+                          &nbsp;&nbsp;&nbsp;&nbsp;전체글 보러가기 --> 
+                        </SeeAllRecord>
+                      </SeeAllRecContainer>
+                    </AllContentContainer>
+									</TotalContentContainer>
+                </TotalIngContainer>
+							</IngContainer>
+						</Container>
+					</>
+  );
 }
 
 export default IngPost;
 
 const Container = styled.div`
-    width: 100%;
-    display: flex;
-    background: #FAFAFA;
-    justify-content: center;
+  width: 100%;
+  display: flex;
+  background: #FAFAFA;
+  justify-content: center;
 `;
 
 const IngContainer = styled.div`
-    width: 920px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end; /* 오른쪽 정렬 */
+  width: 920px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* 오른쪽 정렬 */
 `;
 
 const TotalIngContainer = styled.div`
-    width: 708px;
-    display: flex;
-    border-top: 0.849px solid #DBDBDB;
-    flex-direction: column;
+	width: 708px;
+  display: flex;
+  border-top: 0.849px solid #DBDBDB;
+  flex-direction: column;
 `;
 
 const TotalTitleContainer = styled.div`
-    padding-top: 40px;
-    padding-bottom: 35px;
-    display: flex;
-    width: 100%;
-    gap: 7px;
-    color: #191919;
-    font-family: 'MinSans-Regular';
-    font-size: 22.189px;
-    font-style: normal;
-    font-weight: 600;
-    flex-direction: row;
+  padding-top: 40px;
+	padding-bottom: 35px;
+  display: flex;
+  width: 100%;
+  gap: 7px;
+  color: #191919;
+  font-family: 'MinSans-Regular';
+  font-size: 22.189px;
+  font-style: normal;
+  font-weight: 600;
+  flex-direction: row;
+  white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const TotalContentContainer = styled.div`
@@ -135,6 +139,7 @@ const ContentContainer = styled.div`
 
 const ContentTitle = styled.div`
     display: flex;
+		width: 152px;
     flex-direction: column;
     justify-content: center;
     color: var(--gray-006, #575757);
@@ -142,6 +147,7 @@ const ContentTitle = styled.div`
     font-size: 16px;
     font-style: normal;
     font-weight: 600;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const IngButton = styled.button`
@@ -158,6 +164,7 @@ const IngButton = styled.button`
     font-style: normal;
     font-weight: 700;
     border: none;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const AdviseButton = styled.button`
@@ -178,6 +185,7 @@ const AdviseButton = styled.button`
     font-style: normal;
     font-weight: 500;
     cursor: pointer;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const DeleteButton = styled.button`
@@ -198,6 +206,7 @@ const DeleteButton = styled.button`
     font-style: normal;
     font-weight: 500;
     cursor: pointer;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const UploadButton = styled.button`
@@ -218,12 +227,14 @@ const UploadButton = styled.button`
     font-style: normal;
     font-weight: 600;
     cursor: pointer;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const TitleFunctionContainer = styled.div`
     display: flex;
     align-items: center; /* 중앙 정렬 */
     gap: 10px; /* 요소 간격 추가 */
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const InfoTextContainer = styled.div`
@@ -234,6 +245,7 @@ const InfoTextContainer = styled.div`
     justify-content: center;
     gap: 4px;
     border-radius: var(--Corner-Extra-small, 4px);
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const InfoContainer = styled.div`
@@ -242,6 +254,7 @@ const InfoContainer = styled.div`
     align-items: flex-start;
     flex-direction: row;
     gap: 16px;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const InfoText = styled.div`
@@ -250,10 +263,12 @@ const InfoText = styled.div`
     font-size: 14px;
     font-style: normal;
     font-weight: 500;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const TitleInfoContainer = styled.div`
     width: 328px;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const SeeAllRecContainer = styled.div`
@@ -263,6 +278,7 @@ const SeeAllRecContainer = styled.div`
     justify-content: center;
     align-items: center;
     gap: 10px;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `
 
 const SeeAllRecord = styled.div`
@@ -273,4 +289,5 @@ const SeeAllRecord = styled.div`
     font-weight: 500;
     line-height: 20px; /* 142.857% */
     cursor: pointer;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `

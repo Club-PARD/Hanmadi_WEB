@@ -1,15 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import rightpagearrow from '../../Assets/Img/rightpagearrow.svg';
 import leftpagearrow from '../../Assets/Img/leftpagearrow.svg';
 import defaultblue from '../../Assets/Img/defaultblue.svg';
+import { useRecoilState } from 'recoil';
+import { getRecentRegion, loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
+import LoginModal from '../Login_Components/LoginModal';
+import { useLocation } from 'react-router-dom';
+import { checkPostDeleteAPI, checkPostPostAPI, recentRegionPostGetAPI } from '../../API/AxiosAPI';
 
 function PopularPost() {
     const [isClicked, setIsClicked] = useState(false);
-    const [activeButton, setActiveButton] = useState('진행중'); // 진행중이 기본값
-    const [sendBraveClicked, setSendBraveClicked] = useState([false, false, false]); // sendbravebutton 클릭 상태
+    // 진행중이 기본값
+    const [activeButton, setActiveButton] = useState('진행중'); 
+    // sendbravebutton 클릭 상태
+    const [sendBraveClicked, setSendBraveClicked] = useRecoilState(postLikeBtn);
+    // const [sendBraveClicked, setSendBraveClicked] = useState({});
     const [activeDot, setActiveDot] = useState(0); // pagination 상태
+
+    //로그인 테스트 상태 -추후 서버랑 연결해야함.
+    const [isLogin, setIsLogin] = useRecoilState(loginTestState); 
+    
+    const [recentData, setRecentData] = useRecoilState(getRecentRegion); 
+   
+    const [showModal, setShowModal] = useState(false);
+
+    // 기본적으로 보여줄 유저 데이터
+    const [userData, setUserData] = useRecoilState(userinfo);
+
+    const location = useLocation();
+    const getPathRegion = location.search;
 
     const handleDotClick = (index) => {
         setActiveDot(index);
@@ -30,6 +51,96 @@ function PopularPost() {
         return text;
     };
 
+    useEffect(()=>{
+        const recent = async() =>{
+            const response = await recentRegionPostGetAPI(getPathRegion);
+            setRecentData(response.data);
+        };
+        recent();
+        
+
+    },[getPathRegion, sendBraveClicked]);
+
+    // 현재 페이지에 해당하는 게시글들만 선택
+    const postsToDisplay = recentData.slice(activeDot * 2, activeDot * 2 + 2);
+
+
+    // 포스트 채택
+    const checkPostIncrease = async (postId) => {
+        const response = await checkPostPostAPI(postId);
+        return response.data; 
+    }
+
+    // 포스트 채택 삭제
+    const checkPostDecrease = async (postId) => {
+        const response = await checkPostDeleteAPI(postId);
+        return response.data;
+    }
+
+    const handleLike = async(post) => {
+        if (isLogin) {
+            const postId = post.postId;
+            console.log(postId);
+            const newSendBraveClicked = { ...sendBraveClicked };
+
+            try {
+                let response;
+                if (newSendBraveClicked[postId]) {
+                    const response = await checkPostDecrease(postId); // 좋아요 감소 API 호출
+                    delete newSendBraveClicked[postId]; // postId에 대한 클릭 상태 삭제
+                } else {
+                    const response = await checkPostIncrease(postId); // 좋아요 증가 API 호출
+                    newSendBraveClicked[postId] = true; // postId에 대한 클릭 상태 true로 설정
+                }
+
+                setSendBraveClicked(newSendBraveClicked); // 상태 업데이트
+
+                console.log("배열확인",userData);
+                setUserData(prevUserData => ({
+                    ...prevUserData,
+                    postUpList: Object.keys(newSendBraveClicked).map(key => parseInt(key)), // 클릭된 postId들을 배열로 저장
+                }));
+
+                const updatedPostData = recentData.map(post => {
+                    if (post.postId === postId) {
+                        return {
+                            ...post,
+                            upCountPost: response.postUpCount
+                        };
+                    }
+                    return post;
+                });
+    
+                setRecentData(updatedPostData);
+
+            } catch (error) {
+                console.error('API 호출 실패:', error);
+                
+            }
+
+        } else {
+            setShowModal(true);
+        }
+    };
+
+
+      // 이미지 링크 추출 함수
+      const extractImageLink = (postData) => {
+        const fields = ['proBackground', 'solution', 'benefit'];
+
+        for (let field of fields) {
+            const value = postData[field];
+            if (value) { // value가 undefined나 null이 아닌 경우에만 match 메서드 호출
+              const match = value.match(/\[이미지:\s*(https?:\/\/[^\s\]]+)\]/);
+              if (match) {
+                return match[1];
+              }
+            }
+          }
+
+        return defaultblue;
+        };
+        
     return (
         <Container>
             <GlobalStyle />
@@ -56,8 +167,21 @@ function PopularPost() {
                         </PaginationDotContainer>
                     </Pagination>
                     <TwoContentContainer>
-                        <ImageContent title="포항시 생태공원조성 사업 제안합니다. 포항시 생태공원조성 사업 제안합니다. 어디까지가 끝일까요" author="김**님" due="D-1" initialLikes={143} truncateText={truncateText} />
-                        <ImageContent title="포항시 생태공원조성 사업 제안합니다." author="김**님" due="D-1" initialLikes={143} truncateText={truncateText} />
+                        {postsToDisplay.map((post, index) => (
+                            <ImageContent
+                                key={index}
+                                postImage= {extractImageLink(post)}
+                                title={post.title}
+                                author={post.userName}
+                                due={'D-'+post.deadLine}
+                                initialLikes={post.upCountPost}
+                                truncateText={truncateText}
+                                isLogin ={isLogin}
+                                setShowModal ={setShowModal}
+                                handleLike={() => handleLike(post)} 
+                                isLiked={sendBraveClicked[post.postId]} 
+                            />
+                        ))}
                     </TwoContentContainer>
                 </PopularContentContainer>
                 <RightArrowContainer>
@@ -66,28 +190,18 @@ function PopularPost() {
                     </RightArrowButton>
                 </RightArrowContainer>
             </PageMoveContent>
+            <LoginModal show={showModal} onClose={() => setShowModal(false)} />
         </Container>
     );
 }
 
 export default PopularPost;
 
-const ImageContent = ({ title, author, due, initialLikes, truncateText }) => {
-    const [likeCount, setLikeCount] = useState(initialLikes);
-    const [isLiked, setIsLiked] = useState(false);
-
-    const handleLike = () => {
-        if (isLiked) {
-            setLikeCount(likeCount - 1);
-        } else {
-            setLikeCount(likeCount + 1);
-        }
-        setIsLiked(!isLiked);
-    };
+const ImageContent = ({ postImage, title, author, due, initialLikes, truncateText,handleLike, isLiked }) => {
 
     return (
         <ImageContentContainer>
-            <img src={defaultblue} alt="content image" style={{ width: '424px', height: '300px' }} />
+            <img src={postImage} alt="게시글 이미지" style={{ width: '424px', height: '300px' }} />
             <ContentTitleText>
                 {truncateText(title, 43)} {/* title을 truncateText로 잘라내기 */}
             </ContentTitleText>
@@ -101,7 +215,7 @@ const ImageContent = ({ title, author, due, initialLikes, truncateText }) => {
             </DetailContainer>
             <DetailContainer>
                 <DetailText>공감수</DetailText>
-                <DetailText $color="#5A5A5A">{likeCount}</DetailText>
+                <DetailText $color="#5A5A5A">{initialLikes}</DetailText>
             </DetailContainer>
             <BraveButton onClick={handleLike} isLiked={isLiked}>
                 {isLiked ? '용길이 보내기' : '용길이 보내기'}
@@ -180,7 +294,7 @@ const MainTitle = styled.span`
     font-style: normal;
     font-weight: 700;
     line-height: 30px; /* 83.333% */
-    padding-bottom: 17px;
+    padding-bottom: 10px;
 `;
 
 const SubTitle = styled.div`
@@ -217,6 +331,9 @@ const Dot = styled.span`
 `;
 
 const ContentTitleText = styled.div`
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     height: 49px;
     color: #191919;
     font-family: "Min Sans";
@@ -270,7 +387,8 @@ const BraveButton = styled.button`
     color: ${(props) => (props.isLiked ? '#246BEB' : 'white')};
     border: none;
     align-self: stretch;
-    font-family: 'UhBeeJJIBBABBA';
+    font-family: "Min Sans-Regular";
+    font-weight: 600;
     cursor: pointer;
 
     &:hover {

@@ -5,30 +5,56 @@ import LoginModal from '../Login_Components/LoginModal';
 import ProfileImg from '../../Assets/Img/ProfileImg.svg';
 import { Outlet } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { loginTestState } from '../../Recoil/Atom';
+import { loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
 import { useRecoilState } from 'recoil';
+import { intToRegion } from '../SelectRegion_Components/IntToRegion';
+import { recentRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
 
 
 function Header() {
   const [showModal, setShowModal] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const navigate = useNavigate();
-  //로그인 테스트 상태 -추후 서버랑 연결해야함.
+  //로그인 테스트 상태 - 추후 서버랑 연결해야함.
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);
-
-  // const [routeStyle ,setRouteStyle ] =useState(true);
+  //유저 기본 정보 아톰에 저장
+  const [userData, setUserData] = useRecoilState(userinfo);
 
   const path = new URL(document.location.toString()).pathname;
 
+  //버튼 상태지정 
+  const [postLike, setPostLike] = useRecoilState(postLikeBtn);
+
   //로그인  - 이거 추후 서버 연결 후수정 필요함. 로그인 눌렀을 때 바로 로그아웃 상태 뜨지 않게.
-  const handleLoginClick = () => {
+  const handleLoginClick = async () => {
     setIsLogin(true);
     setShowModal(true);
+
+    //추후 로그인 모달 이후 작동할 로직
+    const response =  await userInfoGetAPI();
+    setUserData({
+      ...userData,
+      nickName: response.data.nickName,
+      local: response.data.local,
+      profileImage: response.data.profileImage,
+      postUpList: response.data.postUpList,
+      commentUpList: response.data.commentUpList
+    });
+    setPostLike(response.data.postUpList);
+
+    console.log("로긴",postLike);
+
   };
 
   //로그아웃
   const handleLogoutClick = () => {
     setIsLogin(false);
+    //로그아웃 했을 때 로컬 스토리지에 있는 유저의 정보를 제거함. 
+    localStorage.removeItem("userData");
+    if(path ==='/mypage'||path==='/writing'){
+    navigate('/');
+    }
+    window.location.reload();
   };
 
   //제안 게시판 클릭 -> 제안 게시판 페이지로 이동
@@ -36,7 +62,8 @@ function Header() {
     setActiveMenu(menu);
     //제안 게시판
     if(menu==='board'){
-    navigate('/list');
+    navigate('/listall');
+    // recentRegionPostGetAPI('?localPageId=' + userData.local);
     }
     //사이트 소개
     else if (menu ==='about'){
@@ -94,8 +121,8 @@ function Header() {
             <LoggedInContainer>
               <ProposalButton onClick={handleWriting}>제안하러가기</ProposalButton>
               <UserInfo>
-                <ProfileImage src={ProfileImg} alt="Profile" />
-                나무꾼님 / 포항시
+                <ProfileImage src={userData.profileImage} alt="Profile" />
+                {userData.nickName}님 / {intToRegion[userData.local]}
               </UserInfo>
               <MyPage onClick={handleMypage}>
                 마이페이지
@@ -203,7 +230,7 @@ const LoginButtonContainer = styled.div`
 const LoginButton = styled.button`
   color: #000;
   font-family: "Min Sans";
-  font-size: 14px;
+  font-size: 17px;
   font-style: normal;
   font-weight: 500;
   background: none;
@@ -222,7 +249,7 @@ const LoggedInContainer = styled.div`
   padding: 49px 0 21px 0; /* match the padding */
   color: #000;
   text-align: right;
-  font-family: "Min Sans";
+  font-family: "Min Sans-Regular";
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -234,7 +261,7 @@ const LoggedInContainer = styled.div`
 
 const ProposalButton = styled.button`
   display: flex;
-  width: 101px;
+  width: 110px;
   height: 35px;
   padding: 4px;
   justify-content: center;
@@ -249,7 +276,7 @@ const ProposalButton = styled.button`
   color: var(--Black-main, #191919);
   text-align: center;
   font-family: "Min Sans";
-  font-size: 14px;
+  font-size: 17px;
   font-style: normal;
   font-weight: 600;
   line-height: 20px;
@@ -267,7 +294,7 @@ const UserInfo = styled.div`
   color: var(--Black-main, #191919);
   text-align: right;
   font-family: "Min Sans";
-  font-size: 14px;
+  font-size: 17px;
   font-style: normal;
   font-weight: 500;
   line-height: 18px;
@@ -277,6 +304,7 @@ const ProfileImage = styled.img`
   width: 29px;
   height: 29px;
   cursor: pointer;
+  border-radius:50%;
 `;
 
 const MyPage = styled.button`
@@ -292,7 +320,7 @@ const MyPage = styled.button`
   color: var(--Black-main, #191919);
   text-align: right;
   font-family: "Min Sans";
-  font-size: 14px;
+  font-size: 17px;
   font-style: normal;
   font-weight: 500;
   line-height: 18px;
@@ -311,7 +339,7 @@ const Logout = styled.button`
   color: var(--Black-main, #191919);
   text-align: right;
   font-family: "Min Sans";
-  font-size: 14px;
+  font-size: 17px;
   font-style: normal;
   font-weight: 500;
   line-height: 18px;

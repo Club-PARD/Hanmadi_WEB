@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import styled, { css } from 'styled-components';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import '../../Assets/Style/quill.snow.custom.css';
 import SideHint from '../../Assets/Img/SideHint.svg';
 import WritingModal from './WritingModal';
 import { GlobalStyle } from '../../Assets/Style/theme';
-import { uploadImageAPI, uploadFileFetch, submitPostAPI } from '../../API/AxiosAPI.js';
+import { deleteFileAPI, uploadImageAPI, uploadFileFetch, submitPostAPI, saveTempPostAPI } from '../../API/AxiosAPI.js';
 
 // Custom font
 const fonts = ['Min Sans-Regular'];
@@ -14,59 +14,21 @@ const Font = Quill.import('formats/font');
 Font.whitelist = fonts;
 Quill.register(Font, true);
 
-const handleImageUpload = async (quill, file) => {
-  const imageUrls = await uploadImageAPI(file);
-  if (imageUrls && imageUrls.length > 0) {
-    const range = quill.getSelection();
-    imageUrls.forEach((url) => {
-      quill.insertEmbed(range.index, 'image', url);
-      range.index += 1; // Move the cursor to insert the next image after the current one
-    });
-    console.log('Uploaded image URLs:', imageUrls);
-  } else {
-    console.error('Image upload failed or no image URLs returned');
-  }
-};
-
-const modules = {
-  toolbar: {
-    container: [
-      [{ 'size': [] }],
-      ['bold'],
-      ['image']
-    ],
-    handlers: {
-      image: function() {
-        const input = document.createElement('input');
-        input.setAttribute('type', 'file');
-        input.setAttribute('accept', 'image/*');
-        input.onchange = async () => {
-          const file = input.files[0];
-          if (file) {
-            handleImageUpload(this.quill, file);
-          }
-        };
-        input.click();
-      }
-    }
-  },
-  clipboard: {
-    matchVisual: false,
-  },
-};
-
-const formats = [
-  'font', 'size', 'bold', 'image'
-];
-
 const Writing = () => {
+  const quillRefBackground = useRef(null);
+  const quillRefSolution = useRef(null);
+  const quillRefEffect = useRef(null);
+
   const [selectedButton, setSelectedButton] = useState(null);
   const [title, setTitle] = useState('');
   const [background, setBackground] = useState('');
   const [solution, setSolution] = useState('');
   const [effect, setEffect] = useState('');
-  const [fileNames, setFileNames] = useState([]);  // 화면에 표시될 파일 이름
-  const [fileRandomStrings, setFileRandomStrings] = useState([]);  // 서버에 전송될 랜덤 문자열
+  const [fileNames, setFileNames] = useState([]);
+  const [fileRandomStrings, setFileRandomStrings] = useState([]);
+  const [backgroundImageNames, setBackgroundImageNames] = useState([]);
+  const [solutionImageNames, setSolutionImageNames] = useState([]);
+  const [effectImageNames, setEffectImageNames] = useState([]);
 
   const [isWModalOpen, setIsWModalOpen] = useState(false);
   const [modalMethod, setModalMethod] = useState('');
@@ -88,7 +50,7 @@ const Writing = () => {
   const handleFileChange = async (e) => {
     const files = Array.from(e.target.files);
     const fileNamesArray = files.map(file => file.name);
-    setFileNames([...fileNames, ...fileNamesArray]);  // 화면에 표시될 파일 이름 설정
+    setFileNames([...fileNames, ...fileNamesArray]);
 
     try {
       const uploadedFiles = await Promise.all(files.map(file => uploadFileFetch(file)));
@@ -101,10 +63,176 @@ const Writing = () => {
     }
   };
 
-  const handleFileRemove = (index) => {
-    setFileNames(fileNames.filter((_, i) => i !== index));
-    setFileRandomStrings(fileRandomStrings.filter((_, i) => i !== index));
+  const handleFileRemove = async (index) => {
+    try {
+      const fileNameToRemove = fileRandomStrings[index];
+      console.log('Removing file with name:', fileNameToRemove);
+      
+      await deleteFileAPI(fileNameToRemove);
+
+      const updatedFileNames = [...fileNames];
+      const updatedFileRandomStrings = [...fileRandomStrings];
+
+      updatedFileNames.splice(index, 1);
+      updatedFileRandomStrings.splice(index, 1);
+
+      setFileNames(updatedFileNames);
+      setFileRandomStrings(updatedFileRandomStrings);
+
+      console.log('파일이 성공적으로 제거되었습니다:', fileNameToRemove);
+    } catch (error) {
+      console.error('파일 제거 중 오류 발생:', error);
+    }
   };
+
+  const handleImageUpload = useCallback(async (quill, file, setImageNames) => {
+    const reader = new FileReader();
+
+    reader.onload = async (e) => {
+      const localUrl = e.target.result;
+      const range = quill.getSelection();
+
+      quill.insertEmbed(range.index, 'image', localUrl);
+
+      try {
+        await uploadImageAPI(file);
+
+        setImageNames((prev) => [...prev, file.name]);
+        console.log('Uploaded image file name:', file.name);
+      } catch (error) {
+        console.error('Image upload failed:', error);
+      }
+    };
+
+    reader.readAsDataURL(file);
+  }, []);
+
+  const handleTextChange = (setter, imageSetter, editorRef) => (content, delta, source, editor) => {
+    if (editor.getLength() <= 5001) {
+      setter(content);
+      if (source === 'user') {
+        const currentContents = editor.getContents();
+        const newImageNames = [];
+        currentContents.ops.forEach(op => {
+          if (op.insert && op.insert.image) {
+            const src = op.insert.image;
+            const imageName = newImageNames.find(name => src.includes(name));
+            if (imageName) {
+              newImageNames.push(imageName);
+            }
+          }
+        });
+        imageSetter(newImageNames);
+      }
+    }
+    adjustEditorHeight(editorRef);
+  };
+
+  const adjustEditorHeight = (editorRef) => {
+    const editor = editorRef.current.getEditor();
+    const editorContainer = editor.root;
+    editorContainer.style.height = '250px'; // 기본 높이 설정
+    if (editorContainer.scrollHeight > 250) {
+      editorContainer.style.height = editorContainer.scrollHeight + 'px';
+    }
+  };
+
+  useEffect(() => {
+    adjustEditorHeight(quillRefBackground);
+  }, [background]);
+
+  useEffect(() => {
+    adjustEditorHeight(quillRefSolution);
+  }, [solution]);
+
+  useEffect(() => {
+    adjustEditorHeight(quillRefEffect);
+  }, [effect]);
+
+  const backgroundModules = useMemo(() => ({
+    toolbar: {
+      container: [
+        [{ 'size': [] }],
+        ['bold'],
+        ['image']
+      ],
+      handlers: {
+        image: function() {
+          const input = document.createElement('input');
+          input.setAttribute('type', 'file');
+          input.setAttribute('accept', 'image/*');
+          input.onchange = async () => {
+            const file = input.files[0];
+            if (file) {
+              handleImageUpload(this.quill, file, setBackgroundImageNames);
+            }
+          };
+          input.click();
+        }
+      }
+    },
+    clipboard: {
+      matchVisual: false,
+    },
+  }), [handleImageUpload]);
+
+  const solutionModules = useMemo(() => ({
+    toolbar: {
+      container: [
+        [{ 'size': [] }],
+        ['bold'],
+        ['image']
+      ],
+      handlers: {
+        image: function() {
+          const input = document.createElement('input');
+          input.setAttribute('type', 'file');
+          input.setAttribute('accept', 'image/*');
+          input.onchange = async () => {
+            const file = input.files[0];
+            if (file) {
+              handleImageUpload(this.quill, file, setSolutionImageNames);
+            }
+          };
+          input.click();
+        }
+      }
+    },
+    clipboard: {
+      matchVisual: false,
+    },
+  }), [handleImageUpload]);
+
+  const effectModules = useMemo(() => ({
+    toolbar: {
+      container: [
+        [{ 'size': [] }],
+        ['bold'],
+        ['image']
+      ],
+      handlers: {
+        image: function() {
+          const input = document.createElement('input');
+          input.setAttribute('type', 'file');
+          input.setAttribute('accept', 'image/*');
+          input.onchange = async () => {
+            const file = input.files[0];
+            if (file) {
+              handleImageUpload(this.quill, file, setEffectImageNames);
+            }
+          };
+          input.click();
+        }
+      }
+    },
+    clipboard: {
+      matchVisual: false,
+    },
+  }), [handleImageUpload]);
+
+  const formats = [
+    'font', 'size', 'bold', 'image'
+  ];
 
   const regionToInt = {
     '경산시': 0,
@@ -119,19 +247,31 @@ const Writing = () => {
     '포항시': 9
   };
 
+  const isSubmitDisabled = !selectedButton || !title || !background || !solution || !effect;
+
   const handleSubmit = async () => {
-    if (selectedButton === null) {
-      console.error('지역을 선택하지 않았습니다.');
+    if (isSubmitDisabled) {
       return;
     }
+
+    const replaceImageSrc = (html, imageNames) => {
+      const div = document.createElement('div');
+      div.innerHTML = html;
+      const images = div.getElementsByTagName('img');
+      Array.from(images).forEach((img, index) => {
+        const fileName = imageNames[index];
+        img.setAttribute('src', fileName);
+      });
+      return div.innerHTML;
+    };
 
     const postData = {
       title,
       postLocal: regionToInt[selectedButton],
-      proBackground: background,
-      solution,
-      benefit: effect,
-      fileNames: fileRandomStrings,  // 서버에 보낼 때 파일 랜덤 문자열 리스트를 포함
+      proBackground: replaceImageSrc(background, backgroundImageNames),
+      solution: replaceImageSrc(solution, solutionImageNames),
+      benefit: replaceImageSrc(effect, effectImageNames),
+      fileNames: fileRandomStrings,
       userId: 1,
       return: true,
     };
@@ -146,13 +286,46 @@ const Writing = () => {
     }
   };
 
+  const handleSave = async () => {
+    const replaceImageSrc = (html, imageNames) => {
+      const div = document.createElement('div');
+      div.innerHTML = html;
+      const images = div.getElementsByTagName('img');
+      Array.from(images).forEach((img, index) => {
+        const fileName = imageNames[index];
+        img.setAttribute('src', fileName);
+      });
+      return div.innerHTML;
+    };
+
+    const postData = {
+      title,
+      postLocal: regionToInt[selectedButton],
+      proBackground: replaceImageSrc(background, backgroundImageNames),
+      solution: replaceImageSrc(solution, solutionImageNames),
+      benefit: replaceImageSrc(effect, effectImageNames),
+      fileNames: fileRandomStrings,
+      userId: 1,
+      return: false, // 임시저장의 경우 false로 설정
+    };
+
+    console.log('임시 저장 데이터:', JSON.stringify(postData));
+
+    try {
+      const response = await saveTempPostAPI(postData);
+      console.log('서버 응답:', response.data);
+    } catch (error) {
+      console.error('임시 저장 중 오류 발생:', error);
+    }
+  };
+
   return (
     <Container>
       <GlobalStyle />
       <Intro>
         <TopButtonContainer>
           <BackButton onClick={() => handleWModalOpen('out')}>나가기</BackButton>
-          <SaveButton onClick={() => handleWModalOpen('save')}>임시저장</SaveButton>
+          <SaveButton onClick={handleSave}>임시저장</SaveButton>
         </TopButtonContainer>
         <RegionContainer>
           <SelectRegion>제안지역 선택하기</SelectRegion>
@@ -172,7 +345,7 @@ const Writing = () => {
       <WritingBody>
         <Section>
           <Label>제목</Label>
-          <TitleBox
+          <InputBox
             placeholder="제목을 입력해주세요"
             value={title}
             onChange={(e) => handleInputChange(setTitle)(e.target.value)}
@@ -184,10 +357,11 @@ const Writing = () => {
           </Label>
           <QuillContainer>
             <StyledQuill
+              ref={quillRefBackground}
               theme="snow"
               value={background}
-              onChange={setBackground}
-              modules={modules}
+              onChange={handleTextChange(setBackground, setBackgroundImageNames, quillRefBackground)}
+              modules={backgroundModules}
               formats={formats}
             />
           </QuillContainer>
@@ -198,10 +372,11 @@ const Writing = () => {
           </Label>
           <QuillContainer>
             <StyledQuill
+              ref={quillRefSolution}
               theme="snow"
               value={solution}
-              onChange={setSolution}
-              modules={modules}
+              onChange={handleTextChange(setSolution, setSolutionImageNames, quillRefSolution)}
+              modules={solutionModules}
               formats={formats}
             />
           </QuillContainer>
@@ -210,10 +385,11 @@ const Writing = () => {
           <Label>기대효과</Label>
           <QuillContainer>
             <StyledQuill
+              ref={quillRefEffect}
               theme="snow"
               value={effect}
-              onChange={setEffect}
-              modules={modules}
+              onChange={handleTextChange(setEffect, setEffectImageNames, quillRefEffect)}
+              modules={effectModules}
               formats={formats}
             />
           </QuillContainer>
@@ -236,12 +412,20 @@ const Writing = () => {
           </FileWrapper>
         </Section>
         <ButtonSection>
-          <PostButton onClick={handleSubmit}>게시하기</PostButton>
+          <PostButton onClick={handleSubmit} disabled={isSubmitDisabled}>
+            게시하기
+          </PostButton>
         </ButtonSection>
-        <Section>
+        <HiddenSection>
           <Label>파일 랜덤 문자열 상태 확인:</Label>
           <pre>{JSON.stringify(fileRandomStrings, null, 2)}</pre>
-        </Section>
+        </HiddenSection>
+        <HiddenSection>
+          <Label>이미지 파일 이름 상태 확인:</Label>
+          <pre>{JSON.stringify(backgroundImageNames, null, 2)}</pre>
+          <pre>{JSON.stringify(solutionImageNames, null, 2)}</pre>
+          <pre>{JSON.stringify(effectImageNames, null, 2)}</pre>
+        </HiddenSection>
       </WritingBody>
       <WritingModal
         isOpen={isWModalOpen}
@@ -288,10 +472,11 @@ const BackButton = styled.button`
   color: var(--Main-001, #005AFF);
   text-align: center;
   font-family: "MinSans-Regular";
-  font-size: 13.558px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 500;
-  line-height: 29.054px; /* 214.286% */
+  line-height: 150%;
+  white-space: nowrap;
 
   border-radius: 6.623px;
   border: 1px solid var(--Main-001, #005AFF);
@@ -301,7 +486,7 @@ const BackButton = styled.button`
 
 const SaveButton = styled.button`
   display: flex;
-  width: 70px;
+  width: 78px;
   height: 36px;
   padding: 10px;
   justify-content: center;
@@ -311,10 +496,11 @@ const SaveButton = styled.button`
   color: var(--white-001, #FFF);
   text-align: center;
   font-family: "MinSans-Regular";
-  font-size: 13.558px;
+  font-size: 16px;
   font-style: normal;
   font-weight: 500;
-  line-height: 29.054px; /* 214.286% */
+  line-height: 150%;
+  white-space: nowrap;
 
   border-radius: 6.623px;
   background: var(--Main-001, #005AFF);
@@ -361,7 +547,7 @@ const LocalButton = styled.button`
 
   color: ${({ selected }) => (selected ? '#005AFF' : '#707070')};
   font-family: "MinSans-Regular";
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
   line-height: 30px; /* 214.286% */
 
@@ -376,7 +562,8 @@ const LocalButton = styled.button`
     &:hover {
       background: rgba(236, 236, 236, 0.60);
       border: 1px solid #D6D6D6;
-    `}
+    }
+  `}
 `;
 
 const WritingBody = styled.div`
@@ -396,6 +583,10 @@ const Section = styled.div`
   width: 100%;
   margin-bottom: 20px;
   position: relative;
+`;
+
+const HiddenSection = styled(Section)`
+  display: none;
 `;
 
 const ButtonSection = styled.div`
@@ -423,10 +614,9 @@ const Hint = styled.span`
   margin-left: 8px;
 `;
 
-const TitleBox = styled.input`
+const sharedStyles = css`
   display: inline-flex;
   width: 880px;
-  height: 15px;
   padding: 20px;
   align-items: center;
   flex-shrink: 0;
@@ -435,6 +625,21 @@ const TitleBox = styled.input`
   background: var(--white-004, #FDFDFD);
   color: #393939;
   font-size: 22px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  
+  &:hover {
+    border-color: #B0B0B0;
+  }
+
+  &:focus-within {
+    border-color: var(--Main-001, #005AFF);
+    box-shadow: 0 0 0 3px rgba(0, 90, 255, 0.2);
+  }
+`;
+
+const InputBox = styled.input`
+  ${sharedStyles}
+  height: 15px;
   &::placeholder {
     color: #C7C7C7;
     font-size: 22px;
@@ -444,16 +649,17 @@ const TitleBox = styled.input`
 const QuillContainer = styled.div`
   width: 920px;
   .ql-container {
-    height: 250px;
-    border-radius: 20px;
+    ${sharedStyles}
+    min-height: 250px; /* 기본 높이 설정 */
+    max-height: 600px; /* 최대 높이 설정 */
+    overflow-y: auto; /* 내용이 많을 경우 스크롤바 표시 */
   }
 `;
 
 const StyledQuill = styled(ReactQuill)`
   .ql-container {
-    height: 250px;
     border-radius: 10px;
-    width: 920px;
+    width: 100%;
   }
 `;
 
@@ -471,22 +677,26 @@ const HintWrapper = styled.div`
 
 const PostButton = styled.button`
   display: flex;
-  width: 100px;
-  height: 36px;
+  width: 120px;
+  height: 50px;
   justify-content: center;
   align-items: center;
   padding: 10px;
   border-radius: 6px;
-  background: #005AFF;
-  color: #FFF;
+  background: ${({ disabled }) => (disabled ? '#ECECEC' : '#005AFF')};
+  color: ${({ disabled }) => (disabled ? '#A0A0A0' : '#FFF')};
   font-family: "MinSans-Regular";
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: 600;
   line-height: 20px;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   border: none;
   margin-top: 20px;
   align-self: flex-end;
+
+  &:hover {
+    background: ${({ disabled }) => (disabled ? '#ECECEC' : '#004EDC')};
+  }
 `;
 
 const FileWrapper = styled.div`
@@ -521,14 +731,14 @@ const FileInput = styled.input`
 const FileInputLabel = styled.label`
   display: flex;
   width: 72px;
-  height: 36px;
+  height: 50px;
   justify-content: center;
   align-items: center;
   border-radius: 6px;
   background: #005AFF;
   color: #FFF;
   font-family: "MinSans-Regular";
-  font-size: 14px;
+  font-size: 20px;
   font-weight: 500;
   line-height: 20px;
   cursor: pointer;

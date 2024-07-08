@@ -1,14 +1,38 @@
 import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ListBanner from "../../Assets/Img/ListBanner.svg";
+import { useRecoilState } from 'recoil';
+import { loginTestState, userinfo } from '../../Recoil/Atom';
+import { intToRegion, regionToInt } from '../SelectRegion_Components/IntToRegion';
+import { useNavigate } from 'react-router-dom';
 
 function ListSelectRegion() {
-  const [selectedButton, setSelectedButton] = useState('포항시');  // 초기값을 '포항시'로 설정
+  //기본적으로 보여줄 유저 데이터
+  const [userData, setUserData] = useRecoilState(userinfo);
+  //로그인 테스트 상태 -추후 서버랑 연결해야함.
+  const [isLogin, setIsLogin] = useRecoilState(loginTestState); 
+  //로그인 했을 때 안 했을 때 디폴트 로그인상태 변화
+  const defaultRegion = isLogin? intToRegion[userData.local]: intToRegion[0]
+  const [selectedButton, setSelectedButton] = useState(defaultRegion); 
+  const navigate =useNavigate();
 
   const handleButtonClick = (region) => {
-    setSelectedButton((prevSelected) => (prevSelected === region ? null : region));
+    setSelectedButton((prevSelected) => (prevSelected === region ? prevSelected : region));
+    if (region) {
+      navigate(`?localPageId=${regionToInt[region]}`);
+    }
   };
+
+  useEffect(()=>{
+    //로그인 했을 때 안 했을 때 디폴트 로그인상태 변화
+    const defaultRegion = isLogin? intToRegion[userData.local]: intToRegion[0]
+    
+    setSelectedButton(defaultRegion);
+
+    navigate(`?localPageId=${regionToInt[defaultRegion]}`);
+
+  },[isLogin])
 
   return (
     <Container>
@@ -74,26 +98,27 @@ const IntroContainer = styled.div`
   width: 377px;
   flex-direction: column;
   align-items: flex-start;
-  gap: 1px;
+  gap: 9px;
 `;
 
 const MainTitle = styled.div`
   align-self: stretch;
   color: #005AFF;
   font-family: 'MinSans-Regular';
-  font-size: 30px;
+  font-size: 36px;
   font-style: normal;
-  font-weight: 700;
-  line-height: 30px; /* 83.333% */
+  font-weight: 600;
+  line-height: 30px;
 `;
 
 const SubTitle = styled.div`
   color: #191919;
   font-family: 'MinSans-Regular';
-  font-size: 18px;
+  font-size: 22px;
   font-style: normal;
   font-weight: 500;
   line-height: 30px; /* 187.5% */
+  white-space: nowrap;
 `;
 
 const ButtonContainer = styled.div`
@@ -119,10 +144,11 @@ const LocalButton = styled.button`
   border-radius: 4px;
   border: 1px solid #D6D6D6;
   background: ${(props) => (props.selected ? 'rgba(0, 90, 255, 0.06)' : 'rgba(255, 255, 255, 0.60)')};
-  font-size: 16px;
+  font-size: 18px;
   color: #333;
   cursor: pointer;
   transition: background 0.3s, border 0.3s;
+  line-height: 150%;
 
   ${(props) =>
     !props.selected &&

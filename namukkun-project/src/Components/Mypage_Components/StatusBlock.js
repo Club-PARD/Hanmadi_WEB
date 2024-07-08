@@ -1,26 +1,26 @@
-import styled, { createGlobalStyle } from 'styled-components';
-import { BrowserRouter } from 'react-router-dom';
+import React from 'react';
+import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 
-function Banner() {
+function StatusBlockComponent({ ingCount, endCount, tempCount }) {
     return (
         <>
             <GlobalStyle/>
             <Container>
                 <AllStatusContainer>
                     <BlockContainer>
-                        <StatusBlock>
-                            <StatusNumber number={3}>3</StatusNumber>
+                        <StatusItem>
+                            <StatusNumber number={ingCount}>{ingCount}</StatusNumber>
                             <StatusTitle>진행중</StatusTitle>
-                        </StatusBlock>
-                        <StatusBlock>
-                            <StatusNumber number={3}>3</StatusNumber>
-                            <StatusTitle>진행중</StatusTitle>
-                        </StatusBlock>
-                        <StatusBlock>
-                            <StatusNumber number={0}>0</StatusNumber>
+                        </StatusItem>
+                        <StatusItem>
+                            <StatusNumber number={endCount}>{endCount}</StatusNumber>
+                            <StatusTitle>종료</StatusTitle>
+                        </StatusItem>
+                        <StatusItem>
+                            <StatusNumber number={tempCount}>{tempCount}</StatusNumber>
                             <StatusTitle>임시저장</StatusTitle>
-                        </StatusBlock>
+                        </StatusItem>
                     </BlockContainer>
                 </AllStatusContainer>
                 
@@ -29,7 +29,7 @@ function Banner() {
     );
 }
 
-export default Banner;
+export default StatusBlockComponent;
 
 const Container = styled.div`
     width: 100%;
@@ -53,7 +53,7 @@ const BlockContainer = styled.div`
     gap: 38px;
 `;
 
-const StatusBlock = styled.button`
+const StatusItem = styled.button`
     width: 210px;
     height: 146px;
     border-radius: 20px;

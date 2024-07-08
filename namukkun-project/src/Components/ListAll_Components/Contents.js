@@ -5,18 +5,13 @@ import Bigdefault from '../../Assets/Img/Bigdefault.svg';
 import sendbrave from '../../Assets/Img/sendbrave.svg';
 import onclicksendbrave from '../../Assets/Img/onclicksendbrave.svg';
 import hoversendbrave from '../../Assets/Img/hoversendbrave.svg';
+import { loginTestState } from "../../Recoil/Atom";
+import { useRecoilState } from "recoil";
 
 function Contents({ content, isClicked, onClick }) {
-  const [likeCount, setLikeCount] = useState(content.like);
-
-  const handleClick = () => {
-    if (isClicked) {
-      setLikeCount(likeCount - 1);
-    } else {
-      setLikeCount(likeCount + 1);
-    }
-    onClick(); // onClick 함수 호출
-  };
+  // const [likeCount, setLikeCount] = useState();
+  //로그인 테스트 상태 -추후 서버랑 연결해야함.
+  const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
 
   // 글자 컷 함수
   const truncateText = (text, maxLength) => {
@@ -26,9 +21,42 @@ function Contents({ content, isClicked, onClick }) {
     return text;
   };
 
+  //서버에서 받은 날짜 형태 변경
+  const formatDateString = (dateString) => {
+    return dateString.replace(/-/g, '.');
+  };
+
+  //proBackground에서 가장 먼저 나오는 이미지 태그 가져옴
+  function getFirstImgSrc(proBackground) {
+    // 가장 처음 나오는 <img> 태그를 찾는 정규 표현식
+    const imgTagRegex = /<img[^>]*src=["']([^"']+)["'][^>]*>/i;
+    const match = proBackground.match(imgTagRegex);
+    return match ? match[1] : Bigdefault;
+  }
+
+  // 이미지 링크 추출 함수
+  const extractImageLink = (postData) => {
+    const fields = ['proBackground', 'solution', 'benefit'];
+    
+    for (let field of fields) {
+      const value = postData[field];
+      if (value) { 
+        const match = value.match(/\[이미지:\s*(https?:\/\/[^\s\]]+)\]/);
+        if (match) {
+          return match[1];
+        }
+      }
+    }
+    
+    return Bigdefault;
+  };
+
+  //extractImageLink(content)
+  // console.log(extractImageLink(content.proBackground));
+
   return (
     <Div>
-      <PostImg src={Bigdefault} alt="content" /> {/* 이미지 placeholder */}
+      <PostImg src={extractImageLink(content)} alt="content" /> {/* 이미지 placeholder */}
       <ContentsDiv >
         <TitleDiv>{truncateText(content.title, 23)}</TitleDiv> 
         <KeyValueWrapper>
@@ -39,15 +67,15 @@ function Contents({ content, isClicked, onClick }) {
             <KeyTextDiv>작성일자</KeyTextDiv> 
           </KeyValueDiv>
           <KeyValueDiv style={{marginLeft:"16px"}}>
-            <ValueTextDiv>{content.name}</ValueTextDiv> 
-            <ValueTextDiv>{likeCount}</ValueTextDiv>
-            <ValueTextDiv>{content.comment}</ValueTextDiv> 
-            <ValueTextDiv>{content.date}</ValueTextDiv>
+            <ValueTextDiv>{content.userName}</ValueTextDiv> 
+            <ValueTextDiv>{content.upCountPost}</ValueTextDiv>
+            <ValueTextDiv>{content.comments.length}</ValueTextDiv> 
+            <ValueTextDiv>{formatDateString(content.postTime)}</ValueTextDiv>
           </KeyValueDiv>
         </KeyValueWrapper>
       </ContentsDiv>
       <SendBraveButton
-        onClick={handleClick} // 버튼 클릭 이벤트 처리
+        onClick={onClick} // 버튼 클릭 이벤트 처리
         isClicked={isClicked} // 버튼 클릭 상태 전달
       >
         <img src={isClicked ? onclicksendbrave : sendbrave} alt="send brave" /> {/* 클릭 상태에 따라 이미지 변경 */}
