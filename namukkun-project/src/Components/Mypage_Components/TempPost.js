@@ -4,52 +4,52 @@ import { GlobalStyle } from '../../Assets/Style/theme';
 import mypageduck from '../../Assets/Img/mypageduck.svg';
 
 function TempPost({ posts }) {
-    const truncateText = (text, maxLength) => {
-  if (!text) return ''; // text가 undefined 또는 null인 경우 빈 문자열 반환
-  if (text.length > maxLength) {
-    return text.slice(0, maxLength) + '...';
-  }
-  return text;
+const truncateText = (text, maxLength) => {
+if (!text) return ''; // text가 undefined 또는 null인 경우 빈 문자열 반환
+if (text.length > maxLength) {
+return text.slice(0, maxLength) + '...';
+}
+return text;
 };
 
 
-    return (
-        <>
-            <GlobalStyle />
-            <Container>
-                <IngContainer>
-                    <TotalIngContainer>
-                        <TotalTitleContainer>
-                            <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
-                            임시저장
-                        </TotalTitleContainer>
-                        <TotalContentContainer>
-                            <AllContentContainer>
-                                <InfoBarContainer>
-                                    <InfoTextContainer $paddingright='78px'>번호</InfoTextContainer>
-                                    <InfoTextContainer $paddingright='320px'>제목</InfoTextContainer>
-                                    <InfoTextContainer>작성일자</InfoTextContainer>
-                                </InfoBarContainer>
-                                {posts.slice(0, 1).map((post, index) => ( // 게시물을 딱 한 개만 보여줌
-                                    <ContentContainer key={post.postId}>
-                                        <NumberText>{index + 1}</NumberText>
-                                        <TitleText>{truncateText(post.title, 13)}</TitleText>
-                                        <DateText>{post.postTime}</DateText>
-                                        <ButtonContainer>
-                                            <AdviseButton>수정</AdviseButton>
-                                            <DeleteButton>삭제</DeleteButton>
-                                        </ButtonContainer>
-                                    </ContentContainer>
-                                ))}
-                                <SeeAllRecContainer>
-                                </SeeAllRecContainer>
-                            </AllContentContainer>
-                        </TotalContentContainer>
-                    </TotalIngContainer>
-                </IngContainer>
-            </Container>
-        </>
-    );
+return (
+<>
+<GlobalStyle />
+<Container>
+    <IngContainer>
+        <TotalIngContainer>
+            <TotalTitleContainer>
+                <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
+                임시저장
+            </TotalTitleContainer>
+            <TotalContentContainer>
+                <AllContentContainer>
+                    <InfoBarContainer>
+                        <InfoTextContainer $paddingright='78px'>번호</InfoTextContainer>
+                        <InfoTextContainer $paddingright='320px'>제목</InfoTextContainer>
+                        <InfoTextContainer>작성일자</InfoTextContainer>
+                    </InfoBarContainer>
+                    {posts.map((post, index) => (
+                        <ContentContainer key={post.postId}>
+                            <NumberText>{index + 1}</NumberText>
+                            <TitleText>{truncateText(post.title, 13)}</TitleText>
+                            <DateText>{post.postTime}</DateText>
+                            <ButtonContainer>
+                                <AdviseButton>수정</AdviseButton>
+                                <DeleteButton>삭제</DeleteButton>
+                            </ButtonContainer>
+                        </ContentContainer>
+                    ))}
+                    <SeeAllRecContainer>
+                    </SeeAllRecContainer>
+                </AllContentContainer>
+            </TotalContentContainer>
+        </TotalIngContainer>
+    </IngContainer>
+</Container>
+</>
+);
 }
 
 export default TempPost;
