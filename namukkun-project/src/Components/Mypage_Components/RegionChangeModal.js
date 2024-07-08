@@ -89,9 +89,9 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
   const patchUserInfo = async () =>{
     const data ={
       id : 1, //나중에 서버 연결 후 수정 필요
-      nickName: userData.nickName,
+      nickName: info.nickName,
       local: regionToInt[selectedButton],
-      profileImage : userData.profileImage
+      profileImage : info.profileImage
     }
     const response =await userPofilePatchAPI(data);
     setUserData({

@@ -3,7 +3,7 @@ import axios from "axios";
 const kakaoserver = process.env.REACT_APP_KAKAO_SERVER;
 const server = process.env.REACT_APP_SERVER;
 
-const post = process.env.REACT_APP_SERVER4;
+// const post = process.env.REACT_APP_SERVER4;
 
 // CORS 요청 시 쿠키를 포함하도록 설정
 // 로그인시 서버로부터 쿠키를 받음
@@ -39,7 +39,7 @@ export const uploadImageAPI = async (file) => {
     const formData = new FormData();
     formData.append('img', file);
 
-    const response = await axios.post(`${post}/post/upload/img`, formData, {
+    const response = await axios.post(`${server}/post/upload/img`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -57,7 +57,7 @@ export const uploadFileFetch = async (file) => {
     const formData = new FormData();
     formData.append('files', file);
 
-    const response = await axios.post(`${post}/post/upload/file`, formData, {
+    const response = await axios.post(`${server}/post/upload/file`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -73,7 +73,7 @@ export const uploadFileFetch = async (file) => {
 // '게시하기' 버튼을 눌렀을 때, 서버로 전송.
 export const submitPostAPI = async (postData) => {
   try {
-    const response = await axios.post(`${post}/post/upload/post`, postData, {
+    const response = await axios.post(`${server}/post/upload/post`, postData, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -88,7 +88,7 @@ export const submitPostAPI = async (postData) => {
 // 임시저장
 export const saveTempPostAPI = async (postData) => {
   try {
-    const response = await axios.post(`${post}/post/upload/temppost`, postData, {
+    const response = await axios.post(`${server}/post/upload/temppost`, postData, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -103,7 +103,7 @@ export const saveTempPostAPI = async (postData) => {
 // 첨부파일 '제거' 버튼을 눌렀을 때, 제거하기
 export const deleteFileAPI = async (fileName) => {
   try {
-    const response = await axios.post(`${post}/post/delete/file?fileName=${encodeURIComponent(fileName)}`, null, {
+    const response = await axios.post(`${server}/post/delete/file?fileName=${encodeURIComponent(fileName)}`, null, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -203,7 +203,7 @@ export const userPofilePatchAPI = async(data) =>{
   }
 }
 
-// 유저 정보 전달
+// 유저 정보 가져오기
 export const userInfoGetAPI = async() =>{
   try {
     const userid = 1; // 디버그용
@@ -286,5 +286,17 @@ export const allPostsGetAPI =async () =>{
   }
   catch(err){
     console.error(err);
+  }
+}
+// 마이페이지 유저 정보 가져오기
+export const getUserAllInfoAPI = async() => {
+  try {
+    const userid = 1; // 디버그용
+
+    const response = await axios.get(`${server}/user/info/all?userid=${userid}`);
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching all user info:', err);
+    throw err;
   }
 }

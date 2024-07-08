@@ -8,7 +8,7 @@ import TempPost from '../Components/Mypage_Components/TempPost';
 import advisepen from '../Assets/Img/advisepen.svg';
 import WritingModal from "../Components/WritingPage_Components/WritingModal";
 import RegionChangeModal from "../Components/Mypage_Components/RegionChangeModal";
-import { userInfoGetAPI } from "../API/AxiosAPI";
+import { getUserAllInfoAPI } from "../API/AxiosAPI";
 import { loginTestState, userinfo } from "../Recoil/Atom";
 import { useRecoilState } from "recoil";
 import { intToRegion } from "../Components/SelectRegion_Components/IntToRegion";
@@ -18,6 +18,13 @@ function MyPage() {
   //유저 기본 정보 아톰에 저장
   const [userData, setUserData] = useRecoilState(userinfo);
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);
+  
+  // New state to manage posts
+  const [posts, setPosts] = useState({
+    ingPosts: [],
+    endPosts: [],
+    tempPosts: [],
+  });
 
   //모달창 끌지 켤지 다루는 usestate
   const [isWModalOpen, setIsWModalOpen] = useState(false);
@@ -44,33 +51,53 @@ function MyPage() {
 
   //유저 데이터 불러오는 함수 
   const getUserInfo = async () =>{
-    const response =await userInfoGetAPI();
-    //아톰에 유저 정보 저장
-    setUserData({
-      ...userData,
-      nickName: response.data.nickName,
-      local: response.data.local,
-      profileImage: response.data.profileImage
-    })
-    console.log(response.data);
+    try {
+      const response = await getUserAllInfoAPI();
+      //아톰에 유저 정보 저장
+      setUserData({
+        ...userData,
+        nickName: response.userInfoDTO.nickName,
+        local: response.userInfoDTO.local,
+        profileImage: response.userInfoDTO.profileImage
+      });
+
+      // Categorize posts based on their properties
+      const ingPosts = [];
+      const endPosts = [];
+      const tempPosts = [];
+
+      response.posts.forEach(post => {
+        if (!post.isReturn) {
+          tempPosts.push(post);
+        } else if (post.isDone) {
+          endPosts.push(post);
+        } else {
+          ingPosts.push(post);
+        }
+      });
+
+      setPosts({ ingPosts, endPosts, tempPosts });
+      
+      console.log(response);
+    } catch (error) {
+      console.error('Error fetching user info:', error);
+    }
   };
 
   useEffect(()=>{
     //로그인이 됐을 때 유저 정보를 불러옴.
     if(isLogin){
-      const response =getUserInfo();
-      console.log(isLogin, response.data);
+      getUserInfo();
     }
   },[isLogin]);
 
 
   return (
     <div>
-      {/* <Header /> */}
       <StatusBlock />
-      <IngPost />
-      <EndPost />
-      <TempPost />
+      <IngPost posts={posts.ingPosts} />
+      <EndPost posts={posts.endPosts} />
+      <TempPost posts={posts.tempPosts} />
       <FixedButton $isSticky={isSticky}>
         <img src={userData.profileImage} style={{ width: '144px', height: '144px', borderRadius:'50%' }} alt="face" />
         <InfoContainer>
