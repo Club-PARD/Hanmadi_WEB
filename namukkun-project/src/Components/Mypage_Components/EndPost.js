@@ -1,16 +1,18 @@
+import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
-import { BrowserRouter } from 'react-router-dom';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import mypageduck from '../../Assets/Img/mypageduck.svg';
 import uploadarrow from '../../Assets/Img/uploadarrow.svg';
 
-function EndPost() {
+function EndPost({ posts }) {
     const truncateText = (text, maxLength) => {
-        if (text.length > maxLength) {
-            return text.slice(0, maxLength) + '...';
-        }
-        return text;
-    };
+  if (!text) return ''; // text가 undefined 또는 null인 경우 빈 문자열 반환
+  if (text.length > maxLength) {
+    return text.slice(0, maxLength) + '...';
+  }
+  return text;
+};
+
 
     return (
         <>
@@ -24,41 +26,43 @@ function EndPost() {
                         </TotalTitleContainer>
                         <TotalContentContainer>
                             <AllContentContainer>
-                                <ContentContainer>
-                                    <TitleInfoContainer>
-                                        <TitleFunctionContainer>
-                                            <EndButton>종료</EndButton>
-                                            <ContentTitle>{truncateText('포항시 문화생태마을 조성', 13)}</ContentTitle>
-                                            <AdviseButton>수정</AdviseButton>
-                                            <DeleteButton>삭제</DeleteButton>
-                                        </TitleFunctionContainer>
-                                        <InfoContainer>
-                                            <InfoTextContainer>
-                                                <InfoText>용길이 수</InfoText>
-                                                <InfoText>15</InfoText>
-                                            </InfoTextContainer>
-                                            <InfoTextContainer>
-                                                <InfoText>한마디 수</InfoText>
-                                                <InfoText>6</InfoText>
-                                            </InfoTextContainer>
-                                            <InfoTextContainer $marginright='16px'>
-                                                <InfoText>종료 일자</InfoText>
-                                                <InfoText>2024.07.02</InfoText>
-                                            </InfoTextContainer>
-                                            <InfoTextContainer>
-                                                <InfoText>작성일자</InfoText>
-                                                <InfoText>2024.07.02</InfoText>
-                                            </InfoTextContainer>
-                                        </InfoContainer>
-                                    </TitleInfoContainer>
-                                    <UploadButton>
-                                        국민신문고
-                                        <img src={uploadarrow} style={{ width: '14.4px', height: '4.9px' }} ></img>
-                                    </UploadButton>
-                                </ContentContainer>
+                                {posts.map(post => (
+                                    <ContentContainer key={post.postId}>
+                                        <TitleInfoContainer>
+                                            <TitleFunctionContainer>
+                                                <EndButton>종료</EndButton>
+                                                <ContentTitle>{truncateText(post.title, 13)}</ContentTitle>
+                                                <AdviseButton>수정</AdviseButton>
+                                                <DeleteButton>삭제</DeleteButton>
+                                            </TitleFunctionContainer>
+                                            <InfoContainer>
+                                                <InfoTextContainer>
+                                                    <InfoText>용길이 수</InfoText>
+                                                    <InfoText>{post.upCountPost}</InfoText>
+                                                </InfoTextContainer>
+                                                <InfoTextContainer>
+                                                    <InfoText>한마디 수</InfoText>
+                                                    <InfoText>{post.postitCount}</InfoText>
+                                                </InfoTextContainer>
+                                                <InfoTextContainer $marginright='16px'>
+                                                    <InfoText>종료 일자</InfoText>
+                                                    <InfoText>{post.deadline}</InfoText>
+                                                </InfoTextContainer>
+                                                <InfoTextContainer>
+                                                    <InfoText>작성일자</InfoText>
+                                                    <InfoText>{post.postTime}</InfoText>
+                                                </InfoTextContainer>
+                                            </InfoContainer>
+                                        </TitleInfoContainer>
+                                        <UploadButton>
+                                            국민신문고
+                                            <img src={uploadarrow} style={{ width: '14.4px', height: '4.9px' }} ></img>
+                                        </UploadButton>
+                                    </ContentContainer>
+                                ))}
                                 <SeeAllRecContainer>
                                     <SeeAllRecord>
-                                        1 / 1&nbsp;&nbsp;&nbsp;&nbsp;전체글 보러가기 --> 
+                                        &nbsp;&nbsp;&nbsp;&nbsp;전체글 보러가기 --> 
                                     </SeeAllRecord>
                                 </SeeAllRecContainer>
                             </AllContentContainer>

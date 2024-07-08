@@ -1,15 +1,17 @@
+import React from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
-import { BrowserRouter } from 'react-router-dom';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import mypageduck from '../../Assets/Img/mypageduck.svg';
 
-function Banner() {
+function TempPost({ posts }) {
     const truncateText = (text, maxLength) => {
-        if (text.length > maxLength) {
-            return text.slice(0, maxLength) + '...';
-        }
-        return text;
-    };
+  if (!text) return ''; // text가 undefined 또는 null인 경우 빈 문자열 반환
+  if (text.length > maxLength) {
+    return text.slice(0, maxLength) + '...';
+  }
+  return text;
+};
+
 
     return (
         <>
@@ -28,19 +30,18 @@ function Banner() {
                                     <InfoTextContainer $paddingright='320px'>제목</InfoTextContainer>
                                     <InfoTextContainer>작성일자</InfoTextContainer>
                                 </InfoBarContainer>
-                                <ContentContainer>
-                                    <NumberText>1</NumberText>
-                                    <TitleText>{truncateText('포항시 문화생태마을 조성', 13)}</TitleText>
-                                    <DateText>2024.07.02</DateText>
-                                    <ButtonContainer>
-                                        <AdviseButton>수정</AdviseButton>
-                                        <DeleteButton>삭제</DeleteButton>
-                                    </ButtonContainer>
-                                </ContentContainer>
+                                {posts.map((post, index) => (
+                                    <ContentContainer key={post.postId}>
+                                        <NumberText>{index + 1}</NumberText>
+                                        <TitleText>{truncateText(post.title, 13)}</TitleText>
+                                        <DateText>{post.postTime}</DateText>
+                                        <ButtonContainer>
+                                            <AdviseButton>수정</AdviseButton>
+                                            <DeleteButton>삭제</DeleteButton>
+                                        </ButtonContainer>
+                                    </ContentContainer>
+                                ))}
                                 <SeeAllRecContainer>
-                                    <SeeAllRecord>
-                                        1 / 1&nbsp;&nbsp;&nbsp;&nbsp;전체글 보러가기 --> 
-                                    </SeeAllRecord>
                                 </SeeAllRecContainer>
                             </AllContentContainer>
                         </TotalContentContainer>
@@ -51,7 +52,7 @@ function Banner() {
     );
 }
 
-export default Banner;
+export default TempPost;
 
 const Container = styled.div`
     width: 100%;
