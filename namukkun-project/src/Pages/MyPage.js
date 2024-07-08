@@ -69,11 +69,11 @@ function MyPage() {
 
       response.posts.forEach(post => {
         console.log(post);  // 여기에서 post의 실제 값을 출력해봅시다.
-        if (!post.isReturn) {
+        if (!post.return) {
           tempPosts.push(post);
-        } else if (post.isReturn && !post.isDone) {
+        } else if (post.return && !post.done) {
           ingPosts.push(post);
-        } else if (post.isReturn && post.isDone) {
+        } else if (post.return && post.done) {
           endPosts.push(post);
         }
       });
