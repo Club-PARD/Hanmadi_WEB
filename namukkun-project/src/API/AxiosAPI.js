@@ -3,7 +3,7 @@ import axios from "axios";
 const kakaoserver = process.env.REACT_APP_KAKAO_SERVER;
 const server = process.env.REACT_APP_SERVER;
 
-const post = process.env.REACT_APP_SERVER3;
+const post = process.env.REACT_APP_SERVER4;
 
 // CORS 요청 시 쿠키를 포함하도록 설정
 // 로그인시 서버로부터 쿠키를 받음
