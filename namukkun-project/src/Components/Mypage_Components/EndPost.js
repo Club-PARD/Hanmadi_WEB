@@ -25,7 +25,7 @@ function EndPost({ posts }) {
                         </TotalTitleContainer>
                         <TotalContentContainer>
                             <AllContentContainer>
-                                {posts.map(post => (
+                                {posts.slice(0, 3).map(post => ( // 게시물을 최대 3개만 보여줌
                                     <ContentContainer key={post.postId}>
                                         <TitleInfoContainer>
                                             <TitleFunctionContainer>
@@ -294,3 +294,4 @@ const SeeAllRecord = styled.div`
     cursor: pointer;
     white-space: nowrap; /* 줄 바꿈 방지 */
 `;
+

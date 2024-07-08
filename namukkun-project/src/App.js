@@ -12,6 +12,8 @@ import Postit from './Pages/Postit';
 import WritingPage from './Pages/WritingPage';
 import AboutPage from './Components/About_Components/AboutPage';
 import ListAllPage from './Pages/ListAllPage';
+import IngAll from './Components/Mypage_Components/IngAll';
+import EndAll from './Components/Mypage_Components/EndAll';
 
 //Pages 폴더로부터 컴포넌트를 가져와서 라우터 연결  
 function App() {
@@ -26,6 +28,8 @@ function App() {
         <Route path='/postit/:postId' element={<Postit/>}/>
         <Route path='/about' element={<AboutPage/>}/>
         <Route path='/listall' element={<ListAllPage/>}/>
+        <Route path='/mypage/ingall' element={<IngAll/>}/>
+        <Route path='/mypage/endall' element={<EndAll/>}/>
       </Route>
       <Route path='/login/oauth2/code/kakao' element={<KaKaoLogin/>}/>
       <Route path='/selectregion' element={<SelectRegionPage/>}/>

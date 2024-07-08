@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const kakaoserver = process.env.REACT_APP_KAKAO_SERVER;
-const server = process.env.REACT_APP_SERVER;
+const server = process.env.REACT_APP_SERVER4;
 
 // const post = process.env.REACT_APP_SERVER4;
 
