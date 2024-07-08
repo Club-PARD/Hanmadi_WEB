@@ -1,24 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import rightpagearrow from '../../Assets/Img/rightpagearrow.svg';
 import leftpagearrow from '../../Assets/Img/leftpagearrow.svg';
 import defaultblue from '../../Assets/Img/defaultblue.svg';
 import { useRecoilState } from 'recoil';
-import { loginTestState } from '../../Recoil/Atom';
+import { getRecentRegion, loginTestState, userinfo } from '../../Recoil/Atom';
 import LoginModal from '../Login_Components/LoginModal';
+import { useLocation } from 'react-router-dom';
+import { checkPostDeleteAPI, checkPostPostAPI, recentRegionPostGetAPI } from '../../API/AxiosAPI';
 
 function PopularPost() {
     const [isClicked, setIsClicked] = useState(false);
     // 진행중이 기본값
     const [activeButton, setActiveButton] = useState('진행중'); 
     // sendbravebutton 클릭 상태
-    const [sendBraveClicked, setSendBraveClicked] = useState([false, false, false, false, false, false]);
+    const [sendBraveClicked, setSendBraveClicked] = useState({});
     const [activeDot, setActiveDot] = useState(0); // pagination 상태
 
     //로그인 테스트 상태 -추후 서버랑 연결해야함.
-    const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
+    const [isLogin, setIsLogin] = useRecoilState(loginTestState); 
+    
+    const [recentData, setRecentData] = useRecoilState(getRecentRegion); 
+   
     const [showModal, setShowModal] = useState(false);
+
+    // 기본적으로 보여줄 유저 데이터
+    const [userData, setUserData] = useRecoilState(userinfo);
+
+    const location = useLocation();
+    const getPathRegion = location.search;
 
     const handleDotClick = (index) => {
         setActiveDot(index);
@@ -39,35 +50,71 @@ function PopularPost() {
         return text;
     };
 
-    // 더미 데이터 - 서버 연결 후 삭제
-    const newposts = [
-        { postImage: defaultblue, title: "포항시 생태공원조성 사업 제안합니다. 포항시 생태공원조성 사업 제안합니다. 어디까지가 끝일까요", author: "김**님", due: "D-1", likes: 143 },
-        { postImage: defaultblue, title: "포항시 생태공원조성 사업 제안합니다.", author: "김**님", due: "D-1", likes: 143 },
-        { postImage: defaultblue,  title: "학교에 자전거 보관소 설치를 요청합니다.", author: "이**님", due: "D-10", likes: 200 },
-        { postImage: defaultblue, title: "도서관에 신간 도서 추가를 부탁드립니다.", author: "박**님", due: "D-5", likes: 98 },
-        { postImage: defaultblue, title: "공원에 더 많은 벤치를 설치해 주세요.", author: "최**님", due: "D-15", likes: 75 },
-        { postImage: defaultblue,  title: "지역 주민을 위한 헬스장 건립을 건의합니다.", author: "정**님", due: "D-20", likes: 120 },
-        { postImage: defaultblue,  title: "지역 주민을 위한 헬스장 건립을 건의합니다.", author: "정**님", due: "D-20", likes: 120 },
-        { postImage: defaultblue,  title: "지역 주민을 위한 헬스장 건립을 건의합니다.", author: "정**님", due: "D-20", likes: 120 },
-    ];
+    useEffect(()=>{
+        const recent = async() =>{
+            const response = await recentRegionPostGetAPI(getPathRegion);
+            setRecentData(response.data);
+        };
+
+        recent();
+
+    },[getPathRegion, sendBraveClicked]);
 
     // 현재 페이지에 해당하는 게시글들만 선택
-    const postsToDisplay = newposts.slice(activeDot * 2, activeDot * 2 + 2);
+    const postsToDisplay = recentData.slice(activeDot * 2, activeDot * 2 + 2);
 
-    const handleLike = (index) => {
+
+    // 포스트 채택
+    const checkPostIncrease = async (postId) => {
+        const response = await checkPostPostAPI(postId);
+        return response.data; 
+    }
+
+    // 포스트 채택 삭제
+    const checkPostDecrease = async (postId) => {
+        const response = await checkPostDeleteAPI(postId);
+        return response.data;
+    }
+
+    const handleLike = async(post) => {
         if (isLogin) {
-            // sendBraveClicked 배열에서 클릭된 버튼의 상태를 토글
-            const updatedClicked = [...sendBraveClicked];
-            updatedClicked[activeDot * 2 + index] = !updatedClicked[activeDot * 2 + index];
-            setSendBraveClicked(updatedClicked);
+            const postId = post.postId;
+            console.log(postId);
+            const newSendBraveClicked = { ...sendBraveClicked };
 
-            // 좋아요 수 증가/감소 처리
-            const updatedPosts = [...newposts];
-            updatedPosts[activeDot * 2 + index] = {
-                ...updatedPosts[activeDot * 2 + index],
-                likes: updatedPosts[activeDot * 2 + index].likes + (updatedClicked[index] ? 1 : -1)
-            };
-            // setNewPosts(updatedPosts); // 실제 서버 연결 후 업데이트하는 방식으로 변경
+            try {
+                let response;
+                if (newSendBraveClicked[postId]) {
+                    const response = await checkPostDecrease(postId); // 좋아요 감소 API 호출
+                    delete newSendBraveClicked[postId]; // postId에 대한 클릭 상태 삭제
+                } else {
+                    const response = await checkPostIncrease(postId); // 좋아요 증가 API 호출
+                    newSendBraveClicked[postId] = true; // postId에 대한 클릭 상태 true로 설정
+                }
+
+                setSendBraveClicked(newSendBraveClicked); // 상태 업데이트
+
+                setUserData(prevUserData => ({
+                    ...prevUserData,
+                    postUpList: Object.keys(newSendBraveClicked).map(key => parseInt(key)), // 클릭된 postId들을 배열로 저장
+                }));
+
+                const updatedPostData = recentData.map(post => {
+                    if (post.postId === postId) {
+                        return {
+                            ...post,
+                            upCountPost: response.postUpCount
+                        };
+                    }
+                    return post;
+                });
+    
+                setRecentData(updatedPostData);
+
+            } catch (error) {
+                console.error('API 호출 실패:', error);
+            }
+
         } else {
             setShowModal(true);
         }
@@ -102,16 +149,16 @@ function PopularPost() {
                         {postsToDisplay.map((post, index) => (
                             <ImageContent
                                 key={index}
-                                postImage= {post.postImage}
+                                postImage= {defaultblue}
                                 title={post.title}
-                                author={post.author}
-                                due={post.due}
-                                initialLikes={post.likes}
+                                author={post.userName}
+                                due={'D-'+post.deadLine}
+                                initialLikes={post.upCountPost}
                                 truncateText={truncateText}
                                 isLogin ={isLogin}
                                 setShowModal ={setShowModal}
-                                handleLike={() => handleLike(index)} 
-                                isLiked={sendBraveClicked[activeDot * 2 + index]} 
+                                handleLike={() => handleLike(post)} 
+                                isLiked={sendBraveClicked[post.postId]} 
                             />
                         ))}
                     </TwoContentContainer>
@@ -130,12 +177,6 @@ function PopularPost() {
 export default PopularPost;
 
 const ImageContent = ({ postImage, title, author, due, initialLikes, truncateText,handleLike, isLiked }) => {
-    const [likeCount, setLikeCount] = useState(initialLikes);
-
-    const handleButtonClick = () => {
-        handleLike();
-        setLikeCount((prevCount) => prevCount + (isLiked ? -1 : 1));
-    };
 
     return (
         <ImageContentContainer>
@@ -153,9 +194,9 @@ const ImageContent = ({ postImage, title, author, due, initialLikes, truncateTex
             </DetailContainer>
             <DetailContainer>
                 <DetailText>공감수</DetailText>
-                <DetailText $color="#5A5A5A">{likeCount}</DetailText>
+                <DetailText $color="#5A5A5A">{initialLikes}</DetailText>
             </DetailContainer>
-            <BraveButton onClick={handleButtonClick} isLiked={isLiked}>
+            <BraveButton onClick={handleLike} isLiked={isLiked}>
                 {isLiked ? '용길이 보내기' : '용길이 보내기'}
             </BraveButton>
         </ImageContentContainer>

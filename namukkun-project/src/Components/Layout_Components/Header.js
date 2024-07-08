@@ -22,6 +22,9 @@ function Header() {
 
   const path = new URL(document.location.toString()).pathname;
 
+  //버튼 상태지정 
+  const [postLike, setPostLike] = useRecoilState(postLikeBtn);
+
   //로그인  - 이거 추후 서버 연결 후수정 필요함. 로그인 눌렀을 때 바로 로그아웃 상태 뜨지 않게.
   const handleLoginClick = async () => {
     setIsLogin(true);
@@ -35,7 +38,8 @@ function Header() {
       profileImage: response.data.profileImage,
       postUpList: response.data.postUpList,
       commentUpList: response.data.commentUpList
-    })
+    });
+
   };
 
   //로그아웃
@@ -55,7 +59,7 @@ function Header() {
     //제안 게시판
     if(menu==='board'){
     navigate('/listall');
-    recentRegionPostGetAPI('?localPageId=' + userData.local);
+    // recentRegionPostGetAPI('?localPageId=' + userData.local);
     }
     //사이트 소개
     else if (menu ==='about'){

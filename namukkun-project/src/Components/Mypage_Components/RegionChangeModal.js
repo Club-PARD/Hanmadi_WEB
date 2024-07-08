@@ -105,7 +105,7 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
 
   const profileEditChagne =(e)=>{
     e.preventDefault();
-    patchUserInfo(info);
+    patchUserInfo();
     closeModal();
     console.log(info);
   }

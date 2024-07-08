@@ -67,3 +67,9 @@ export const getPopularRegion = atom({
   key: 'getPopularRegion',
   default: [],
 });
+
+//최신글 포스트 get
+export const getRecentRegion = atom({
+  key: 'getRecentRegion',
+  default: [],
+});

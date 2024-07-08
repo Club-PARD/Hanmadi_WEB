@@ -4,7 +4,7 @@ import Contents from "./Contents";
 import arrowleft from '../../Assets/Img/Arrowleft.svg';
 import arrowright from '../../Assets/Img/Arrowright.svg';
 import { useRecoilState } from "recoil";
-import { getPopularRegion, loginTestState, pagenation, postLikeBtn, userinfo } from "../../Recoil/Atom";
+import { getPopularRegion, getRecentRegion, loginTestState, pagenation, postLikeBtn, userinfo } from "../../Recoil/Atom";
 import LoginModal from "../Login_Components/LoginModal";
 import { useLocation } from "react-router-dom";
 import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
@@ -28,6 +28,7 @@ function ShowList() {
   const [getpostData, setGetPostData] = useState([]);
 
   const [PopularData, setPopularData] = useRecoilState(getPopularRegion);
+  const [recentData, setRecentData] = useRecoilState(getRecentRegion); 
 
   // 전체 글에 대한 추천/최신 필터 버튼
   const onClickFilterBtn = (filterValue) => {
@@ -47,6 +48,7 @@ function ShowList() {
     return response.data;
   }
 
+  // console.log("affaf", postLike);
   // 버튼 클릭 상태 관리
   const [sendBraveClicked, setSendBraveClicked] = useState(postLike)
   ;
@@ -70,11 +72,14 @@ function ShowList() {
           response = await checkPostDecrease(content.postId); // 좋아요 감소 API 호출
         }
       
-      // 유저 데이터 업데이트
-      setUserData({
-        ...userData,
-        postUpList: response.upList
-      });
+      if(response.postId ===postId){
+        // 유저 데이터 업데이트
+        setUserData({
+          ...userData,
+          postUpList: response.postId
+        });
+
+      }
 
       // postId에 해당하는 포스트의 upCount 추출
       const upcount = response.find(post => post.postId === postId)?.postUpCount;
@@ -91,6 +96,7 @@ function ShowList() {
       });
   
       setGetPostData(updatedPostData);
+      console.log("hi", sendBraveClicked);
   
       } catch (error) {
         console.error("Error updating post:", error);
@@ -98,6 +104,7 @@ function ShowList() {
     } else {
       setShowModal(true);
     }
+
   };
 
   // 버튼 상태 변화 시 서버에서 유저 데이터를 가져옴
@@ -120,12 +127,14 @@ function ShowList() {
     const response = getUserInfo();
     console.log("유저 데이터", response);
     setPostLike(sendBraveClicked);
-  }, [sendBraveClicked]);
+
+  }, [sendBraveClicked, postLike]);
 
   // 지역별 최신순
   const getPostsListallrecent = async (gerPathRegion) => {
     const response = await recentRegionPostGetAPI(gerPathRegion);
     setGetPostData(response.data);
+    setRecentData(response.data)
     console.log("데이터 확인", getpostData);
   }
 
@@ -138,6 +147,7 @@ function ShowList() {
   }
 
   useEffect(() => {
+
     if (filter === 'recent') {
       console.log("최신");
       getPostsListallrecent(gerPathRegion);
