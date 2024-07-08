@@ -3,7 +3,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import mypageduck from '../../Assets/Img/mypageduck.svg';
 
-function TempPost({ posts }) {
+function TempPost({ posts , setUpdate, update}) {
 const truncateText = (text, maxLength) => {
 if (!text) return ''; // text가 undefined 또는 null인 경우 빈 문자열 반환
 if (text.length > maxLength) {
