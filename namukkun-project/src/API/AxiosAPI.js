@@ -1,7 +1,9 @@
 import axios from "axios";
 
 const kakaoserver = process.env.REACT_APP_KAKAO_SERVER;
-const server = process.env.REACT_APP_SERVER;
+const server = process.env.REACT_APP_SERVER4;
+
+const myPage = process.env.REACT_APP_SERVER;
 
 const post = process.env.REACT_APP_SERVER4;
 
@@ -203,7 +205,7 @@ export const userPofilePatchAPI = async(data) =>{
   }
 }
 
-// 유저 정보 전달
+// 유저 정보 가져오기
 export const userInfoGetAPI = async() =>{
   try {
     const userid = 1; // 디버그용
@@ -213,5 +215,18 @@ export const userInfoGetAPI = async() =>{
   } catch (err) {
     console.error(err);
     throw err ;
+  }
+}
+
+// 마이페이지 유저 정보 가져오기
+export const getUserAllInfoAPI = async() => {
+  try {
+    const userid = 1; // 디버그용
+
+    const response = await axios.get(`${myPage}/user/info/all?userid=${userid}`);
+    return response.data;
+  } catch (err) {
+    console.error('Error fetching all user info:', err);
+    throw err;
   }
 }
