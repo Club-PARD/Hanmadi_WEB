@@ -6,6 +6,7 @@ import sendbrave from '../../Assets/Img/sendbrave.svg';
 import onclicksendbrave from '../../Assets/Img/onclicksendbrave.svg';
 import hoversendbrave from '../../Assets/Img/hoversendbrave.svg';
 import fileimg from '../../Assets/Img/fileimg.svg';
+import { getPost } from '../../API/AxiosAPI';
 
 function DetailContent(){
     const [isClicked, setIsClicked] = useState(false);

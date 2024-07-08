@@ -33,16 +33,6 @@ const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment,
         postit.x = newPosition.x;
         postit.y = newPosition.y;
 
-        console.log('Moving postit:', {
-            postItId: postit.postItId,
-            postId: 1,
-            commentId: postit.commentId,
-            userId: postit.userId,
-            x: newPosition.x,
-            y: newPosition.y,
-            z: postit.z
-        });
-
         try {
             await movePostit(postit.userId, {
                 postItId: postit.postItId,
@@ -85,7 +75,8 @@ const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment,
         <Draggable
             bounds="parent"
             position={position}
-            onStart={() => {
+            onStart={(e) => {
+                e.stopPropagation(); // 이벤트 버블링 방지
                 bringToFront(postit.postItId);
                 onStart();
             }}
@@ -99,14 +90,23 @@ const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment,
                             <PostWriting>{truncateText(postit.content, 90)}</PostWriting>
                         </PostitContent>
                         <ButtonContainer>
-                            <MoveButton onClick={onMove}>
+                            <MoveButton onClick={(e) => {
+                                e.stopPropagation(); // 이벤트 버블링 방지
+                                onMove();
+                            }}>
                                 <img src={nextbutton} alt='nextbutton' style={{ width: '67px', height: '30px' }}/>
                             </MoveButton>
-                            <ScrollButton onClick={onScrollToComment}>댓글 보러가기</ScrollButton>
+                            <ScrollButton onClick={(e) => {
+                                e.stopPropagation(); // 이벤트 버블링 방지
+                                onScrollToComment();
+                            }}>댓글 보러가기</ScrollButton>
                         </ButtonContainer>
                     </PostitWriteButtonContainer>
                     <DeleteButtonContainer>
-                        <DeleteButton onClick={onDelete}>
+                        <DeleteButton onClick={(e) => {
+                            e.stopPropagation(); // 이벤트 버블링 방지
+                            onDelete();
+                        }}>
                             <img src={close} alt='close' style={{ width: '10px', height: '10px' }}/>
                         </DeleteButton>
                     </DeleteButtonContainer>

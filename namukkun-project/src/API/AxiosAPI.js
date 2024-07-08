@@ -315,7 +315,6 @@ export const movePostit = async (userId, postitData) => {
 
 //postit section이동
 export const movePostitSection = async (userId, postitId, section) => {
-  console.log(`Move Postit Section: ${userId}, ${postitId}, ${section}`);
   try {
       const response = await axios.patch(`${server}/post/postit/sectionmove`, null, {
           params: {
@@ -324,6 +323,7 @@ export const movePostitSection = async (userId, postitId, section) => {
               section: section
           }
       });
+      console.log(`Move Postit Section: ${userId}, ${postitId}, ${section}`);
       return response.data;
   } catch (error) {
       console.error('Error moving postit section:', error);
@@ -442,3 +442,16 @@ export const getUserAllInfoAPI = async() => {
     throw err;
   }
 }
+
+// 상세 페이지
+
+// 상세 내용 가져오기
+// export const getPost =async () =>{
+//   try{
+//     const response = await axios.get(`${server}/post/read?id=${id}`);
+//     return response;
+//   }
+//   catch(err){
+//     console.error(err);
+//   }
+// }
