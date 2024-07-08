@@ -18,9 +18,9 @@ function PopularPost() {
     //진행중/ 종료 필터 상태 관리 // 진행중이 기본값
     const [activeButton, setActiveButton] = useState('진행중');
 
-    // const [postLike, setPostLike] = useRecoilState(postLikeBtn);
+    const [sendBraveClicked, setSendBraveClicked] = useRecoilState(postLikeBtn);
     // sendbravebutton 클릭 상태
-    const [sendBraveClicked, setSendBraveClicked] = useState({}); // 객체로 변경
+    // const [sendBraveClicked, setSendBraveClicked] = useState({}); // 객체로 변경
 
     const [PopData, setPopData] = useRecoilState(getPopularRegion);
 
@@ -104,10 +104,16 @@ function PopularPost() {
 
                 setSendBraveClicked(newSendBraveClicked); // 상태 업데이트
 
-                setUserData(prevUserData => ({
-                    ...prevUserData,
-                    postUpList: Object.keys(newSendBraveClicked).map(key => parseInt(key)), // 클릭된 postId들을 배열로 저장
-                }));
+                setUserData(prevUserData => {
+                    const updatedPostUpList = newSendBraveClicked[postId]
+                        ? [...prevUserData.postUpList, postId] // postId 추가
+                        : prevUserData.postUpList.filter(id => id !== postId); // postId 제거
+    
+                    return {
+                        ...prevUserData,
+                        postUpList: updatedPostUpList,
+                    };
+                });
             } catch (error) {
                 console.error('API 호출 실패:', error);
             }

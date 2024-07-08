@@ -39,6 +39,7 @@ function Header() {
       postUpList: response.data.postUpList,
       commentUpList: response.data.commentUpList
     });
+    setPostLike(response.data.postUpList);
 
   };
 

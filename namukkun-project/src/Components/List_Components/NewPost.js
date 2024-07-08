@@ -5,7 +5,7 @@ import rightpagearrow from '../../Assets/Img/rightpagearrow.svg';
 import leftpagearrow from '../../Assets/Img/leftpagearrow.svg';
 import defaultblue from '../../Assets/Img/defaultblue.svg';
 import { useRecoilState } from 'recoil';
-import { getRecentRegion, loginTestState, userinfo } from '../../Recoil/Atom';
+import { getRecentRegion, loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
 import LoginModal from '../Login_Components/LoginModal';
 import { useLocation } from 'react-router-dom';
 import { checkPostDeleteAPI, checkPostPostAPI, recentRegionPostGetAPI } from '../../API/AxiosAPI';
@@ -15,7 +15,8 @@ function PopularPost() {
     // 진행중이 기본값
     const [activeButton, setActiveButton] = useState('진행중'); 
     // sendbravebutton 클릭 상태
-    const [sendBraveClicked, setSendBraveClicked] = useState({});
+    const [sendBraveClicked, setSendBraveClicked] = useRecoilState(postLikeBtn);
+    // const [sendBraveClicked, setSendBraveClicked] = useState({});
     const [activeDot, setActiveDot] = useState(0); // pagination 상태
 
     //로그인 테스트 상태 -추후 서버랑 연결해야함.
@@ -55,8 +56,8 @@ function PopularPost() {
             const response = await recentRegionPostGetAPI(getPathRegion);
             setRecentData(response.data);
         };
-
         recent();
+        
 
     },[getPathRegion, sendBraveClicked]);
 
@@ -94,6 +95,7 @@ function PopularPost() {
 
                 setSendBraveClicked(newSendBraveClicked); // 상태 업데이트
 
+                console.log("배열확인",userData);
                 setUserData(prevUserData => ({
                     ...prevUserData,
                     postUpList: Object.keys(newSendBraveClicked).map(key => parseInt(key)), // 클릭된 postId들을 배열로 저장
@@ -113,6 +115,7 @@ function PopularPost() {
 
             } catch (error) {
                 console.error('API 호출 실패:', error);
+                
             }
 
         } else {
