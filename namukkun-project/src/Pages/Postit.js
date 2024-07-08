@@ -13,7 +13,7 @@ import DraggablePostit from '../Components/Postit_Components/DraggablePostit';
 import {
     fetchComments, deleteComment, createComment, toggleLikeComment,
     toggleTakeComment, fetchPostits, createPostit, deletePostit, movePostit,
-    movePostitSection
+    movePostitSection, getUserInfo
 } from '../API/AxiosAPI';
 import DetailContent from "../Components/Postit_Components/DetailContent";
 import sendcomment from '../Assets/Img/sendcomment.svg';
@@ -58,13 +58,19 @@ function Postit() {
     useEffect(() => {
         const loadCommentsAndPostits = async () => {
             try {
-                const [commentsData, postitsData] = await Promise.all([
+                const [commentsData, postitsData, userInfo] = await Promise.all([
                     fetchComments(1), // postId를 1로 고정
-                    fetchPostits(1) // postId를 1로 고정
+                    fetchPostits(1), // postId를 1로 고정
+                    getUserInfo(userId)
                 ]);
 
+                const likedComments = userInfo.commentUpList || [];
+
                 // 댓글을 commentId 내림차순으로 정렬하여 최신 댓글이 위로 오게 함
-                const sortedComments = commentsData.sort((a, b) => b.id - a.id);
+                const sortedComments = commentsData.sort((a, b) => b.id - a.id).map(comment => ({
+                    ...comment,
+                    liked: likedComments.includes(comment.id)
+                }));
                 setComments(sortedComments);
 
                 const sortedPostits = postitsData.sort((a, b) => a.z - b.z);
@@ -124,7 +130,7 @@ function Postit() {
         try {
             await toggleLikeComment(commentId, userId, newLikedStatus);
             const updatedComments = comments.map(comment => 
-                comment.id === commentId ? { ...comment, liked: newLikedStatus } : comment
+                comment.id === commentId ? { ...comment, liked: newLikedStatus, upCounter: comment.upCounter + (newLikedStatus ? 1 : -1) } : comment
             );
             setComments(updatedComments);
         } catch (error) {

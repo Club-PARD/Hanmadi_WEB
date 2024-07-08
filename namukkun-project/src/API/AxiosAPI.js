@@ -209,6 +209,20 @@ export const toggleLikeComment = async (commentid, userid, up) => {
   }
 };
 
+export const getUserInfo = async (userid) => {
+  try {
+    const response = await axios.get(`${server}/user/info`, {
+      params: {
+        userid
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user info:', error);
+    throw error;
+  }
+};
+
 
 //comment 채택
 export const toggleTakeComment = async (commentid, userid, take) => {

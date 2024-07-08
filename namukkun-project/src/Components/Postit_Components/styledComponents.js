@@ -290,7 +290,7 @@ export const LikeButton = styled.button`
 
 // 추천 수 스타일
 export const LikeCount = styled.div`
-    width: 22.75px;
+    width: 35px;
     font-size: 14px;
 `;
 
