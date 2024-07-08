@@ -23,7 +23,7 @@ function App() {
         <Route path='/list' element={<ListPage/>}/>
         <Route path='/mypage' element={<MyPage/>}/>
         <Route path='/writing' element={<WritingPage/>}/>
-        <Route path='/postit' element={<Postit/>}/>
+        <Route path='/postit/:postId' element={<Postit/>}/>
         <Route path='/about' element={<AboutPage/>}/>
         <Route path='/listall' element={<ListAllPage/>}/>
       </Route>

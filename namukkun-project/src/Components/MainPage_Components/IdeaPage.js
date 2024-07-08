@@ -6,6 +6,7 @@ import { useRecoilState } from 'recoil';
 import { loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
 import LoginModal from '../Login_Components/LoginModal';
 import { allPostsRecommendGetAPI, checkPostDeleteAPI, checkPostPostAPI, userInfoGetAPI } from '../../API/AxiosAPI';
+import { useNavigate } from 'react-router-dom';
 
 function IdeaPage() { 
     const [showModal, setShowModal] = useState(false);
@@ -97,31 +98,30 @@ function IdeaPage() {
     }
     
 
-// 좋아요 버튼 클릭 처리
-const handleLike = async(postId) => {
-    if (sendBraveClicked[postId]) { // 이미 좋아요를 클릭한 상태인 경우
-        const newLikeStatus = { ...sendBraveClicked };
-        await checkPostDecrease(postId);
-        delete newLikeStatus[postId]; // postId에 대한 클릭 상태 삭제
-        setSendBraveClicked(newLikeStatus); // 클릭 상태 업데이트
+    // 좋아요 버튼 클릭 처리
+    const handleLike = async(postId) => {
+        if (sendBraveClicked[postId]) { // 이미 좋아요를 클릭한 상태인 경우
+            const newLikeStatus = { ...sendBraveClicked };
+            await checkPostDecrease(postId);
+            delete newLikeStatus[postId]; // postId에 대한 클릭 상태 삭제
+            setSendBraveClicked(newLikeStatus); // 클릭 상태 업데이트
 
-        // 아톰에 저장된 사용자 데이터 업데이트
-        setUserData(prevUserData => ({
-            ...prevUserData,
-            postUpList: prevUserData.postUpList.filter(id => id !== postId), // postId 제거
-        }));
-    } else { // 좋아요를 클릭하지 않은 상태인 경우
-        await checkPostIncrease(postId);
-        setSendBraveClicked({ ...sendBraveClicked, [postId]: true }); // postId에 대한 클릭 상태 true로 설정
+            // 아톰에 저장된 사용자 데이터 업데이트
+            setUserData(prevUserData => ({
+                ...prevUserData,
+                postUpList: prevUserData.postUpList.filter(id => id !== postId), // postId 제거
+            }));
+        } else { // 좋아요를 클릭하지 않은 상태인 경우
+            await checkPostIncrease(postId);
+            setSendBraveClicked({ ...sendBraveClicked, [postId]: true }); // postId에 대한 클릭 상태 true로 설정
 
-        // 아톰에 저장된 사용자 데이터 업데이트
-        setUserData(prevUserData => ({
-            ...prevUserData,
-            postUpList: [...prevUserData.postUpList, postId], // postId 추가
-        }));
-    }
-};
-
+            // 아톰에 저장된 사용자 데이터 업데이트
+            setUserData(prevUserData => ({
+                ...prevUserData,
+                postUpList: [...prevUserData.postUpList, postId], // postId 추가
+            }));
+        }
+    };
     
     return (
         <Container>
@@ -161,6 +161,7 @@ const ImageContent = ({ postId, image, title, author, due, initialLikes, setShow
 
     //로그인 테스트 상태 -추후 서버랑 연결해야함.
     const [isLogin, setIsLogin] = useRecoilState(loginTestState); 
+    const navigate = useNavigate();
 
     const handleClickLike = () => {
         if(isLogin){
@@ -171,10 +172,15 @@ const ImageContent = ({ postId, image, title, author, due, initialLikes, setShow
         }
     };
 
+    //상세페이지로 이동
+    const navigateToPost = (postId) => {
+        navigate(`/postit/${postId}`);
+    };
+
     return (
         <ImageContentContainer>
             <img src={image} alt="포스트 이미지" style={{ width: '515px', height:"359px" }} />
-            <ContentTitleText>
+            <ContentTitleText onClick={()=>navigateToPost(postId)}>
                 {title}
             </ContentTitleText>
             <Details>
