@@ -27,12 +27,18 @@ export const loginTestState = atom({
 
 // 서버에서 가져온 유저 정보 로컬스토리지에 저장
 export const userinfo = atom({
-  key: 'userinfo',
-  default: {
-    nickName: "",
-    local: 0,
-    profileImage: ""
-  },
+  key : 'userinfo',
+  default:
+    {
+      nickName: "",
+      local: 0,
+      profileImage: "",
+      postUpList: [
+      ],
+      commentUpList: [
+      ]
+    },
+
   effects: [
     ({ setSelf, onSet }) => {
       const saveSessionData = localStorage.getItem("userData");
@@ -49,6 +55,24 @@ export const userinfo = atom({
   ]
 });
 
+//포스트 좋아요 버튼 상태
+export const postLikeBtn = atom({
+  key: 'postLikeBtn',
+  default: {},
+});
+
+
+//인기글 포스트 get
+export const getPopularRegion = atom({
+  key: 'getPopularRegion',
+  default: [],
+});
+
+//최신글 포스트 get
+export const getRecentRegion = atom({
+  key: 'getRecentRegion',
+  default: [],
+});
 // 임시 저장 게시물 상태
 export const tempPostState = atom({
   key: 'tempPostState',
