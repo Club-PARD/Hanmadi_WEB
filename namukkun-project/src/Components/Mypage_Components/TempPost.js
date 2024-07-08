@@ -1,16 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import mypageduck from '../../Assets/Img/mypageduck.svg';
+import DeleteModal from './DeleteModal';
 
 function TempPost({ posts , setUpdate, update}) {
-const truncateText = (text, maxLength) => {
-if (!text) return ''; // text가 undefined 또는 null인 경우 빈 문자열 반환
-if (text.length > maxLength) {
-return text.slice(0, maxLength) + '...';
-}
-return text;
-};
+
+    const [isWModalOpen, setIsWModalOpen] = useState(false);
+    const [getpostid, setGetPostid] = useState(null);
+
+    const truncateText = (text, maxLength) => {
+    if (!text) return ''; // text가 undefined 또는 null인 경우 빈 문자열 반환
+    if (text.length > maxLength) {
+    return text.slice(0, maxLength) + '...';
+    }
+    return text;
+    };
+
+    const handleWModalOpen = (postId) => {
+        setIsWModalOpen(!isWModalOpen);
+        setGetPostid(postId);
+    };
 
 
 return (
@@ -48,6 +58,13 @@ return (
         </TotalIngContainer>
     </IngContainer>
 </Container>
+<DeleteModal
+    isOpen={isWModalOpen}
+    closeModal={handleWModalOpen}
+    postId ={getpostid}
+    setUpdate ={setUpdate}
+    update= {update}
+></DeleteModal>
 </>
 );
 }
