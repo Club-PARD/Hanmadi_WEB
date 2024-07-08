@@ -5,9 +5,10 @@ import LoginModal from '../Login_Components/LoginModal';
 import ProfileImg from '../../Assets/Img/ProfileImg.svg';
 import { Outlet } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { loginTestState, userinfo } from '../../Recoil/Atom';
+import { loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
 import { useRecoilState } from 'recoil';
 import { intToRegion } from '../SelectRegion_Components/IntToRegion';
+import { recentRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
 
 
 function Header() {
@@ -21,10 +22,28 @@ function Header() {
 
   const path = new URL(document.location.toString()).pathname;
 
+  //버튼 상태지정 
+  const [postLike, setPostLike] = useRecoilState(postLikeBtn);
+
   //로그인  - 이거 추후 서버 연결 후수정 필요함. 로그인 눌렀을 때 바로 로그아웃 상태 뜨지 않게.
-  const handleLoginClick = () => {
+  const handleLoginClick = async () => {
     setIsLogin(true);
     setShowModal(true);
+
+    //추후 로그인 모달 이후 작동할 로직
+    const response =  await userInfoGetAPI();
+    setUserData({
+      ...userData,
+      nickName: response.data.nickName,
+      local: response.data.local,
+      profileImage: response.data.profileImage,
+      postUpList: response.data.postUpList,
+      commentUpList: response.data.commentUpList
+    });
+    setPostLike(response.data.postUpList);
+
+    console.log("로긴",postLike);
+
   };
 
   //로그아웃
@@ -35,6 +54,7 @@ function Header() {
     if(path ==='/mypage'||path==='/writing'){
     navigate('/');
     }
+    window.location.reload();
   };
 
   //제안 게시판 클릭 -> 제안 게시판 페이지로 이동
@@ -43,6 +63,7 @@ function Header() {
     //제안 게시판
     if(menu==='board'){
     navigate('/listall');
+    // recentRegionPostGetAPI('?localPageId=' + userData.local);
     }
     //사이트 소개
     else if (menu ==='about'){

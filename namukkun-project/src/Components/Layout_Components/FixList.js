@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from "recoil";
-import { pagenation, stateListCategory } from "../../Recoil/Atom";
+import { pagenation, stateListCategory, userinfo } from "../../Recoil/Atom";
+import { recentRegionPostGetAPI } from "../../API/AxiosAPI";
 
 function FixList() {
   const navigate = useNavigate();
   const [chagnePage, setChagnePage] = useRecoilState(stateListCategory);
   const [currentPage, setCurrentPage] = useRecoilState(pagenation);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  //유저 기본 정보 아톰에 저장
+  const [userData, setUserData] = useRecoilState(userinfo);
 
   const onClickListMenu = (category) => {
     setChagnePage(category);
@@ -21,9 +24,10 @@ function FixList() {
     setCurrentPage(1);
 
     if (category === 'recent') {
-      navigate('/listall');
+      navigate('/listall?localPageId='+ userData.local);
+      // recentRegionPostGetAPI('?localPageId=' + userData.local);
     } else if (category === 'popular') {
-      navigate('/list');
+      navigate('/list?localPageId='+ userData.local);
     }
   }
 
