@@ -3,7 +3,7 @@ import axios from "axios";
 const kakaoserver = process.env.REACT_APP_KAKAO_SERVER;
 const server = process.env.REACT_APP_SERVER;
 
-const post = process.env.REACT_APP_SERVER3;
+const post = process.env.REACT_APP_SERVER4;
 
 // CORS 요청 시 쿠키를 포함하도록 설정
 // 로그인시 서버로부터 쿠키를 받음
@@ -84,6 +84,21 @@ export const submitPostAPI = async (postData) => {
     throw error;
   }
 };
+
+// 임시저장
+export const saveTempPostAPI = async (postData) => {
+  try {
+    const response = await axios.post(`${post}/post/upload/temppost`, postData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error('Temporary post save failed:', error);
+    throw error;
+  }
+}
 
 // 첨부파일 '제거' 버튼을 눌렀을 때, 제거하기
 export const deleteFileAPI = async (fileName) => {
