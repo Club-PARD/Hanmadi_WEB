@@ -15,7 +15,7 @@ import { intToRegion } from "../Components/SelectRegion_Components/IntToRegion";
 
 function MyPage() {
   const [isSticky, setIsSticky] = useState(false);
-  //유저 기본 정보 아톰에 저장
+  // 유저 기본 정보 아톰에 저장
   const [userData, setUserData] = useRecoilState(userinfo);
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);
   
@@ -26,10 +26,10 @@ function MyPage() {
     tempPosts: [],
   });
 
-  //모달창 끌지 켤지 다루는 usestate
+  // 모달창 끌지 켤지 다루는 usestate
   const [isWModalOpen, setIsWModalOpen] = useState(false);
 
-  //모달창 관리하는 함수
+  // 모달창 관리하는 함수
   const handleWModalOpen = () => {
     setIsWModalOpen(!isWModalOpen);
   };
@@ -49,11 +49,12 @@ function MyPage() {
     };
   }, []);
 
-  //유저 데이터 불러오는 함수 
-  const getUserInfo = async () =>{
+  // 유저 데이터 불러오는 함수 
+  const getUserInfo = async () => {
     try {
       const response = await getUserAllInfoAPI();
-      //아톰에 유저 정보 저장
+      console.log('API Response:', response);
+      // 아톰에 유저 정보 저장
       setUserData({
         ...userData,
         nickName: response.userInfoDTO.nickName,
@@ -67,14 +68,19 @@ function MyPage() {
       const tempPosts = [];
 
       response.posts.forEach(post => {
+        console.log(post);  // 여기에서 post의 실제 값을 출력해봅시다.
         if (!post.isReturn) {
           tempPosts.push(post);
-        } else if (post.isDone) {
-          endPosts.push(post);
-        } else {
+        } else if (post.isReturn && !post.isDone) {
           ingPosts.push(post);
+        } else if (post.isReturn && post.isDone) {
+          endPosts.push(post);
         }
       });
+
+      console.log('ingPosts:', ingPosts);
+      console.log('endPosts:', endPosts);
+      console.log('tempPosts:', tempPosts);
 
       setPosts({ ingPosts, endPosts, tempPosts });
       
@@ -84,22 +90,25 @@ function MyPage() {
     }
   };
 
-  useEffect(()=>{
-    //로그인이 됐을 때 유저 정보를 불러옴.
-    if(isLogin){
+  useEffect(() => {
+    // 로그인이 됐을 때 유저 정보를 불러옴.
+    if (isLogin) {
       getUserInfo();
     }
-  },[isLogin]);
-
+  }, [isLogin]);
 
   return (
     <div>
-      <StatusBlock />
+      <StatusBlock 
+        ingCount={posts.ingPosts.length} 
+        endCount={posts.endPosts.length} 
+        tempCount={posts.tempPosts.length} 
+      />
       <IngPost posts={posts.ingPosts} />
       <EndPost posts={posts.endPosts} />
       <TempPost posts={posts.tempPosts} />
       <FixedButton $isSticky={isSticky}>
-        <img src={userData.profileImage} style={{ width: '144px', height: '144px', borderRadius:'50%' }} alt="face" />
+        <img src={userData.profileImage} style={{ width: '144px', height: '144px', borderRadius: '50%' }} alt="face" />
         <InfoContainer>
             <InfoName>이름</InfoName>
             <InfoContent>{userData.nickName}</InfoContent>
