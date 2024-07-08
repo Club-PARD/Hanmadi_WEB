@@ -34,9 +34,29 @@ function Contents({ content, isClicked, onClick }) {
     return match ? match[1] : Bigdefault;
   }
 
+  // 이미지 링크 추출 함수
+  const extractImageLink = (postData) => {
+    const fields = ['proBackground', 'solution', 'benefit'];
+    
+    for (let field of fields) {
+      const value = postData[field];
+      if (value) { 
+        const match = value.match(/\[이미지:\s*(https?:\/\/[^\s\]]+)\]/);
+        if (match) {
+          return match[1];
+        }
+      }
+    }
+    
+    return Bigdefault;
+  };
+
+  //extractImageLink(content)
+  // console.log(extractImageLink(content.proBackground));
+
   return (
     <Div>
-      <PostImg src={getFirstImgSrc(content.proBackground)} alt="content" /> {/* 이미지 placeholder */}
+      <PostImg src={extractImageLink(content)} alt="content" /> {/* 이미지 placeholder */}
       <ContentsDiv >
         <TitleDiv>{truncateText(content.title, 23)}</TitleDiv> 
         <KeyValueWrapper>

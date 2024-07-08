@@ -162,6 +162,23 @@ function PopularPost() {
         navigate('/listall');
     };
 
+      // 이미지 링크 추출 함수
+        const extractImageLink = (postData) => {
+        const fields = ['proBackground', 'solution', 'benefit'];
+
+        for (let field of fields) {
+            const value = postData[field];
+            if (value) { // value가 undefined나 null이 아닌 경우에만 match 메서드 호출
+              const match = value.match(/\[이미지:\s*(https?:\/\/[^\s\]]+)\]/);
+              if (match) {
+                return match[1];
+              }
+            }
+          }
+
+        return defaultwhite;
+        };
+
     return (
         <Container>
             <GlobalStyle />
@@ -192,7 +209,7 @@ function PopularPost() {
                 {popularFilterData.slice(0, 4).map((item, index) => (
                     <ContentImageContainer key={index}>
                         <ImageContainer>
-                            <img src={defaultwhite} alt="content image" style={{ width: '209px', height: '134px' }} />
+                            <img src={extractImageLink(item)} alt="게시글 이미지" style={{ width: '209px', height: '134px' }} />
                             <ContentTextContainer>
                                 <ContentTitleText>
                                     {truncateText(item.title, 52)}

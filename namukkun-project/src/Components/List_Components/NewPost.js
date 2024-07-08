@@ -122,6 +122,24 @@ function PopularPost() {
             setShowModal(true);
         }
     };
+
+
+      // 이미지 링크 추출 함수
+      const extractImageLink = (postData) => {
+        const fields = ['proBackground', 'solution', 'benefit'];
+
+        for (let field of fields) {
+            const value = postData[field];
+            if (value) { // value가 undefined나 null이 아닌 경우에만 match 메서드 호출
+              const match = value.match(/\[이미지:\s*(https?:\/\/[^\s\]]+)\]/);
+              if (match) {
+                return match[1];
+              }
+            }
+          }
+
+        return defaultblue;
+        };
         
     return (
         <Container>
@@ -152,7 +170,7 @@ function PopularPost() {
                         {postsToDisplay.map((post, index) => (
                             <ImageContent
                                 key={index}
-                                postImage= {defaultblue}
+                                postImage= {extractImageLink(post)}
                                 title={post.title}
                                 author={post.userName}
                                 due={'D-'+post.deadLine}
@@ -183,7 +201,7 @@ const ImageContent = ({ postImage, title, author, due, initialLikes, truncateTex
 
     return (
         <ImageContentContainer>
-            <img src={postImage} alt="content image" style={{ width: '424px', height: '300px' }} />
+            <img src={postImage} alt="게시글 이미지" style={{ width: '424px', height: '300px' }} />
             <ContentTitleText>
                 {truncateText(title, 43)} {/* title을 truncateText로 잘라내기 */}
             </ContentTitleText>
