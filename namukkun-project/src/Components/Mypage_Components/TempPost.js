@@ -239,3 +239,4 @@ const SeeAllRecord = styled.div`
     line-height: 20px; /* 142.857% */
     cursor: pointer;
 `
+
