@@ -64,7 +64,7 @@ function Postit() {
                 ]);
 
                 // 댓글을 commentId 내림차순으로 정렬하여 최신 댓글이 위로 오게 함
-                const sortedComments = commentsData.sort((a, b) => b.commentId - a.commentId);
+                const sortedComments = commentsData.sort((a, b) => b.id - a.id);
                 setComments(sortedComments);
 
                 const sortedPostits = postitsData.sort((a, b) => a.z - b.z);
@@ -101,7 +101,8 @@ function Postit() {
                         section: "right",
                         liked: false
                     };
-                    setComments([updatedNewComment, ...comments]); // 최신 댓글을 가장 위에 추가
+                    const updatedComments = [updatedNewComment, ...comments];
+                    setComments(updatedComments); // 최신 댓글을 가장 위에 추가
                     setNewComment('');
                     setDesignIndex((designIndex + 1) % 3);
                     setHighestZIndex(highestZIndex + 1);

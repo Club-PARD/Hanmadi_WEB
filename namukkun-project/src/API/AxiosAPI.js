@@ -121,6 +121,7 @@ export const submitPostAPI = async (postData) => {
 export const fetchComments = async (postId) => {
     try {
         const response = await axios.get(`${server}/post/comment?postid=${postId}`);
+        console.log('get comment', response.data);
         return response.data;
     } catch (error) {
         console.error('Error fetching comments:', error);
