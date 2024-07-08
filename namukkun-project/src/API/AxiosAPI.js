@@ -85,6 +85,21 @@ export const submitPostAPI = async (postData) => {
   }
 };
 
+// 임시저장
+export const saveTempPostAPI = async (postData) => {
+  try {
+    const response = await axios.post(`${post}/post/upload/temppost`, postData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error('Temporary post save failed:', error);
+    throw error;
+  }
+}
+
 // 첨부파일 '제거' 버튼을 눌렀을 때, 제거하기
 export const deleteFileAPI = async (fileName) => {
   try {
