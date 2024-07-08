@@ -9,16 +9,16 @@ import { allPostsGetAPI } from '../../API/AxiosAPI';
 
 function GreatIdeaPage() {
 
-    const [allPopularPosts, setAllPopularPosts] =useState([]);
+    const [allPosts, setAllPosts] =useState([]);
 
-    const allPopularFunc = async () =>{
+    const allPostsFunc = async () =>{
         const response = await allPostsGetAPI();
-        setAllPopularPosts(response.data);
+        setAllPosts(response.data);
         console.log(response);
     }
 
     useEffect(()=>{
-        allPopularFunc();
+        allPostsFunc();
     },[])
 
     // 글자 컷 함수
@@ -60,25 +60,25 @@ function GreatIdeaPage() {
                         <TitleText>다른 지역의 한마디도 함께</TitleText>
                     </LineTextContainer>
                 </TextContainer>
-                {allPopularPosts.slice(0, 2).map((content, index) => (
+                {allPosts.slice(0, 2).map((content, index) => (
                     <ContentImageContainer key={index}>
                     <ContentTextContainer>
                         <ContentTitleText>{truncateText(content.title,25)}</ContentTitleText>
                         <DetailContainer>
                         <DetailText>작성자</DetailText>
-                        <DetailText $color="#5A5A5A">{content.author}</DetailText>
+                        <DetailText $color="#5A5A5A">{content.userName}</DetailText>
                         </DetailContainer>
                         <DetailContainer>
                         <DetailText>공감수</DetailText>
-                        <DetailText $color="#5A5A5A">{content.empathyCount}</DetailText>
+                        <DetailText $color="#5A5A5A">{content.upCountPost}</DetailText>
                         </DetailContainer>
                         <DetailContainer>
                         <DetailText $paddingright='16px'>응원 한마디</DetailText>
-                        <DetailText $color="#5A5A5A">{content.cheeringCount}</DetailText>
+                        <DetailText $color="#5A5A5A">{content.comments.length}</DetailText>
                         </DetailContainer>
                     </ContentTextContainer>
                     <ImageContainer>
-                        <img src={defaultblue} alt="content image" style={{ width: '234px' }}/>
+                        <img src={extractImageLink(content)} alt="content image" style={{ width: '234px' }}/>
                     </ImageContainer>
                     </ContentImageContainer>
                 ))}

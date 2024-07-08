@@ -209,7 +209,7 @@ function PopularPost() {
                 {popularFilterData.slice(0, 4).map((item, index) => (
                     <ContentImageContainer key={index}>
                         <ImageContainer>
-                            <img src={extractImageLink(item)} alt="게시글 이미지" style={{ width: '209px', height: '134px' }} />
+                            <img src={extractImageLink(item)} alt="프로필 이미지" style={{ width: '209px', height: '134px' }} />
                             <ContentTextContainer>
                                 <ContentTitleText>
                                     {truncateText(item.title, 52)}

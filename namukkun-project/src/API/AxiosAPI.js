@@ -288,6 +288,7 @@ export const allPostsGetAPI =async () =>{
     console.error(err);
   }
 }
+
 // 마이페이지 유저 정보 가져오기
 export const getUserAllInfoAPI = async() => {
   try {

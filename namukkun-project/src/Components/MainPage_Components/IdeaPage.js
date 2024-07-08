@@ -1,39 +1,127 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
-import defaultwhite from '../../Assets/Img/defaultwhite.svg';
+import hanmadiv from '../../Assets/Img/hanmadiv.svg';
 import { useRecoilState } from 'recoil';
-import { loginTestState } from '../../Recoil/Atom';
+import { loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
 import LoginModal from '../Login_Components/LoginModal';
+import { allPostsRecommendGetAPI, checkPostDeleteAPI, checkPostPostAPI, userInfoGetAPI } from '../../API/AxiosAPI';
 
 function IdeaPage() { 
     const [showModal, setShowModal] = useState(false);
 
-    // 예시용 데이터 배열
-    const contentData = [
-        {
-        title: '포항시 생태공원조성 사업 제안합니다.',
-        author: '김**님',
-        due: 'D-1',
-        initialLikes: 143,
-        setShowModal: setShowModal // setShowModal 설정 필요
-        },
-        {
-        title: '두 번째 데이터 제목입니다.',
-        author: '홍길동',
-        due: 'D-2',
-        initialLikes: 200,
-        setShowModal: setShowModal // setShowModal 설정 필요
-        },
-        // 추가 데이터들 ...
-    ];
+    const [allPopularPosts, setAllPopularPosts] =useState([]);
+
+    // 버튼 클릭 상태
+    const [sendBraveClicked, setSendBraveClicked] = useRecoilState(postLikeBtn);
+
+    // 기본적으로 보여줄 유저 데이터
+    const [userData, setUserData] = useRecoilState(userinfo);
+
+    // 유저 데이터 불러오는 함수 
+    const getUserInfo = async () => {
+        try {
+            const response = await userInfoGetAPI();
+            setUserData({
+                nickName: response.data.nickName,
+                local: response.data.local,
+                profileImage: response.data.profileImage,
+                postUpList: response.data.postUpList,
+                commentUpList: response.data.commentUpList
+            });
+            return response.data; // Return user data for useEffect
+        } catch (error) {
+            console.error('Error fetching user info:', error);
+        }
+    };
+
+    // 초기 sendBraveClicked 상태 설정
+    useEffect(() => {
+        getUserInfo().then(userData => {
+            console.log("유저 데이터", userData);
     
+            const initialSendBraveClicked = {};
+            userData.postUpList.forEach(postId => {
+            initialSendBraveClicked[postId] = true;
+            });
+            setSendBraveClicked(initialSendBraveClicked);
+        });
+        }, []);
+
+    //모든 인기게시물 불러오기
+    const allPopularFunc = async () =>{
+        const response = await allPostsRecommendGetAPI();
+        setAllPopularPosts(response.data);
+        console.log(response);
+    }
+
+    useEffect(()=>{
+        allPopularFunc();
+    },[sendBraveClicked]);
+    
+    //글자수 컷
     const truncateText = (text, maxLength) => {
         if (text.length > maxLength) {
             return text.slice(0, maxLength) + '...';
         }
         return text;
     };
+
+    // 이미지 링크 추출 함수
+    const extractImageLink = (postData) => {
+        const fields = ['proBackground', 'solution', 'benefit'];
+        
+        for (let field of fields) {
+        const value = postData[field];
+        if (value) { 
+            const match = value.match(/\[이미지:\s*(https?:\/\/[^\s\]]+)\]/);
+            if (match) {
+            return match[1];
+            }
+        }
+        }
+        
+        return hanmadiv;
+    };
+
+    // 포스트 채택
+    const checkPostIncrease = async (postId) => {
+        const response = await checkPostPostAPI(postId);
+        return response.data; 
+    }
+
+    // 포스트 채택 삭제
+    const checkPostDecrease = async (postId) => {
+        const response = await checkPostDeleteAPI(postId);
+        return response.data;
+    }
+    
+
+// 좋아요 버튼 클릭 처리
+const handleLike = async(postId) => {
+    if (sendBraveClicked[postId]) { // 이미 좋아요를 클릭한 상태인 경우
+        const newLikeStatus = { ...sendBraveClicked };
+        await checkPostDecrease(postId);
+        delete newLikeStatus[postId]; // postId에 대한 클릭 상태 삭제
+        setSendBraveClicked(newLikeStatus); // 클릭 상태 업데이트
+
+        // 아톰에 저장된 사용자 데이터 업데이트
+        setUserData(prevUserData => ({
+            ...prevUserData,
+            postUpList: prevUserData.postUpList.filter(id => id !== postId), // postId 제거
+        }));
+    } else { // 좋아요를 클릭하지 않은 상태인 경우
+        await checkPostIncrease(postId);
+        setSendBraveClicked({ ...sendBraveClicked, [postId]: true }); // postId에 대한 클릭 상태 true로 설정
+
+        // 아톰에 저장된 사용자 데이터 업데이트
+        setUserData(prevUserData => ({
+            ...prevUserData,
+            postUpList: [...prevUserData.postUpList, postId], // postId 추가
+        }));
+    }
+};
+
     
     return (
         <Container>
@@ -48,14 +136,18 @@ function IdeaPage() {
                     </LineTextContainer>
                 </TextContainer>
                 <TwoContentContainer>
-                {contentData.slice(0, 2).map((content, index) => (
+                {allPopularPosts.slice(0, 2).map((content, index) => (
                     <ImageContent
                     key={index}
+                    postId={content.postId}
+                    image = {extractImageLink(content)}
                     title={truncateText(content.title,25)}
-                    author={content.author}
-                    due={content.due}
-                    initialLikes={content.initialLikes}
-                    setShowModal={content.setShowModal}
+                    author={content.userName}
+                    due={'D-'+content.deadLine}
+                    initialLikes={content.upCountPost}
+                    setShowModal={setShowModal}
+                    isLiked={sendBraveClicked[content.postId]}
+                    handleLike={() => handleLike(content.postId)}
                     />
                 ))}
                 </TwoContentContainer>
@@ -65,21 +157,14 @@ function IdeaPage() {
     );
 }
 
-const ImageContent = ({ title, author, due, initialLikes, setShowModal }) => {
-    const [likeCount, setLikeCount] = useState(initialLikes);
-    const [isLiked, setIsLiked] = useState(false);
+const ImageContent = ({ postId, image, title, author, due, initialLikes, setShowModal, isLiked, handleLike }) => {
 
     //로그인 테스트 상태 -추후 서버랑 연결해야함.
     const [isLogin, setIsLogin] = useRecoilState(loginTestState); 
 
-    const handleLike = () => {
+    const handleClickLike = () => {
         if(isLogin){
-            if (isLiked) {
-                setLikeCount(likeCount - 1);
-            } else {
-                setLikeCount(likeCount + 1);
-            }
-            setIsLiked(!isLiked);
+            handleLike(postId);
         }
         else{
             setShowModal(true);
@@ -88,7 +173,7 @@ const ImageContent = ({ title, author, due, initialLikes, setShowModal }) => {
 
     return (
         <ImageContentContainer>
-            <img src={defaultwhite} alt="content image" style={{ width: '515px' }} />
+            <img src={image} alt="포스트 이미지" style={{ width: '515px', height:"359px" }} />
             <ContentTitleText>
                 {title}
             </ContentTitleText>
@@ -103,10 +188,10 @@ const ImageContent = ({ title, author, due, initialLikes, setShowModal }) => {
                 </DetailContainer>
                 <DetailContainer>
                     <DetailText>공감수</DetailText>
-                    <DetailText $color="#5A5A5A">{likeCount}</DetailText>
+                    <DetailText $color="#5A5A5A">{initialLikes}</DetailText>
                 </DetailContainer>
             </Details>
-            <BraveButton onClick={handleLike} isLiked={isLiked}>
+            <BraveButton onClick={handleClickLike} isLiked={isLiked}>
                 {isLiked ? '용길이 보내기' : '용길이 보내기'}
             </BraveButton>
         </ImageContentContainer>
