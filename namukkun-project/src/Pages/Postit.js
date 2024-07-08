@@ -69,7 +69,10 @@ function Postit() {
                 // 댓글을 commentId 내림차순으로 정렬하여 최신 댓글이 위로 오게 함
                 const sortedComments = commentsData.sort((a, b) => b.id - a.id).map(comment => ({
                     ...comment,
-                    liked: likedComments.includes(comment.id)
+                    liked: likedComments.includes(comment.id),
+                    nickname: comment.userInfoDTO.nickName,
+                    local: comment.userInfoDTO.local,
+                    commentTime: new Date(comment.commentTime).toLocaleDateString()
                 }));
                 setComments(sortedComments);
 
@@ -90,14 +93,15 @@ function Postit() {
     const addComment = async () => {
         if (newComment.trim()) {
             try {
+                const userInfo = await getUserInfo(userId);
                 const newCommentData = await createComment(1, userId, newComment); // postId를 1로 고정
                 if (newCommentData && newCommentData.commentId) {
                     const updatedNewComment = {
                         id: newCommentData.commentId,
                         userId: userId, // 사용자 ID 추가
-                        name: "사용자",
-                        region: 9,
-                        date: new Date().toLocaleString(),
+                        nickname: userInfo.nickName,
+                        local: userInfo.local,
+                        commentTime: new Date().toLocaleDateString(),
                         upCounter: 0,
                         content: newComment,
                         position: { x: 0, y: 0 },
@@ -392,8 +396,8 @@ function Postit() {
                                 <CommentContainer key={index} ref={el => commentRefs.current[index] = el}>
                                     <CommentHeader>
                                         <CommentInfo>
-                                            <CommentNameRegion>{comment.name} / {intToRegion[comment.region]}</CommentNameRegion>
-                                            <CommentDate>{comment.date}</CommentDate>
+                                            <CommentNameRegion>{comment.nickname} / {intToRegion[comment.local]}</CommentNameRegion>
+                                            <CommentDate>{comment.commentTime}</CommentDate>
                                         </CommentInfo>
                                         <CommentLikes>
                                             <LikeButton onClick={() => handleUp(index)}>

@@ -281,7 +281,6 @@ export const createPostit = async (dto, userId) => {
 
 // 포스티잇 삭제 함수 추가
 export const deletePostit = async (userId, postitId) => {
-  console.log(`Deleting postit with userId: ${userId}, postitId: ${postitId}`);
   try {
       console.log(`Deleting postit with userId: ${userId}, postitId: ${postitId}`);
       const response = await axios.delete(`${server}/post/postit/delete`, {
