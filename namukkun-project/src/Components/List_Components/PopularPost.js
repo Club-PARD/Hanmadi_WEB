@@ -10,7 +10,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { getPopularRegion, loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
 import LoginModal from '../Login_Components/LoginModal';
-import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI } from '../../API/AxiosAPI';
+import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
 
 function PopularPost() {
     const navigate = useNavigate();
@@ -39,7 +39,36 @@ function PopularPost() {
     const location = useLocation();
     const getPathRegion = location.search;
     console.log(getPathRegion)
+
+    // 초기 sendBraveClicked 상태 설정
+    useEffect(() => {
+        getUserInfo().then(userInfo => {
+            console.log("유저 데이터", userInfo);
+    
+            const initialSendBraveClicked = {};
+            userInfo.postUpList.forEach(postId => {
+            initialSendBraveClicked[postId] = true;
+            });
+            setSendBraveClicked(initialSendBraveClicked);
+        });
+        }, [getPathRegion]);
   
+    // 유저 데이터 불러오는 함수 
+    const getUserInfo = async () => {
+        const response = await userInfoGetAPI();
+        // 아톰에 유저 정보 저장
+        setUserData({
+        ...userData,
+        nickName: response.data.nickName,
+        local: response.data.local,
+        profileImage: response.data.profileImage,
+        postUpList: response.data.postUpList,
+        commentUpList: response.data.commentUpList
+        });
+
+        return response.data;
+    };
+
     //선택한 자역에 따라 인기글을 보여줄 수 있도록 하는 함수
     const getPopularPostFunc = async(getPathRegion) =>{
         const response = await popularRegionPostGetAPI(getPathRegion);

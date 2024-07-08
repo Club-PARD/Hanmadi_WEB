@@ -30,6 +30,20 @@ function ShowList() {
   const [PopularData, setPopularData] = useRecoilState(getPopularRegion);
   const [recentData, setRecentData] = useRecoilState(getRecentRegion); 
 
+    // 초기 sendBraveClicked 상태 설정
+    useEffect(() => {
+        getUserInfo().then(userInfo => {
+          console.log("유저 데이터", userInfo);
+    
+          const initialSendBraveClicked = {};
+          userInfo.postUpList.forEach(postId => {
+            initialSendBraveClicked[postId] = true;
+          });
+          setSendBraveClicked(initialSendBraveClicked);
+          setPostLike(initialSendBraveClicked);
+        });
+    }, []);
+
   // 전체 글에 대한 추천/최신 필터 버튼
   const onClickFilterBtn = (filterValue) => {
     setCurrentPage(1);
@@ -48,7 +62,6 @@ function ShowList() {
     return response.data;
   }
 
-  // console.log("affaf", postLike);
   // 버튼 클릭 상태 관리
   const [sendBraveClicked, setSendBraveClicked] = useState(postLike)
   ;
@@ -120,6 +133,7 @@ function ShowList() {
       postUpList: response.data.postUpList,
       commentUpList: response.data.commentUpList
     });
+
     return response.data;
   };
   

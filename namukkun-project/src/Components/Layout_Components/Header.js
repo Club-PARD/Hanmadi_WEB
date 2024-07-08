@@ -30,6 +30,7 @@ function Header() {
     setIsLogin(true);
     setShowModal(true);
 
+    //추후 로그인 모달 이후 작동할 로직
     const response =  await userInfoGetAPI();
     setUserData({
       ...userData,
@@ -40,6 +41,8 @@ function Header() {
       commentUpList: response.data.commentUpList
     });
     setPostLike(response.data.postUpList);
+
+    console.log("로긴",postLike);
 
   };
 
