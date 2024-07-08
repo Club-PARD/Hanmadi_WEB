@@ -7,7 +7,7 @@ import defaultblue from '../../Assets/Img/defaultblue.svg';
 import { useRecoilState } from 'recoil';
 import { getRecentRegion, loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
 import LoginModal from '../Login_Components/LoginModal';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { checkPostDeleteAPI, checkPostPostAPI, recentRegionPostGetAPI } from '../../API/AxiosAPI';
 
 function PopularPost() {
@@ -124,22 +124,22 @@ function PopularPost() {
     };
 
 
-      // 이미지 링크 추출 함수
-      const extractImageLink = (postData) => {
-        const fields = ['proBackground', 'solution', 'benefit'];
+    // 이미지 링크 추출 함수
+    const extractImageLink = (postData) => {
+    const fields = ['proBackground', 'solution', 'benefit'];
 
-        for (let field of fields) {
-            const value = postData[field];
-            if (value) { // value가 undefined나 null이 아닌 경우에만 match 메서드 호출
-              const match = value.match(/\[이미지:\s*(https?:\/\/[^\s\]]+)\]/);
-              if (match) {
-                return match[1];
-              }
+    for (let field of fields) {
+        const value = postData[field];
+        if (value) { // value가 undefined나 null이 아닌 경우에만 match 메서드 호출
+            const match = value.match(/\[이미지:\s*(https?:\/\/[^\s\]]+)\]/);
+            if (match) {
+            return match[1];
             }
-          }
+        }
+        }
 
-        return defaultblue;
-        };
+    return defaultblue;
+    };
         
     return (
         <Container>
@@ -180,6 +180,7 @@ function PopularPost() {
                                 setShowModal ={setShowModal}
                                 handleLike={() => handleLike(post)} 
                                 isLiked={sendBraveClicked[post.postId]} 
+                                postId = {post.postId}
                             />
                         ))}
                     </TwoContentContainer>
@@ -197,12 +198,19 @@ function PopularPost() {
 
 export default PopularPost;
 
-const ImageContent = ({ postImage, title, author, due, initialLikes, truncateText,handleLike, isLiked }) => {
+const ImageContent = ({ postImage, title, author, due, initialLikes, truncateText,handleLike, isLiked ,postId }) => {
+
+    const navigate = useNavigate();
+    
+    //상세페이지로 이동
+    const navigateToPost = (postId) => {
+        navigate(`/postit/${postId}`);
+    };
 
     return (
         <ImageContentContainer>
             <img src={postImage} alt="게시글 이미지" style={{ width: '424px', height: '300px' }} />
-            <ContentTitleText>
+            <ContentTitleText onClick={()=>{navigateToPost(postId)}}>
                 {truncateText(title, 43)} {/* title을 truncateText로 잘라내기 */}
             </ContentTitleText>
             <DetailContainer>

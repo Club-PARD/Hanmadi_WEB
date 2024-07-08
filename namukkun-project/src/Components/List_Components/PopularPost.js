@@ -179,6 +179,12 @@ function PopularPost() {
         return defaultwhite;
         };
 
+    //상세페이지로 이동
+    const navigateToPost = (postId) => {
+        navigate(`/postit/${postId}`);
+    };
+    
+
     return (
         <Container>
             <GlobalStyle />
@@ -211,7 +217,7 @@ function PopularPost() {
                         <ImageContainer>
                             <img src={extractImageLink(item)} alt="프로필 이미지" style={{ width: '209px', height: '134px' }} />
                             <ContentTextContainer>
-                                <ContentTitleText>
+                                <ContentTitleText onClick={()=>{navigateToPost(item.postId)}}>
                                     {truncateText(item.title, 52)}
                                 </ContentTitleText>
                                 <DetailContainer>

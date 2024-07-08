@@ -7,11 +7,10 @@ import onclicksendbrave from '../../Assets/Img/onclicksendbrave.svg';
 import hoversendbrave from '../../Assets/Img/hoversendbrave.svg';
 import { loginTestState } from "../../Recoil/Atom";
 import { useRecoilState } from "recoil";
+import { useNavigate } from "react-router-dom";
 
 function Contents({ content, isClicked, onClick }) {
-  // const [likeCount, setLikeCount] = useState();
-  //로그인 테스트 상태 -추후 서버랑 연결해야함.
-  const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
+  const navigate = useNavigate();
 
   // 글자 컷 함수
   const truncateText = (text, maxLength) => {
@@ -25,14 +24,6 @@ function Contents({ content, isClicked, onClick }) {
   const formatDateString = (dateString) => {
     return dateString.replace(/-/g, '.');
   };
-
-  //proBackground에서 가장 먼저 나오는 이미지 태그 가져옴
-  function getFirstImgSrc(proBackground) {
-    // 가장 처음 나오는 <img> 태그를 찾는 정규 표현식
-    const imgTagRegex = /<img[^>]*src=["']([^"']+)["'][^>]*>/i;
-    const match = proBackground.match(imgTagRegex);
-    return match ? match[1] : Bigdefault;
-  }
 
   // 이미지 링크 추출 함수
   const extractImageLink = (postData) => {
@@ -51,14 +42,16 @@ function Contents({ content, isClicked, onClick }) {
     return Bigdefault;
   };
 
-  //extractImageLink(content)
-  // console.log(extractImageLink(content.proBackground));
+  //상세페이지로 이동
+  const navigateToPost = (postId) => {
+    navigate(`/postit/${postId}`);
+  };
 
   return (
     <Div>
-      <PostImg src={extractImageLink(content)} alt="content" /> {/* 이미지 placeholder */}
+      <PostImg src={extractImageLink(content)} alt="게시글 이미지" /> {/* 이미지 placeholder */}
       <ContentsDiv >
-        <TitleDiv>{truncateText(content.title, 23)}</TitleDiv> 
+        <TitleDiv onClick={()=>navigateToPost(content.postId)}>{truncateText(content.title, 23)}</TitleDiv> 
         <KeyValueWrapper>
           <KeyValueDiv>
             <KeyTextDiv>작성자</KeyTextDiv> 
