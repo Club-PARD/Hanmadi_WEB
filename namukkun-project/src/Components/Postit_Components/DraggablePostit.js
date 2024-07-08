@@ -58,6 +58,13 @@ const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment,
         }
     };
 
+    const truncateText = (text, maxLength) => {
+        if (text.length > maxLength) {
+            return text.slice(0, maxLength) + '...';
+        }
+        return text;
+    };
+
     let PostitStyledContainer;
     switch (postit.design) {
         case 0:
@@ -89,7 +96,7 @@ const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment,
                     <PostitWriteButtonContainer>
                         <PostitContent>
                             <PostitInfo>{postit.nickname} / {intToRegion[postit.local]}</PostitInfo>
-                            <PostWriting>{postit.content}</PostWriting>
+                            <PostWriting>{truncateText(postit.content, 90)}</PostWriting>
                         </PostitContent>
                         <ButtonContainer>
                             <MoveButton onClick={onMove}>
