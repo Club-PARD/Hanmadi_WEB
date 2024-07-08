@@ -6,13 +6,12 @@ import uploadarrow from '../../Assets/Img/uploadarrow.svg';
 
 function EndPost({ posts }) {
     const truncateText = (text, maxLength) => {
-  if (!text) return ''; // text가 undefined 또는 null인 경우 빈 문자열 반환
-  if (text.length > maxLength) {
-    return text.slice(0, maxLength) + '...';
-  }
-  return text;
-};
-
+        if (!text) return ''; // text가 undefined 또는 null인 경우 빈 문자열 반환
+        if (text.length > maxLength) {
+            return text.slice(0, maxLength) + '...';
+        }
+        return text;
+    };
 
     return (
         <>
@@ -31,7 +30,7 @@ function EndPost({ posts }) {
                                         <TitleInfoContainer>
                                             <TitleFunctionContainer>
                                                 <EndButton>종료</EndButton>
-                                                <ContentTitle>{truncateText(post.title, 13)}</ContentTitle>
+                                                <ContentTitle>{truncateText(post.title, 11)}</ContentTitle>
                                                 <AdviseButton>수정</AdviseButton>
                                                 <DeleteButton>삭제</DeleteButton>
                                             </TitleFunctionContainer>
@@ -44,7 +43,7 @@ function EndPost({ posts }) {
                                                     <InfoText>한마디 수</InfoText>
                                                     <InfoText>{post.postitCount}</InfoText>
                                                 </InfoTextContainer>
-                                                <InfoTextContainer $marginright='16px'>
+                                                <InfoTextContainer>
                                                     <InfoText>종료 일자</InfoText>
                                                     <InfoText>{post.deadline}</InfoText>
                                                 </InfoTextContainer>
@@ -108,6 +107,7 @@ const TotalTitleContainer = styled.div`
     font-style: normal;
     font-weight: 600;
     flex-direction: row;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const TotalContentContainer = styled.div`
@@ -117,27 +117,31 @@ const TotalContentContainer = styled.div`
     flex-direction: column;
     gap: 14px;
     align-items: flex-end; /* 오른쪽 정렬 */
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const AllContentContainer = styled.div`
     display: flex;
     width: 680px;
-    flex-direction:column;
+    flex-direction: column;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const ContentContainer = styled.div`
     width: 100%;
     height: 98px;
     display: flex;
-    align-items:center;
+    align-items: center;
     justify-content: space-between;
     flex-direction: row;
     border-top: 1px solid var(--gray-001, #E0E0E0);
     border-bottom: 1px solid var(--gray-001, #E0E0E0);
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const ContentTitle = styled.div`
     display: flex;
+    width: 152px;
     flex-direction: column;
     justify-content: center;
     color: var(--gray-006, #575757);
@@ -145,6 +149,7 @@ const ContentTitle = styled.div`
     font-size: 16px;
     font-style: normal;
     font-weight: 600;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const EndButton = styled.button`
@@ -161,6 +166,7 @@ const EndButton = styled.button`
     font-style: normal;
     font-weight: 700;
     border: none;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const AdviseButton = styled.button`
@@ -181,6 +187,7 @@ const AdviseButton = styled.button`
     font-style: normal;
     font-weight: 500;
     cursor: pointer;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const DeleteButton = styled.button`
@@ -201,6 +208,7 @@ const DeleteButton = styled.button`
     font-style: normal;
     font-weight: 500;
     cursor: pointer;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const UploadButton = styled.button`
@@ -221,12 +229,14 @@ const UploadButton = styled.button`
     font-style: normal;
     font-weight: 600;
     cursor: pointer;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const TitleFunctionContainer = styled.div`
     display: flex;
     align-items: center; /* 중앙 정렬 */
     gap: 10px; /* 요소 간격 추가 */
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const InfoTextContainer = styled.div`
@@ -238,6 +248,7 @@ const InfoTextContainer = styled.div`
     gap: 4px;
     border-radius: var(--Corner-Extra-small, 4px);
     margin-right: ${(props) => props.$marginright || '0px'};
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const InfoContainer = styled.div`
@@ -246,6 +257,7 @@ const InfoContainer = styled.div`
     align-items: flex-start;
     flex-direction: row;
     gap: 16px;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const InfoText = styled.div`
@@ -254,10 +266,12 @@ const InfoText = styled.div`
     font-size: 14px;
     font-style: normal;
     font-weight: 500;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const TitleInfoContainer = styled.div`
     width: 328px;
+    white-space: nowrap; /* 줄 바꿈 방지 */
 `;
 
 const SeeAllRecContainer = styled.div`
@@ -267,7 +281,8 @@ const SeeAllRecContainer = styled.div`
     justify-content: center;
     align-items: center;
     gap: 10px;
-`
+    white-space: nowrap; /* 줄 바꿈 방지 */
+`;
 
 const SeeAllRecord = styled.div`
     color: var(--gray-007, #393939);
@@ -277,4 +292,5 @@ const SeeAllRecord = styled.div`
     font-weight: 500;
     line-height: 20px; /* 142.857% */
     cursor: pointer;
-`
+    white-space: nowrap; /* 줄 바꿈 방지 */
+`;
