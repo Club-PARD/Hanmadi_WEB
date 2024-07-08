@@ -74,9 +74,18 @@ function Postit() {
                     local: comment.userInfoDTO.local,
                     commentTime: new Date(comment.commentTime).toLocaleDateString()
                 }));
+
+                const sortedPostits = postitsData.sort((a, b) => a.z - b.z).map(postit => {
+                    const comment = sortedComments.find(c => c.id === postit.commentId);
+                    return {
+                        ...postit,
+                        nickname: comment ? comment.nickname : '',
+                        local: comment ? comment.local : ''
+                    };
+                });
+
                 setComments(sortedComments);
 
-                const sortedPostits = postitsData.sort((a, b) => a.z - b.z);
                 const initialZIndex = sortedPostits.length > 0 ? Math.max(...sortedPostits.map(postit => postit.z)) + 1 : 1000;
                 setHighestZIndex(initialZIndex);
 

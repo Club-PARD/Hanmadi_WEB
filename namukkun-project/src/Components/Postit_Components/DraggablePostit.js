@@ -88,7 +88,7 @@ const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment,
                 <AllPostitContainer>
                     <PostitWriteButtonContainer>
                         <PostitContent>
-                            <PostitInfo>{postit.name} / {intToRegion[postit.region]}</PostitInfo>
+                            <PostitInfo>{postit.nickname} / {intToRegion[postit.local]}</PostitInfo>
                             <PostWriting>{postit.content}</PostWriting>
                         </PostitContent>
                         <ButtonContainer>
