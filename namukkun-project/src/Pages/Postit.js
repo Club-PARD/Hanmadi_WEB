@@ -201,7 +201,7 @@ function Postit() {
             try {
                 const createdPostit = await createPostit(newPostit, userId);
 
-                if (createdPostit.postItId === null) {
+                if (createdPostit.postItId === null || createdPostit.postItId === undefined) {
                     setIsLimitModalOpen(true);
                     return;
                 }
