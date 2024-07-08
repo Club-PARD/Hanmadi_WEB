@@ -8,6 +8,32 @@ import LoginModal from '../Login_Components/LoginModal';
 
 function IdeaPage() { 
     const [showModal, setShowModal] = useState(false);
+
+    // 예시용 데이터 배열
+    const contentData = [
+        {
+        title: '포항시 생태공원조성 사업 제안합니다.',
+        author: '김**님',
+        due: 'D-1',
+        initialLikes: 143,
+        setShowModal: setShowModal // setShowModal 설정 필요
+        },
+        {
+        title: '두 번째 데이터 제목입니다.',
+        author: '홍길동',
+        due: 'D-2',
+        initialLikes: 200,
+        setShowModal: setShowModal // setShowModal 설정 필요
+        },
+        // 추가 데이터들 ...
+    ];
+    
+    const truncateText = (text, maxLength) => {
+        if (text.length > maxLength) {
+            return text.slice(0, maxLength) + '...';
+        }
+        return text;
+    };
     
     return (
         <Container>
@@ -22,18 +48,16 @@ function IdeaPage() {
                     </LineTextContainer>
                 </TextContainer>
                 <TwoContentContainer>
-                    <ImageContent 
-                    title="포항시 생태공원조성 사업 제안합니다." 
-                    author="김**님" 
-                    due="D-1" 
-                    initialLikes={143} 
-                    setShowModal ={setShowModal} />
-                    <ImageContent 
-                    title="포항시 생태공원조성 사업 제안합니다." 
-                    author="김**님" 
-                    due="D-1" 
-                    initialLikes={143}
-                    setShowModal ={setShowModal} />
+                {contentData.slice(0, 2).map((content, index) => (
+                    <ImageContent
+                    key={index}
+                    title={truncateText(content.title,25)}
+                    author={content.author}
+                    due={content.due}
+                    initialLikes={content.initialLikes}
+                    setShowModal={content.setShowModal}
+                    />
+                ))}
                 </TwoContentContainer>
             </PopularContentContainer>
             <LoginModal show={showModal} onClose={() => setShowModal(false)} />

@@ -265,3 +265,26 @@ export const checkPostDeleteAPI =async (postId) =>{
     console.error(err);
   }
 }
+
+//모든 게시물 추천순
+export const allPostsRecommendGetAPI =async () =>{
+  try{
+
+    const response = await axios.get(`${server}/post/read/by-Upcount`);
+    return response;
+  }
+  catch(err){
+    console.error(err);
+  }
+}
+
+//모든 게시물
+export const allPostsGetAPI =async () =>{
+  try{
+    const response = await axios.get(`${server}/post/read/all`);
+    return response;
+  }
+  catch(err){
+    console.error(err);
+  }
+}
