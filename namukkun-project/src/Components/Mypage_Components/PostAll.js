@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Header from "../Components/Layout_Components/Header";
-import StatusBlock from '../Components/Mypage_Components/StatusBlock';
-import IngPost from '../Components/Mypage_Components/IngPost';
-import EndPost from '../Components/Mypage_Components/EndPost';
-import TempPost from '../Components/Mypage_Components/TempPost';
-import advisepen from '../Assets/Img/advisepen.svg';
-import WritingModal from "../Components/WritingPage_Components/WritingModal";
-import RegionChangeModal from "../Components/Mypage_Components/RegionChangeModal";
-import { getUserAllInfoAPI } from "../API/AxiosAPI";
-import { loginTestState, userinfo } from "../Recoil/Atom";
+import Header from "../Layout_Components/Header";
+import StatusBlock from '../Mypage_Components/StatusBlock';
+import IngPost from '../Mypage_Components/IngPost';
+// import EndPost from '../Components/Mypage_Components/EndPost';
+// import TempPost from '../Components/Mypage_Components/TempPost';
+import advisepen from '../../Assets/Img/advisepen.svg';
+import WritingModal from "../WritingPage_Components/WritingModal";
+import RegionChangeModal from "../Mypage_Components/RegionChangeModal";
+import { getUserAllInfoAPI } from "../../API/AxiosAPI";
+import { loginTestState, userinfo } from "../../Recoil/Atom";
 import { useRecoilState } from "recoil";
-import { intToRegion } from "../Components/SelectRegion_Components/IntToRegion";
+import { intToRegion } from "../SelectRegion_Components/IntToRegion";
 
-function MyPage() {
+function PostAll() {
   const [isSticky, setIsSticky] = useState(false);
   // 유저 기본 정보 아톰에 저장
   const [userData, setUserData] = useRecoilState(userinfo);
@@ -108,8 +108,8 @@ function MyPage() {
         tempCount={posts.tempPosts.length} 
       />
       <IngPost posts={posts.ingPosts} />
-      <EndPost posts={posts.endPosts} />
-      <TempPost posts={posts.tempPosts} />
+      {/* <EndPost posts={posts.endPosts} />
+      <TempPost posts={posts.tempPosts} /> */}
       <FixedButton $isSticky={isSticky}>
         <img src={userData.profileImage} style={{ width: '144px', height: '144px', borderRadius: '50%' }} alt="face" />
         <InfoContainer>
@@ -133,7 +133,7 @@ function MyPage() {
   );
 }
 
-export default MyPage;
+export default PostAll;
 
 const FixedButton = styled.div.attrs(props => ({
   style: {

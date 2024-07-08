@@ -30,7 +30,7 @@ function TempPost({ posts }) {
                                     <InfoTextContainer $paddingright='320px'>제목</InfoTextContainer>
                                     <InfoTextContainer>작성일자</InfoTextContainer>
                                 </InfoBarContainer>
-                                {posts.map((post, index) => (
+                                {posts.slice(0, 1).map((post, index) => ( // 게시물을 딱 한 개만 보여줌
                                     <ContentContainer key={post.postId}>
                                         <NumberText>{index + 1}</NumberText>
                                         <TitleText>{truncateText(post.title, 13)}</TitleText>
@@ -222,3 +222,4 @@ const SeeAllRecord = styled.div`
     line-height: 20px; /* 142.857% */
     cursor: pointer;
 `
+
