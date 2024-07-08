@@ -10,12 +10,15 @@ import { getUserAllInfoAPI } from "../../API/AxiosAPI";
 import { loginTestState, userinfo } from "../../Recoil/Atom";
 import { useRecoilState } from "recoil";
 import { intToRegion } from "../SelectRegion_Components/IntToRegion";
+import arrowleft from '../../Assets/Img/Arrowleft.svg';
+import arrowright from '../../Assets/Img/Arrowright.svg';
 
 // 종료된 한마디 전체를 보여주는 페이지
 function EndAll() {
   const [isSticky, setIsSticky] = useState(false);
   const [userData, setUserData] = useRecoilState(userinfo);
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);
+  const [page, setPage] =useState(0);
   const [posts, setPosts] = useState({
     ingPosts: [],
     endPosts: [],
@@ -64,6 +67,15 @@ function EndAll() {
       getUserInfo();
     }
   }, [isLogin]);
+
+  const itemsPerPage = 8; // 한 페이지당 보여지는 컨텐츠 갯수
+  // 총 페이지 갯수
+  const totalPages = Math.ceil(posts.endPosts.length / itemsPerPage);
+
+  // 페이지 변경 핸들러
+  const handleChangePage = (newPage) => {
+    setPage(newPage);
+  };
 
   return (
     <PageContainer>
@@ -158,3 +170,26 @@ const ProfileAdviseButton = styled.button`
     cursor: pointer;
     border: none;
 `
+const Pagenation = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 69px;
+  margin-bottom: 63px;
+  gap: 10px;
+`;
+
+const PagenationButton = styled.button`
+  display: flex;
+  width: 31px;
+  height: 31px;
+  padding: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border: none;
+
+  border-radius: var(--Corner-Full, 1000px);
+  background-color: ${(props) => (props.isSelected ? '#F5F5F5' : 'transparent')};
+  cursor: pointer
+  `

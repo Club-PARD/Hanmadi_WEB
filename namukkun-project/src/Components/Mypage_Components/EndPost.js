@@ -52,6 +52,10 @@ function EndPost({ posts, setUpdate , update}) {
         navigate(`/postit/${postId}`);
     };
 
+    const navigateEndPost = () =>{
+        navigate('/mypage/endall');
+    }
+
     return (
         <>
             <GlobalStyle />
@@ -99,7 +103,7 @@ function EndPost({ posts, setUpdate , update}) {
                                     </ContentContainer>
                                 ))}
                                 <SeeAllRecContainer>
-                                    <SeeAllRecord>
+                                    <SeeAllRecord onClick={navigateEndPost}>
                                         &nbsp;&nbsp;&nbsp;&nbsp;전체글 보러가기 --> 
                                     </SeeAllRecord>
                                 </SeeAllRecContainer>

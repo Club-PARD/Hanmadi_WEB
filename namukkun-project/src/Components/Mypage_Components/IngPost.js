@@ -37,6 +37,9 @@ function IngPost({ posts , setUpdate, update}) {
     navigate(`/postit/${postId}`);
   };
   
+  const navigateEndPost = () =>{
+    navigate('/mypage/ingall');
+  }
 
   return (
     <>
@@ -85,7 +88,7 @@ function IngPost({ posts , setUpdate, update}) {
                       </ContentContainer>
 											))}
 											<SeeAllRecContainer>
-                        <SeeAllRecord>
+                        <SeeAllRecord onClick={navigateEndPost}>
                           &nbsp;&nbsp;&nbsp;&nbsp;전체글 보러가기 --> 
                         </SeeAllRecord>
                       </SeeAllRecContainer>
