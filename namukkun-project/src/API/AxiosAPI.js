@@ -3,16 +3,16 @@ import axios from "axios";
 const kakaoserver = process.env.REACT_APP_KAKAO_SERVER;
 const server = process.env.REACT_APP_SERVER;
 
-const post = process.env.REACT_APP_SERVER3;
+const post = process.env.REACT_APP_SERVER4;
 
 // CORS 요청 시 쿠키를 포함하도록 설정
-//로그인시 서버로부터 쿠키를 받음
+// 로그인시 서버로부터 쿠키를 받음
 axios.defaults.withCredentials = true; 
 
-//로그인 성공/실패 했을 때 페이지 이동이 필요함
+// 로그인 성공/실패 했을 때 페이지 이동이 필요함
 export const getSendCodeAPI = async (code) => {
   try {
-    const response = await axios.get(`${kakaoserver}?code=${code}`,{withCredentials: true,});
+    const response = await axios.get(`${kakaoserver}?code=${code}`, { withCredentials: true });
     return response;
   } catch (err) {
     console.error(err);
@@ -21,11 +21,10 @@ export const getSendCodeAPI = async (code) => {
   }
 };
 
-//회원가입하고 서버에 쿠키를 받음
+// 회원가입하고 서버에 쿠키를 받음
 export const postRegisterRegion = async (region) =>{
   try{
-    const response = await axios.get(`${server}/login/create/user?local=${region}`, { withCredentials: true } 
-    ); 
+    const response = await axios.get(`${server}/login/create/user?local=${region}`, { withCredentials: true }); 
     
     return response;
   }
@@ -34,7 +33,7 @@ export const postRegisterRegion = async (region) =>{
   }
 }
 
-// 이미지를 보냈다가 Url로 return 받음
+// 이미지를 먼저 서버로 보냄
 export const uploadImageAPI = async (file) => {
   try {
     const formData = new FormData();
@@ -45,10 +44,10 @@ export const uploadImageAPI = async (file) => {
         'Content-Type': 'multipart/form-data',
       },
     });
-    return response.data;
+
+    return response;
   } catch (error) {
     console.error('Image upload failed:', error);
-    return null;
   }
 };
 
@@ -86,6 +85,21 @@ export const submitPostAPI = async (postData) => {
   }
 };
 
+// 임시저장
+export const saveTempPostAPI = async (postData) => {
+  try {
+    const response = await axios.post(`${post}/post/upload/temppost`, postData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error('Temporary post save failed:', error);
+    throw error;
+  }
+}
+
 // 첨부파일 '제거' 버튼을 눌렀을 때, 제거하기
 export const deleteFileAPI = async (fileName) => {
   try {
@@ -101,7 +115,7 @@ export const deleteFileAPI = async (fileName) => {
   }
 };
 
-//comment 읽어오기
+// comment 읽어오기
 export const fetchComments = async (postId) => {
     try {
         const response = await axios.get(`${server}/post/comment?postid=${postId}`);
@@ -112,7 +126,7 @@ export const fetchComments = async (postId) => {
     }
 };
 
-//comment 삭제
+// comment 삭제
 export const deleteComment = async (userid, commentid) => {
     try {
         await axios.delete(`${server}/post/comment`, {
@@ -143,7 +157,7 @@ export const createComment = async (postid, userid, content) => {
   }
 };
 
-//comment 좋아요
+// comment 좋아요
 export const toggleLikeComment = async (commentid, userid) => {
   try {
       const response = await axios.patch(`${server}/post/comment/up`, null, {
@@ -159,7 +173,7 @@ export const toggleLikeComment = async (commentid, userid) => {
   }
 };
 
-//comment 채택
+// comment 채택
 export const toggleTakeComment = async (commentid, userid, take) => {
   try {
       const response = await axios.patch(`${server}/post/comment/take`, null, {
@@ -179,7 +193,7 @@ export const toggleTakeComment = async (commentid, userid, take) => {
 // 유저 프로필 수정
 export const userPofilePatchAPI = async(data) =>{
   try {
-    const userid =1; //디버그용
+    const userid = 1; // 디버그용
 
     const response = await axios.patch(`${server}/user/update?userid=${userid}`, data);
     return response;
@@ -192,7 +206,7 @@ export const userPofilePatchAPI = async(data) =>{
 // 유저 정보 전달
 export const userInfoGetAPI = async() =>{
   try {
-    const userid =1; //디버그용
+    const userid = 1; // 디버그용
 
     const response = await axios.get(`${server}/user/info?userid=${userid}`);
     return response;
