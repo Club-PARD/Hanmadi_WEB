@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import mypageduck from '../../Assets/Img/mypageduck.svg';
 import uploadarrow from '../../Assets/Img/uploadarrow.svg';
+import { useNavigate } from 'react-router-dom';
+import DeleteModal from './DeleteModal';
 
 function EndPost({ posts }) {
+    const navigate = useNavigate();
+    const [isWModalOpen, setIsWModalOpen] = useState(false);
+    const [getpostid, setGetPostid] = useState(null);
+    const url = "https://www.epeople.go.kr/index.jsp"
+
+
     const truncateText = (text, maxLength) => {
         if (!text) return ''; // text가 undefined 또는 null인 경우 빈 문자열 반환
         if (text.length > maxLength) {
@@ -12,6 +20,38 @@ function EndPost({ posts }) {
         }
         return text;
     };
+
+    const navigateEndall = () =>{
+        navigate('/mypage/endall')
+    }
+  
+    //삭제모달
+    const handleWModalOpen = (postId) => {
+      setIsWModalOpen(!isWModalOpen);
+      setGetPostid(postId);
+      };
+  
+    //상세페이지로 이동
+    const navigateToPost = (postId) => {
+        navigate(`/postit/${postId}`);
+    };
+  
+    //수정 버튼
+    const navigateModify = (postId) =>{
+          navigate(`/modify/${postId}`);
+      }
+
+    //종료날짜
+    function addDaysToDate(dateStr) {
+        const date = new Date(dateStr);
+        date.setDate(date.getDate() + 7);
+        
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더해줌
+        const day = String(date.getDate()).padStart(2, '0');
+        
+        return `${year}.${month}.${day}`;
+      }
 
     return (
         <>
@@ -30,9 +70,9 @@ function EndPost({ posts }) {
                                         <TitleInfoContainer>
                                             <TitleFunctionContainer>
                                                 <EndButton>종료</EndButton>
-                                                <ContentTitle>{truncateText(post.title, 11)}</ContentTitle>
-                                                <AdviseButton>수정</AdviseButton>
-                                                <DeleteButton>삭제</DeleteButton>
+                                                <ContentTitle onClick={()=>navigateToPost(post.postId)}>{truncateText(post.title, 11)}</ContentTitle>
+                                                <AdviseButton onClick={()=>navigateModify(post.postId)}>수정</AdviseButton>
+                                                <DeleteButton onClick={()=>handleWModalOpen(post.postId)}>삭제</DeleteButton>
                                             </TitleFunctionContainer>
                                             <InfoContainer>
                                                 <InfoTextContainer>
@@ -45,7 +85,7 @@ function EndPost({ posts }) {
                                                 </InfoTextContainer>
                                                 <InfoTextContainer>
                                                     <InfoText>종료 일자</InfoText>
-                                                    <InfoText>{post.deadline}</InfoText>
+                                                    <InfoText >{addDaysToDate(post.postTime)}</InfoText>
                                                 </InfoTextContainer>
                                                 <InfoTextContainer>
                                                     <InfoText>작성일자</InfoText>
@@ -53,15 +93,15 @@ function EndPost({ posts }) {
                                                 </InfoTextContainer>
                                             </InfoContainer>
                                         </TitleInfoContainer>
-                                        <UploadButton>
+                                        <UploadButton onClick={() => { window.open(url) }}>
                                             국민신문고
                                             <img src={uploadarrow} style={{ width: '14.4px', height: '4.9px' }} ></img>
                                         </UploadButton>
                                     </ContentContainer>
                                 ))}
                                 <SeeAllRecContainer>
-                                    <SeeAllRecord>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;전체글 보러가기 --> 
+                                    <SeeAllRecord onClick={navigateEndall}>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;종료글 보러가기 --> 
                                     </SeeAllRecord>
                                 </SeeAllRecContainer>
                             </AllContentContainer>
@@ -69,6 +109,11 @@ function EndPost({ posts }) {
                     </TotalIngContainer>
                 </IngContainer>
             </Container>
+            <DeleteModal
+            isOpen={isWModalOpen}
+            closeModal={handleWModalOpen}
+            postId ={getpostid}
+        ></DeleteModal>
         </>
     );
 }
@@ -150,6 +195,7 @@ const ContentTitle = styled.div`
     font-style: normal;
     font-weight: 600;
     white-space: nowrap; /* 줄 바꿈 방지 */
+    cursor: pointer;
 `;
 
 const EndButton = styled.button`
@@ -241,7 +287,7 @@ const TitleFunctionContainer = styled.div`
 
 const InfoTextContainer = styled.div`
     display: flex;
-    width: 56px;
+    /* width: 56px; */
     height: 35px;
     flex-direction: column;
     justify-content: center;

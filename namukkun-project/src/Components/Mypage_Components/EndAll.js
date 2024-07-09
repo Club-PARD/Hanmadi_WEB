@@ -7,7 +7,7 @@ import advisepen from '../../Assets/Img/advisepen.svg';
 import WritingModal from "../WritingPage_Components/WritingModal";
 import RegionChangeModal from "../Mypage_Components/RegionChangeModal";
 import { getUserAllInfoAPI } from "../../API/AxiosAPI";
-import { loginTestState, userinfo } from "../../Recoil/Atom";
+import { deleteCheck, loginTestState, userinfo } from "../../Recoil/Atom";
 import { useRecoilState } from "recoil";
 import { intToRegion } from "../SelectRegion_Components/IntToRegion";
 import arrowleft from '../../Assets/Img/Arrowleft.svg';
@@ -19,6 +19,8 @@ function EndAll() {
   const [userData, setUserData] = useRecoilState(userinfo);
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);
   const [page, setPage] =useState(0);
+  const [deUpdate, setDeUpdate] = useRecoilState(deleteCheck
+  );
   const [posts, setPosts] = useState({
     ingPosts: [],
     endPosts: [],
@@ -66,7 +68,7 @@ function EndAll() {
     if (isLogin) {
       getUserInfo();
     }
-  }, [isLogin]);
+  }, [isLogin, deUpdate]);
 
   const itemsPerPage = 8; // 한 페이지당 보여지는 컨텐츠 갯수
   // 총 페이지 갯수
