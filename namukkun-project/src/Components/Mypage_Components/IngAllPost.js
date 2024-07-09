@@ -219,6 +219,7 @@ const ContentTitle = styled.div`
   font-style: normal;
   font-weight: 600;
   white-space: nowrap; /* 줄 바꿈 방지 */
+  cursor: pointer;
 `;
 
 const IngButton = styled.button`
