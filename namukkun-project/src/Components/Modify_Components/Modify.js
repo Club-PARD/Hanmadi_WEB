@@ -1,13 +1,13 @@
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import styled, { css } from 'styled-components';
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import '../../Assets/Style/quill.snow.custom.css';
 import SideHint from '../../Assets/Img/SideHint.svg';
 import { GlobalStyle } from '../../Assets/Style/theme.js';
-import { deleteFileAPI, uploadImageAPI, uploadFileFetch, submitPostAPI, saveTempPostAPI } from '../../API/AxiosAPI.js';
+import { deleteFileAPI, uploadImageAPI, uploadFileFetch, getPost, updatePostPatch, saveTempPostAPI } from '../../API/AxiosAPI.js'; // updatePostPatch 추가
 import ModifyModal from './ModifyModal.js';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom'; // useParams 추가
 
 // Custom font
 const fonts = ['Min Sans-Regular'];
@@ -15,8 +15,21 @@ const Font = Quill.import('formats/font');
 Font.whitelist = fonts;
 Quill.register(Font, true);
 
-//수정하기 파일 
+// 이미지 URL을 추출하여 <img> 태그로 변환하고 문단 띄기를 추가하는 함수
+const convertTextToImages = (text) => {
+    const regex = /\[이미지: (https?:\/\/[^\]]+)\]/g;
+    const parts = text.split(regex);
+    return parts.map((part, index) =>
+        part.startsWith('http') ? (
+            `<img key=${index} src=${part} alt=content-${index} style="width: 100%; height: auto;" />`
+        ) : (
+            part.split('\n').map((line) => `${line}<br />`).join('')
+        )
+    ).join('');
+};
+
 const Modify = () => {
+  const { postId } = useParams(); // useParams를 이용해 postId 가져오기
   const quillRefBackground = useRef(null);
   const quillRefSolution = useRef(null);
   const quillRefEffect = useRef(null);
@@ -34,15 +47,22 @@ const Modify = () => {
 
   const [isWModalOpen, setIsWModalOpen] = useState(false);
   const [modalMethod, setModalMethod] = useState('');
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false); // 수정 모달 상태 추가
 
-  //수정할 게시글 값 불러오고 저장할 상태
-  const [modify, setModify] =useState([]);
-
-  const navigate =useNavigate();
+  const navigate = useNavigate();
 
   const handleWModalOpen = (modalMethod) => {
     setModalMethod(modalMethod);
     setIsWModalOpen(!isWModalOpen);
+  };
+
+  const handleUpdateModalOpen = () => {
+    setIsUpdateModalOpen(true);
+  };
+
+  const handleUpdateModalClose = () => {
+    setIsUpdateModalOpen(false);
+    navigate('/mypage'); // 수정 후 마이페이지로 이동
   };
 
   const handleButtonClick = (region) => {
@@ -155,6 +175,28 @@ const Modify = () => {
   useEffect(() => {
     adjustEditorHeight(quillRefEffect);
   }, [effect]);
+
+  useEffect(() => {
+    const fetchPostData = async () => {
+      try {
+        const post = await getPost(postId); // postId로 게시물 내용 가져오기
+        setTitle(post.title);
+        setBackground(convertTextToImages(post.proBackground)); // 이미지와 문단 띄기 처리
+        setSolution(convertTextToImages(post.solution)); // 이미지와 문단 띄기 처리
+        setEffect(convertTextToImages(post.benefit)); // 이미지와 문단 띄기 처리
+        setSelectedButton(Object.keys(regionToInt).find(key => regionToInt[key] === post.postLocal));
+        
+        // 첨부 파일 설정
+        setFileNames(post.s3Attachments.map(file => file.name));
+        setFileRandomStrings(post.s3Attachments.map(file => file.randomString));
+
+      } catch (error) {
+        console.error('게시물 데이터를 가져오는 중 오류 발생:', error);
+      }
+    };
+
+    fetchPostData();
+  }, [postId]);
 
   const backgroundModules = useMemo(() => ({
     toolbar: {
@@ -286,9 +328,9 @@ const Modify = () => {
     console.log('전송할 데이터:', JSON.stringify(postData));
 
     try {
-      const response = await submitPostAPI(postData);
-      console.log('서버 응답:', response.data);
-      // navigate(`/postit/${response.data}`);
+      const response = await updatePostPatch(postId); // updatePostPatch를 사용하여 게시물 수정
+      console.log('서버 응답:', response);
+      handleUpdateModalOpen(); // 수정 모달 열기
     } catch (error) {
       console.error('서버로 값을 보내는 중 오류 발생:', error);
     }
@@ -442,9 +484,18 @@ const Modify = () => {
         closeModal={() => handleWModalOpen(modalMethod)}
         method={modalMethod}
       ></ModifyModal>
+      <ModifyModal
+        isOpen={isUpdateModalOpen}
+        closeModal={handleUpdateModalClose}
+        method="update"
+      ></ModifyModal>
     </Container>
   );
 };
+
+export default Modify;
+
+
 
 const Container = styled.div`
   display: flex;
@@ -778,4 +829,3 @@ const RemoveButton = styled.button`
   font-size: 14px;
 `;
 
-export default Modify;
