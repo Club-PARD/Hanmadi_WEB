@@ -386,7 +386,7 @@ export const Modal = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1100; // z-index 값을 1100으로 설정
+    z-index: 7000; // z-index 값을 1100으로 설정
 `;
 
 export const ModalContent = styled.div`

@@ -9,6 +9,7 @@ import {
 } from './styledComponents';
 import nextbutton from '../../Assets/Img/nexbutton.svg';
 import close from '../../Assets/Img/close.svg';
+import { useParams } from "react-router-dom";
 
 const intToRegion = {
     0: '경산시',
@@ -24,6 +25,7 @@ const intToRegion = {
 };
 
 const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment, bringToFront }) => {
+    const { postId } = useParams();  // useParams 훅을 사용하여 postId를 가져옴
     const [position, setPosition] = useState({ x: postit.x, y: postit.y });
 
     const handleStop = async (e, data) => {
@@ -33,20 +35,10 @@ const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment,
         postit.x = newPosition.x;
         postit.y = newPosition.y;
 
-        console.log('Moving postit:', {
-            postItId: postit.postItId,
-            postId: 1,
-            commentId: postit.commentId,
-            userId: postit.userId,
-            x: newPosition.x,
-            y: newPosition.y,
-            z: postit.z
-        });
-
         try {
             await movePostit(postit.userId, {
                 postItId: postit.postItId,
-                postId: 1,
+                postId: postId,  // postId를 동적으로 사용
                 commentId: postit.commentId,
                 userId: postit.userId,
                 x: newPosition.x,
@@ -56,6 +48,13 @@ const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment,
         } catch (error) {
             console.error('Error moving postit:', error);
         }
+    };
+
+    const truncateText = (text, maxLength) => {
+        if (text.length > maxLength) {
+            return text.slice(0, maxLength) + '...';
+        }
+        return text;
     };
 
     let PostitStyledContainer;
@@ -78,7 +77,8 @@ const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment,
         <Draggable
             bounds="parent"
             position={position}
-            onStart={() => {
+            onStart={(e) => {
+                e.stopPropagation(); // 이벤트 버블링 방지
                 bringToFront(postit.postItId);
                 onStart();
             }}
@@ -89,17 +89,26 @@ const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment,
                     <PostitWriteButtonContainer>
                         <PostitContent>
                             <PostitInfo>{postit.nickname} / {intToRegion[postit.local]}</PostitInfo>
-                            <PostWriting>{postit.content}</PostWriting>
+                            <PostWriting>{truncateText(postit.content, 90)}</PostWriting>
                         </PostitContent>
                         <ButtonContainer>
-                            <MoveButton onClick={onMove}>
+                            <MoveButton onClick={(e) => {
+                                e.stopPropagation(); // 이벤트 버블링 방지
+                                onMove();
+                            }}>
                                 <img src={nextbutton} alt='nextbutton' style={{ width: '67px', height: '30px' }}/>
                             </MoveButton>
-                            <ScrollButton onClick={onScrollToComment}>댓글 보러가기</ScrollButton>
+                            <ScrollButton onClick={(e) => {
+                                e.stopPropagation(); // 이벤트 버블링 방지
+                                onScrollToComment();
+                            }}>댓글 보러가기</ScrollButton>
                         </ButtonContainer>
                     </PostitWriteButtonContainer>
                     <DeleteButtonContainer>
-                        <DeleteButton onClick={onDelete}>
+                        <DeleteButton onClick={(e) => {
+                            e.stopPropagation(); // 이벤트 버블링 방지
+                            onDelete();
+                        }}>
                             <img src={close} alt='close' style={{ width: '10px', height: '10px' }}/>
                         </DeleteButton>
                     </DeleteButtonContainer>
