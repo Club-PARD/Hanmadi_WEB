@@ -15,6 +15,7 @@ import ListAllPage from './Pages/ListAllPage';
 import IngAll from './Components/Mypage_Components/IngAll';
 import EndAll from './Components/Mypage_Components/EndAll';
 import ModifyPage from './Pages/ModifyPage';
+import BeforeLogin from './Components/BeforeLogin_Components/BeforeLogin';
 
 //Pages 폴더로부터 컴포넌트를 가져와서 라우터 연결  
 function App() {
@@ -22,7 +23,7 @@ function App() {
   return (
     <Routes>  
       <Route element={<Header/>}>
-        <Route path='/' element={<MainPage/>}/>
+        <Route path='/yourpage' element={<MainPage/>}/>
         <Route path='/list' element={<ListPage/>}/>
         <Route path='/mypage' element={<MyPage/>}/>
         <Route path='/writing' element={<WritingPage/>}/>
@@ -36,6 +37,7 @@ function App() {
       <Route path='/login/oauth2/code/kakao' element={<KaKaoLogin/>}/>
       <Route path='/selectregion' element={<SelectRegionPage/>}/>
       <Route path="/*" element={<NotFound/>} />
+      <Route path='/' element={<BeforeLogin/>} />
     </Routes>
 
   );
