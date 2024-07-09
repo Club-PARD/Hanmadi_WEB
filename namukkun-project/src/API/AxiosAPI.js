@@ -223,6 +223,21 @@ export const getUserInfo = async (userid) => {
   }
 };
 
+export const decreaseUpCount = async (postId, userId) => {
+  try {
+    const response = await axios.post(`${server}/post/decrease/UpCount`, null, {
+      params: {
+        postId: postId,
+        userId: userId
+      }
+    });
+    return response.data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
 
 //comment 채택
 // comment 채택
@@ -446,12 +461,29 @@ export const getUserAllInfoAPI = async() => {
 // 상세 페이지
 
 // 상세 내용 가져오기
-// export const getPost =async () =>{
-//   try{
-//     const response = await axios.get(`${server}/post/read?id=${id}`);
-//     return response;
-//   }
-//   catch(err){
-//     console.error(err);
-//   }
-// }
+export async function getPost(id) {
+  try {
+      const response = await axios.get(`${server}/post/read?id=${id}`);
+      console.log('get post:', response.data);
+      return response.data;
+  } catch (err) {
+      console.error(err);
+      throw err;
+  }
+}
+
+// post 좋아요
+export async function increaseUpCount(postId, userId) {
+  try {
+      const response = await axios.post(`${server}/post/increase/UpCount`, null, {
+          params: {
+              postId: postId,
+              userId: userId
+          }
+      });
+      return response.data;
+  } catch (err) {
+      console.error(err);
+      throw err;
+  }
+}

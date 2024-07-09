@@ -9,6 +9,7 @@ import {
 } from './styledComponents';
 import nextbutton from '../../Assets/Img/nexbutton.svg';
 import close from '../../Assets/Img/close.svg';
+import { useParams } from "react-router-dom";
 
 const intToRegion = {
     0: '경산시',
@@ -24,6 +25,7 @@ const intToRegion = {
 };
 
 const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment, bringToFront }) => {
+    const { postId } = useParams();  // useParams 훅을 사용하여 postId를 가져옴
     const [position, setPosition] = useState({ x: postit.x, y: postit.y });
 
     const handleStop = async (e, data) => {
@@ -36,7 +38,7 @@ const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment,
         try {
             await movePostit(postit.userId, {
                 postItId: postit.postItId,
-                postId: 1,
+                postId: postId,  // postId를 동적으로 사용
                 commentId: postit.commentId,
                 userId: postit.userId,
                 x: newPosition.x,
