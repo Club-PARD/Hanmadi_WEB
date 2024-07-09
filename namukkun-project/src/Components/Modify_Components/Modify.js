@@ -298,7 +298,8 @@ const Modify = () => {
 
   const isSubmitDisabled = !selectedButton || !title || !background || !solution || !effect;
 
-  const handleSubmit = async () => {
+  //수정하기
+  const handleSubmit = async (postId) => {
     if (isSubmitDisabled) {
       return;
     }
@@ -321,21 +322,21 @@ const Modify = () => {
       solution: replaceImageSrc(solution, solutionImageNames),
       benefit: replaceImageSrc(effect, effectImageNames),
       fileNames: fileRandomStrings,
-      userId: 1,
-      return: true,
+      userId: 1, //
     };
 
     console.log('전송할 데이터:', JSON.stringify(postData));
 
     try {
-      const response = await updatePostPatch(postId); // updatePostPatch를 사용하여 게시물 수정
+      const response = await updatePostPatch(postId, postData); // updatePostPatch를 사용하여 게시물 수정
       console.log('서버 응답:', response);
-      handleUpdateModalOpen(); // 수정 모달 열기
+      navigate(`/postit/${postId}`);
     } catch (error) {
       console.error('서버로 값을 보내는 중 오류 발생:', error);
     }
   };
 
+  //임시저장
   const handleSave = async () => {
     const replaceImageSrc = (html, imageNames) => {
       const div = document.createElement('div');
@@ -365,6 +366,7 @@ const Modify = () => {
     try {
       const response = await saveTempPostAPI(postData);
       console.log('서버 응답:', response.data);
+      // handleUpdateModalOpen(); 
       navigate('/mypage');
     } catch (error) {
       console.error('임시 저장 중 오류 발생:', error);
@@ -377,7 +379,7 @@ const Modify = () => {
       <Intro>
         <TopButtonContainer>
           <BackButton onClick={() => handleWModalOpen('out')}>나가기</BackButton>
-          <SaveButton onClick={handleSave}>임시저장</SaveButton>
+          <SaveButton onClick={()=>handleWModalOpen('temp')}>임시저장</SaveButton>
         </TopButtonContainer>
         <RegionContainer>
           <SelectRegion>제안지역 선택하기</SelectRegion>
@@ -464,7 +466,7 @@ const Modify = () => {
           </FileWrapper>
         </Section>
         <ButtonSection>
-          <PostButton onClick={handleSubmit} disabled={isSubmitDisabled}>
+          <PostButton onClick={()=>handleSubmit(postId)} disabled={isSubmitDisabled}>
             수정하기
           </PostButton>
         </ButtonSection>
@@ -483,12 +485,14 @@ const Modify = () => {
         isOpen={isWModalOpen}
         closeModal={() => handleWModalOpen(modalMethod)}
         method={modalMethod}
+        handleSave= {handleSave}
       ></ModifyModal>
-      <ModifyModal
+      {/* <ModifyModal
         isOpen={isUpdateModalOpen}
         closeModal={handleUpdateModalClose}
         method="update"
-      ></ModifyModal>
+        handleSave ={handleSave}
+      ></ModifyModal> */}
     </Container>
   );
 };

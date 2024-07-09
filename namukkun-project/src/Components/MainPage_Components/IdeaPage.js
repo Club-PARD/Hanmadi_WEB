@@ -148,7 +148,7 @@ function IdeaPage() {
                     </LineTextContainer>
                 </TextContainer>
                 <TwoContentContainer>
-                {allPopularPosts.slice(0, 2).map((content, index) => (
+                {allPopularPosts.length > 0 && allPopularPosts.slice(0, 2).map((content, index) => (
                     <ImageContent
                     key={index}
                     postId={content.postId}
@@ -210,7 +210,7 @@ const ImageContent = ({ postId, image, title, author, due, initialLikes, setShow
                 </DetailContainer>
             </Details>
             <BraveButton onClick={handleClickLike} isLiked={isLiked}>
-                {isLiked ? '용길이 보내기' : '용길이 보내기'}
+                {isLiked ? '공감하기' : '공감하기'}
             </BraveButton>
         </ImageContentContainer>
     );

@@ -4,11 +4,17 @@ import { useNavigate } from 'react-router-dom';
 import { GlobalStyle } from "../../Assets/Style/theme";
 
 // 개발자를 추가, 수정하는 버튼을 눌렀을 때 뜨는 모달
-function ModifyModal({ isOpen, closeModal, method }) {
+function ModifyModal({ isOpen, closeModal, method, handleSave }) {
   const navigate = useNavigate();
 
   const onClcikPath = () =>{
-    navigate('/mypage');
+    if(method ==='out'){
+      navigate('/listall');
+    }
+    else{
+      handleSave();
+      navigate('/mypage');
+    }
   }
 
   useEffect(() => {
@@ -35,7 +41,7 @@ function ModifyModal({ isOpen, closeModal, method }) {
         <Title>{modalcon.title}</Title>
         <Contents method ={method}>{modalcon.content}</Contents>
         <BtnContainer  method ={method}>
-          {method === 'out' &&<ContinueBtn onClick={closeModal}>계속작성하기</ContinueBtn> }
+          <ContinueBtn onClick={closeModal}>계속작성하기</ContinueBtn> 
           <OutButton onClick={onClcikPath}>나가기</OutButton>
         </BtnContainer>
       </Container>

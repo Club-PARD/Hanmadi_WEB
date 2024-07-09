@@ -46,7 +46,7 @@ function PopularPost() {
             console.log("유저 데이터", userInfo);
     
             const initialSendBraveClicked = {};
-            userInfo.postUpList.forEach(postId => {
+            userInfo &&userInfo.postUpList.forEach(postId => {
             initialSendBraveClicked[postId] = true;
             });
             setSendBraveClicked(initialSendBraveClicked);
@@ -55,26 +55,32 @@ function PopularPost() {
   
     // 유저 데이터 불러오는 함수 
     const getUserInfo = async () => {
-        const response = await userInfoGetAPI();
-        // 아톰에 유저 정보 저장
-        setUserData({
-        ...userData,
-        nickName: response.data.nickName,
-        local: response.data.local,
-        profileImage: response.data.profileImage,
-        postUpList: response.data.postUpList,
-        commentUpList: response.data.commentUpList
-        });
-
-        return response.data;
+        try {
+            const response = await userInfoGetAPI();
+            setUserData({
+                ...userData,
+                nickName: response.data.nickName,
+                local: response.data.local,
+                profileImage: response.data.profileImage,
+                postUpList: response.data.postUpList,
+                commentUpList: response.data.commentUpList
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Failed to fetch user info:', error);
+            return null;
+        }
     };
 
     //선택한 자역에 따라 인기글을 보여줄 수 있도록 하는 함수
     const getPopularPostFunc = async(getPathRegion) =>{
-        const response = await popularRegionPostGetAPI(getPathRegion);
-        console.log(response);
-        setPopularData(response.data);
-    
+        try {
+            const response = await popularRegionPostGetAPI(getPathRegion);
+            console.log(response);
+            setPopularData(response.data);
+        } catch (error) {
+            console.error('Failed to fetch popular posts:', error);
+        }
     }
 
     useEffect(() => {
@@ -108,14 +114,26 @@ function PopularPost() {
 
     // 포스트 채택
     const checkPostIncrease = async (postId) => {
-        const response = await checkPostPostAPI(postId);
-        return response.data; 
+        try {
+            const response = await checkPostPostAPI(postId);
+            return response.data;
+        } catch (error) {
+            console.error('Failed to increase post like:', error);
+            throw error; // 재시도를 위해 오류를 다시 던집니다.
+        }
+
     }
 
     // 포스트 채택 삭제
     const checkPostDecrease = async (postId) => {
-        const response = await checkPostDeleteAPI(postId);
-        return response.data;
+        try {
+            const response = await checkPostDeleteAPI(postId);
+            return response.data;
+        } catch (error) {
+            console.error('Failed to decrease post like:', error);
+            throw error; // 재시도를 위해 오류를 다시 던집니다.
+        }
+
     }
 
     const handleSendBraveClick = async(index, item) => {
@@ -212,7 +230,7 @@ function PopularPost() {
                     <AllButton onClick={goToListall}>전체글 보러가기<img src={rightarrow} style={{ width: '6px', height: '12px' }} /></AllButton>
                 </StatusBar>
 
-                {popularFilterData.slice(0, 4).map((item, index) => (
+                {popularFilterData.length > 0 && popularFilterData.slice(0, 4).map((item, index) => (
                     <ContentImageContainer key={index}>
                         <ImageContainer>
                             <img src={extractImageLink(item)} alt="프로필 이미지" style={{ width: '209px', height: '134px' }} />
