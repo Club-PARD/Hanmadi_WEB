@@ -474,12 +474,9 @@ export const getUserAllInfoAPI = async() => {
     throw err;
   }
 }
-<<<<<<< HEAD
-=======
 
 // 상세 페이지
 
->>>>>>> develop
 // 상세 내용 가져오기
 export async function getPost(id) {
   try {
@@ -516,4 +513,3 @@ export const deletePostAPI = async(postId) => {
     console.error( err);
   }
 }
-
