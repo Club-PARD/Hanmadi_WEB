@@ -181,9 +181,9 @@ const Modify = () => {
       try {
         const post = await getPost(postId); // postId로 게시물 내용 가져오기
         setTitle(post.title);
-        setBackground(post.proBackground); // 이미지와 문단 띄기 처리
-        setSolution(post.solution); // 이미지와 문단 띄기 처리
-        setEffect(post.benefit); // 이미지와 문단 띄기 처리
+        setBackground(convertTextToImages(post.proBackground)); // 이미지와 문단 띄기 처리
+        setSolution(convertTextToImages(post.solution)); // 이미지와 문단 띄기 처리
+        setEffect(convertTextToImages(post.benefit)); // 이미지와 문단 띄기 처리
         setSelectedButton(Object.keys(regionToInt).find(key => regionToInt[key] === post.postLocal));
         
         // 첨부 파일 설정
@@ -328,7 +328,7 @@ const Modify = () => {
     console.log('전송할 데이터:', JSON.stringify(postData));
 
     try {
-      const response = await updatePostPatch(postId, postData); // updatePostPatch를 사용하여 게시물 수정
+      const response = await updatePostPatch(postId); // updatePostPatch를 사용하여 게시물 수정
       console.log('서버 응답:', response);
       handleUpdateModalOpen(); // 수정 모달 열기
     } catch (error) {
@@ -494,7 +494,6 @@ const Modify = () => {
 };
 
 export default Modify;
-
 
 
 
