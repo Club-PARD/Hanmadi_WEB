@@ -173,6 +173,11 @@ const LoginButton = styled.button`
   border: none;
   border-radius: var(--Corner-Large, 16px);
   background: #005AFF;
+  cursor: pointer;
+
+  &:hover {
+    background: #004FDE;
+  }
 `;
 
 const RegionList = styled.div`
@@ -290,6 +295,11 @@ const SuggestionButton = styled.button`
   font-style: normal;
   font-weight: 500;
   line-height: 23.415px;
+  cursor: pointer;
+  
+  &:hover {
+    background: #004FDE;
+  }
 `;
 
 const SecondHeader = styled.div`
