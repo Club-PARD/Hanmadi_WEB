@@ -410,7 +410,7 @@ export const ModalTitle = styled.div`
     color: var(--gray-008, #191919);
     text-align: center;
     font-family: 'MinSans-Regular';
-    font-size: 24px;
+    font-size: 26px;
     font-style: normal;
     font-weight: 600;
     padding-bottom: 15px;
@@ -421,7 +421,7 @@ export const ModalSubText = styled.div`
     color: var(--gray-005, #707070);
     text-align: center;
     font-family: 'MinSans-Regular';
-    font-size: 16px;
+    font-size: 18px;
     font-style: normal;
     font-weight: 500;
     line-height: 30px; /* 187.5% */
@@ -445,12 +445,24 @@ export const ModalButton = styled.button`
     justify-content: center;
     border-radius: var(--Corner-Full, 1000px);
     border: 1px solid var(--gray-002, #C7C7C7);
+    color: var(--gray-004, #959595);
     background: var(--white-001, #FFF);
     align-items: center;
+    line-height: 20px;
+  /* 기본 확인 버튼 색상 */
+    &:nth-child(2) {
+        background-color: #005aff;
+        color: white;
+        cursor: pointer;
+    }
 
-    &:hover {
-        border: 1px solid var(--gray-002, #005AFF);
-        background: var(--Main-001, #005AFF);
-        color: #FFF;
+    &:nth-child(2):hover{
+        background: #0047C7;
+    }
+
+  /* 취소 버튼 호버 시 색상 변경 */
+    &:nth-child(1):hover {
+        cursor: pointer;
+        background-color: var(--white-005, #F5F5F5);
     }
 `;
