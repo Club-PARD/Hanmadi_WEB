@@ -82,7 +82,7 @@ function EndAllPost({ posts }) {
             </TotalTitleContainer>
             <TotalContentContainer>
               <AllContentContainer>
-                {posts.map(post => (
+                {posts.length >0 && posts.map(post => (
                   <ContentContainer key={post.postId}>
                     <TitleInfoContainer>
                       <TitleFunctionContainer>

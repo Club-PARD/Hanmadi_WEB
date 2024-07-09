@@ -59,7 +59,7 @@ function IngPost({ posts , setUpdate, update}) {
 									</TotalTitleContainer>
                   <TotalContentContainer>
                     <AllContentContainer>
-                      {posts.slice(0, 3).map(post => (
+                      {posts.length >0 && posts.slice(0, 3).map(post => (
 											<ContentContainer key={post.postId}>
 												<TitleInfoContainer>
                           <TitleFunctionContainer>

@@ -212,7 +212,7 @@ function PopularPost() {
                     <AllButton onClick={goToListall}>전체글 보러가기<img src={rightarrow} style={{ width: '6px', height: '12px' }} /></AllButton>
                 </StatusBar>
 
-                {popularFilterData.slice(0, 4).map((item, index) => (
+                {popularFilterData.length > 0 && popularFilterData.slice(0, 4).map((item, index) => (
                     <ContentImageContainer key={index}>
                         <ImageContainer>
                             <img src={extractImageLink(item)} alt="프로필 이미지" style={{ width: '209px', height: '134px' }} />

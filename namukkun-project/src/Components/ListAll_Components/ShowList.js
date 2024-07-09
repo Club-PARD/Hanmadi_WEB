@@ -193,7 +193,7 @@ function ShowList() {
         </BtnDiv>
       </TopHeader>
       <PostListContentsDiv>
-        {paginatedContents.map((content, index) => (
+        {paginatedContents.length > 0 && paginatedContents.map((content, index) => (
           <Contents
             key={index}
             content={content}

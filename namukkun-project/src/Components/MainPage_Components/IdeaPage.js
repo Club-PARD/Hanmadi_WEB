@@ -148,7 +148,7 @@ function IdeaPage() {
                     </LineTextContainer>
                 </TextContainer>
                 <TwoContentContainer>
-                {allPopularPosts.slice(0, 2).map((content, index) => (
+                {allPopularPosts.length > 0 && allPopularPosts.slice(0, 2).map((content, index) => (
                     <ImageContent
                     key={index}
                     postId={content.postId}
