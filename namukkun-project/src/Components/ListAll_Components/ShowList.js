@@ -18,6 +18,7 @@ function ShowList() {
   const gerPathRegion = location.search;
   // 기본적으로 보여줄 유저 데이터
   const [userData, setUserData] = useRecoilState(userinfo);
+  //누른 버튼 상태
   const [postLike, setPostLike] = useRecoilState(postLikeBtn);
 
   // 로그인 테스트 상태 - 추후 서버랑 연결해야 함.
@@ -27,6 +28,7 @@ function ShowList() {
   // 포스트 데이터 저장
   const [getpostData, setGetPostData] = useState([]);
 
+  //포스트 데이터
   const [PopularData, setPopularData] = useRecoilState(getPopularRegion);
   const [recentData, setRecentData] = useRecoilState(getRecentRegion); 
 
@@ -36,7 +38,7 @@ function ShowList() {
           console.log("유저 데이터", userInfo);
     
           const initialSendBraveClicked = {};
-          userInfo.length > 0 && userInfo.postUpList.forEach(postId => {
+          userInfo.post.length > 0 && userInfo.postUpList.forEach(postId => {
             initialSendBraveClicked[postId] = true;
           });
           setSendBraveClicked(initialSendBraveClicked);
