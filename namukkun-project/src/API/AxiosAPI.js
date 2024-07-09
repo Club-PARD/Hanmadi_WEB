@@ -223,6 +223,21 @@ export const getUserInfo = async (userid) => {
   }
 };
 
+export const decreaseUpCount = async (postId, userId) => {
+  try {
+    const response = await axios.post(`${server}/post/decrease/UpCount`, null, {
+      params: {
+        postId: postId,
+        userId: userId
+      }
+    });
+    return response.data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
 
 //comment 채택
 // comment 채택
@@ -315,7 +330,6 @@ export const movePostit = async (userId, postitData) => {
 
 //postit section이동
 export const movePostitSection = async (userId, postitId, section) => {
-  console.log(`Move Postit Section: ${userId}, ${postitId}, ${section}`);
   try {
       const response = await axios.patch(`${server}/post/postit/sectionmove`, null, {
           params: {
@@ -324,6 +338,7 @@ export const movePostitSection = async (userId, postitId, section) => {
               section: section
           }
       });
+      console.log(`Move Postit Section: ${userId}, ${postitId}, ${section}`);
       return response.data;
   } catch (error) {
       console.error('Error moving postit section:', error);
@@ -460,6 +475,35 @@ export const getUserAllInfoAPI = async() => {
   }
 }
 
+// 상세 페이지
+
+// 상세 내용 가져오기
+export async function getPost(id) {
+  try {
+      const response = await axios.get(`${server}/post/read?id=${id}`);
+      console.log('get post:', response.data);
+      return response.data;
+  } catch (err) {
+      console.error(err);
+      throw err;
+  }
+}
+
+// post 좋아요
+export async function increaseUpCount(postId, userId) {
+  try {
+      const response = await axios.post(`${server}/post/increase/UpCount`, null, {
+          params: {
+              postId: postId,
+              userId: userId
+          }
+      });
+      return response.data;
+  } catch (err) {
+      console.error(err);
+      throw err;
+  }
+}
 // 마이페이지 포스트 삭제
 export const deletePostAPI = async(postId) => {
   try {
