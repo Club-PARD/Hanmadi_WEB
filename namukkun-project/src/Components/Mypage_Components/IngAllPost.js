@@ -53,6 +53,11 @@ function IngAllPost({ posts }) {
   const navigateModify = (postId) =>{
       navigate(`/modify/${postId}`);
   }
+  
+  //뒤로가기
+    const navigateBack = () =>{
+      navigate(`/mypage`);
+  }
 
   return (
     <>
@@ -65,7 +70,7 @@ function IngAllPost({ posts }) {
                 <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
                 진행중인 한마디
               </TotalTitle>
-              <GoBackMyPage> <img src={BackToMyPage}  alt="back" /> </GoBackMyPage>
+              <GoBackMyPage  onClick={navigateBack}> <img src={BackToMyPage}  alt="back" /> </GoBackMyPage>
             </TotalTitleContainer>
             <TotalContentContainer>
               <AllContentContainer>
@@ -219,6 +224,7 @@ const ContentTitle = styled.div`
   font-style: normal;
   font-weight: 600;
   white-space: nowrap; /* 줄 바꿈 방지 */
+  cursor: pointer;
 `;
 
 const IngButton = styled.button`
