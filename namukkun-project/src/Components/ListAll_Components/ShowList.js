@@ -38,7 +38,7 @@ function ShowList() {
           console.log("유저 데이터", userInfo);
     
           const initialSendBraveClicked = {};
-          userInfo.post.length > 0 && userInfo.postUpList.forEach(postId => {
+          userInfo.postUpList&& userInfo.postUpList.forEach(postId => {
             initialSendBraveClicked[postId] = true;
           });
           setSendBraveClicked(initialSendBraveClicked);

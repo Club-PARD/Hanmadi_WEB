@@ -33,6 +33,21 @@ export const postRegisterRegion = async (region) =>{
   }
 }
 
+
+//로그인 체크
+export const loginCheckAPI = async() =>{
+
+  const userid = 1;
+  try{
+    const response = await axios.post(`${server}/login/check?userId=${userid}`); 
+    
+    return response;
+  }
+  catch(err){
+    console.error(err);
+  }
+}
+
 // 이미지를 먼저 서버로 보냄
 export const uploadImageAPI = async (file) => {
   try {

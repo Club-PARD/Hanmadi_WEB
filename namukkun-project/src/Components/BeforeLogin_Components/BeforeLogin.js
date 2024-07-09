@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import BeforeLoginLogo from '../../Assets/Img/BeforeLoginLogo.svg';
 import ThumbsMan from '../../Assets/Img/ThumbsMan.svg';
@@ -10,16 +10,40 @@ import Comment from '../../Assets/Img/Comment.svg';
 import WhiteArrow from '../../Assets/Img/WhiteArrow.svg';
 import { useNavigate } from 'react-router-dom';
 import LoginModal from '../Login_Components/LoginModal';
+import { loginCheckAPI } from '../../API/AxiosAPI';
+// import  {loginCheckAPI} from "../../API/AxiosAPI";
 
 function BeforeLogin() {
   const [showModal, setShowModal] = useState(false);
   const navigate =useNavigate();
+  const [loginCheck, setLoginCheck] =useState(false);
 
-  //로그인  - 이거 추후 서버 연결 후수정 필요함. 로그인 눌렀을 때 바로 로그아웃 상태 뜨지 않게.
-  const handleLoginClick = async () => {
-    setShowModal(true);
-
+  const checkloginFunc = async () => {
+    try {
+      const response = await loginCheckAPI();
+      if (response.status === 200) {
+        setLoginCheck(true);
+      } else {
+        setLoginCheck(false);
+      }
+    } catch (error) {
+      console.error("로그인 체크 중 오류 발생:", error);
+    }
   };
+
+  useEffect(()=>{
+    checkloginFunc();
+  },[]);
+
+
+  const handleLogin = async () =>{
+    if(!loginCheck){
+      setShowModal(true);
+    }
+    else{
+      navigate('/list'); //메인페이지로 수정 필여
+    }
+  }
 
   const navigateRegionList = (region) =>{
     navigate(`/listall?localPageId=${region}`);
@@ -30,7 +54,7 @@ function BeforeLogin() {
       <SideBar>
         <SideBarContainer>
           <Logo><img src={BeforeLoginLogo} alt="SemiLogo" /></Logo>
-          <LoginButton onClick={handleLoginClick}>카카오계정 로그인</LoginButton>
+          <LoginButton onClick={handleLogin}>카카오계정 로그인</LoginButton>
           <RegionList>
             <Title>우리지역 게시판 둘러보기</Title>
             <RegionItem onClick={()=>navigateRegionList(0)}>경산시</RegionItem>
@@ -59,7 +83,7 @@ function BeforeLogin() {
             <SubTitle>
               평소 우리지역을 위해 생각해본 아이디어가 있다면 <br />한마디에 의견을 제안해주세요.
             </SubTitle>
-            <SuggestionButton onClick={handleLoginClick}>
+            <SuggestionButton onClick={handleLogin}>
               의견 제안하기 <img src={WhiteArrow} alt="WhiteArrow" />
             </SuggestionButton>
           </Ment>

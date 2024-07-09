@@ -12,20 +12,20 @@ function KaKaoLogin(){
   const params = new URL(document.location.toString()).searchParams;
   const code = params.get('code');
 
-    const sendCode = async (code) => {
-      try {
-        const response = await getSendCodeAPI(code);
-        console.log("성공",response);
-        if (response.status === 201) {
-          navigate('/selectregion');  // 201 상태 코드일 때 이동할 경로
-        } else {
-          navigate('/');  // (로그인) 성공했을 때 이동할 경로
-        }
-        
-      } catch (err) {
-        console.error(err);
+  const sendCode = async (code) => {
+    try {
+      const response = await getSendCodeAPI(code);
+      console.log("성공",response);
+      if (response.status === 201) {
+        navigate('/selectregion');  // 201 상태 코드일 때 이동할 경로
+      } else {
+        navigate('/');  // (로그인) 성공했을 때 이동할 경로
       }
-    };
+      
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(()=>{
     if (code && (state===1)) {
