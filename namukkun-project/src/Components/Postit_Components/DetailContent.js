@@ -8,32 +8,23 @@ import hoversendbrave from '../../Assets/Img/hoversendbrave.svg';
 import fileimg from '../../Assets/Img/fileimg.svg';
 import { getPost, increaseUpCount, decreaseUpCount, getUserInfo } from '../../API/AxiosAPI'; // API 가져오기
 
-// 텍스트에 태그를 적용하는 함수임
-const applyTags = (text) => {
-    return text
-        .replace(/\[small\](.*?)\[\/small\]/g, '<h4>$1</h4>')
-        .replace(/\[normal\](.*?)\[\/normal\]/g, '<h3>$1</h3>')
-        .replace(/\[large\](.*?)\[\/large\]/g, '<h2>$1</h2>')
-        .replace(/\[huge\](.*?)\[\/huge\]/g, '<h1>$1</h1>')
-        .replace(/\[bold\](.*?)\[\/bold\]/g, '<strong>$1</strong>');
-};
-
-// HTML을 React 컴포넌트로 변환하는 함수 
-const convertHtmlToReact = (htmlString) => {
-    return <div dangerouslySetInnerHTML={{ __html: htmlString }} />;
+// 이미지 URL을 추출하여 <img> 태그로 변환하는 함수
+const convertTextToImages = (text) => {
+    const regex = /\[이미지: (https?:\/\/[^\]]+)\]/g;
+    const parts = text.split(regex);
+    return parts.map((part, index) =>
+        part.startsWith('http') ? <img key={index} src={part} alt={`content-${index}`} style={{ width: '100%', height: 'auto' }} /> : <span key={index}>{part}</span>
+    );
 };
 
 // 파일 이름을 자르고 형식을 붙여주는 함수
 const truncateFileName = (fileName, maxLength) => {
     const fileExtension = fileName.slice(fileName.lastIndexOf('.'));
     const nameWithoutExtension = fileName.slice(0, fileName.lastIndexOf('.'));
-    const nameParts = nameWithoutExtension.split('_');
-    const truncatedName = nameParts.length > 1 ? nameParts[1] : nameParts[0]; // 첫 번째 언더바 다음의 이름만 사용
-
-    if (truncatedName.length > maxLength) {
-        return truncatedName.slice(0, maxLength) + '...' + fileExtension;
+    if (nameWithoutExtension.length > maxLength) {
+        return nameWithoutExtension.slice(0, maxLength) + '...' + fileExtension;
     }
-    return truncatedName + fileExtension;
+    return fileName;
 };
 
 function DetailContent() {
@@ -165,7 +156,7 @@ function DetailContent() {
                             <BackgroundContent>
                                 <BackgroundTitle>제안배경</BackgroundTitle>
                                 <BackgroundWriting>
-                                    {convertHtmlToReact(applyTags(postData.proBackground))} {/* 제안배경 표시 */}
+                                    {convertTextToImages(postData.proBackground)} {/* 제안배경 표시 */}
                                 </BackgroundWriting>
                             </BackgroundContent>
                         </BackgroundContainer>
@@ -173,7 +164,7 @@ function DetailContent() {
                             <BackgroundContent>
                                 <BackgroundTitle>해결방안</BackgroundTitle>
                                 <BackgroundWriting>
-                                    {convertHtmlToReact(applyTags(postData.solution))} {/* 해결방안 표시 */}
+                                    {convertTextToImages(postData.solution)} {/* 해결방안 표시 */}
                                 </BackgroundWriting>
                             </BackgroundContent>
                         </BackgroundContainer>
@@ -181,7 +172,7 @@ function DetailContent() {
                             <BackgroundContent>
                                 <BackgroundTitle>기대효과</BackgroundTitle>
                                 <BackgroundWriting>
-                                    {convertHtmlToReact(applyTags(postData.benefit))} {/* 기대효과 표시 */}
+                                    {convertTextToImages(postData.benefit)} {/* 기대효과 표시 */}
                                 </BackgroundWriting>
                             </BackgroundContent>
                         </BackgroundContainer>
@@ -191,7 +182,7 @@ function DetailContent() {
                                     <FileContent key={index}>
                                         <a href={file.fileUrl} target="_blank" rel="noopener noreferrer">
                                             <img src={fileimg} style={{ width: '17px', height: '18px' }} alt="fileimg" />&nbsp;
-                                            {truncateFileName(file.fileUrl, 30)}
+                                            {truncateFileName(file.fileUrl, 10)}
                                         </a>
                                     </FileContent>
                                 ))}
