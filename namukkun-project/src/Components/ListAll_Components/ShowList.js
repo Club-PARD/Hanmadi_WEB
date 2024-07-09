@@ -36,11 +36,13 @@ function ShowList() {
           console.log("유저 데이터", userInfo);
     
           const initialSendBraveClicked = {};
-          userInfo.postUpList.forEach(postId => {
+          userInfo.length > 0 && userInfo.postUpList.forEach(postId => {
             initialSendBraveClicked[postId] = true;
           });
           setSendBraveClicked(initialSendBraveClicked);
           setPostLike(initialSendBraveClicked);
+        }).catch(error => {
+          console.error("Error fetching user info:", error);
         });
     }, []);
 
@@ -52,14 +54,24 @@ function ShowList() {
 
   // 포스트 채택
   const checkPostIncrease = async (postId) => {
-    const response = await checkPostPostAPI(postId);
-    return response.data;
+    try {
+      const response = await checkPostPostAPI(postId);
+      return response.data;
+    } catch (error) {
+      console.error("Error increasing post:", error);
+      throw error;
+    }
   }
 
   // 포스트 채택 삭제
   const checkPostDecrease = async (postId) => {
-    const response = await checkPostDeleteAPI(postId);
-    return response.data;
+    try {
+      const response = await checkPostDeleteAPI(postId);
+      return response.data;
+    } catch (error) {
+      console.error("Error decreasing post:", error);
+      throw error;
+    }
   }
 
   // 버튼 클릭 상태 관리
@@ -123,41 +135,55 @@ function ShowList() {
   // 버튼 상태 변화 시 서버에서 유저 데이터를 가져옴
   // 유저 데이터 불러오는 함수 
   const getUserInfo = async () => {
-    const response = await userInfoGetAPI();
-    // 아톰에 유저 정보 저장
-    setUserData({
-      ...userData,
-      nickName: response.data.nickName,
-      local: response.data.local,
-      profileImage: response.data.profileImage,
-      postUpList: response.data.postUpList,
-      commentUpList: response.data.commentUpList
-    });
-
-    return response.data;
+    try {
+      const response = await userInfoGetAPI();
+      // 아톰에 유저 정보 저장
+      setUserData({
+        ...userData,
+        nickName: response.data.nickName,
+        local: response.data.local,
+        profileImage: response.data.profileImage,
+        postUpList: response.data.postUpList,
+        commentUpList: response.data.commentUpList
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+      throw error;
+    }
   };
   
   useEffect(() => {
-    const response = getUserInfo();
-    console.log("유저 데이터", response);
-    setPostLike(sendBraveClicked);
-
+    getUserInfo().then(response => {
+      console.log("유저 데이터", response);
+      setPostLike(sendBraveClicked);
+    }).catch(error => {
+      console.error("Error fetching user info:", error);
+    });
   }, [sendBraveClicked, postLike]);
 
   // 지역별 최신순
   const getPostsListallrecent = async (gerPathRegion) => {
-    const response = await recentRegionPostGetAPI(gerPathRegion);
-    setGetPostData(response.data);
-    setRecentData(response.data)
-    console.log("데이터 확인", getpostData);
+    try {
+      const response = await recentRegionPostGetAPI(gerPathRegion);
+      setGetPostData(response.data);
+      setRecentData(response.data);
+      console.log("데이터 확인", getpostData);
+    } catch (error) {
+      console.error("Error fetching recent posts:", error);
+    }
   }
 
   // 지역별 인기순
   const getPostsListallPopular = async (gerPathRegion) => {
-    const response = await popularRegionPostGetAPI(gerPathRegion);
-    setGetPostData(response.data);
-    setPopularData(response.data);
-    console.log(response.data);
+    try {
+      const response = await popularRegionPostGetAPI(gerPathRegion);
+      setGetPostData(response.data);
+      setPopularData(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching popular posts:", error);
+    }
   }
 
   useEffect(() => {
