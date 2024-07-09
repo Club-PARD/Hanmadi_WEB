@@ -1,8 +1,4 @@
 import styled, { createGlobalStyle } from 'styled-components';
-import blueduck from '../../Assets/Img/blueduck.svg';
-import whiteduck from '../../Assets/Img/whiteduck.svg';
-import bannerimg from '../../Assets/Img/bannerimg.svg';
-
 import { BrowserRouter } from 'react-router-dom';
 import { GlobalStyle } from '../../Assets/Style/theme';
 
