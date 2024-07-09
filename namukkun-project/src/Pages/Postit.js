@@ -10,6 +10,7 @@ import {
     ModalButton, NotMyComment
 } from '../Components/Postit_Components/styledComponents';
 import DraggablePostit from '../Components/Postit_Components/DraggablePostit';
+import { useParams } from "react-router-dom";
 import {
     fetchComments, deleteComment, createComment, toggleLikeComment,
     toggleTakeComment, fetchPostits, createPostit, deletePostit, movePostit,
@@ -36,6 +37,7 @@ const intToRegion = {
 };
 
 function Postit() {
+    const { postId } = useParams();  // useParams를 사용하여 postId를 가져옴
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [leftPostits, setLeftPostits] = useState([]);
@@ -59,8 +61,8 @@ function Postit() {
         const loadCommentsAndPostits = async () => {
             try {
                 const [commentsData, postitsData, userInfo] = await Promise.all([
-                    fetchComments(1), // postId를 1로 고정
-                    fetchPostits(1), // postId를 1로 고정
+                    fetchComments(postId), 
+                    fetchPostits(postId), 
                     getUserInfo(userId)
                 ]);
 
@@ -103,7 +105,7 @@ function Postit() {
         if (newComment.trim()) {
             try {
                 const userInfo = await getUserInfo(userId);
-                const newCommentData = await createComment(1, userId, newComment); // postId를 1로 고정
+                const newCommentData = await createComment(postId, userId, newComment); // postId를 1로 고정
                 if (newCommentData && newCommentData.commentId) {
                     const updatedNewComment = {
                         id: newCommentData.commentId,
@@ -193,7 +195,7 @@ function Postit() {
                 x: 0,
                 y: 0,
                 z: highestZIndex,
-                postId: 1 // postId를 1로 고정
+                postId: postId // postId를 1로 고정
             };
 
             console.log('New postit data:', newPostit);
@@ -201,7 +203,7 @@ function Postit() {
             try {
                 const createdPostit = await createPostit(newPostit, userId);
 
-                if (createdPostit.postItId === null) {
+                if (createdPostit.postItId === null || createdPostit.postItId === undefined) {
                     setIsLimitModalOpen(true);
                     return;
                 }
@@ -223,17 +225,15 @@ function Postit() {
 
                 if (updatedNewPostit.section === "left") {
                     setLeftPostits([...leftPostits, updatedNewPostit]);
-                    if (leftPostitsRef.current) {
-                        leftPostitsRef.current.scrollIntoView({ behavior: 'smooth' });
-                    }
                 } else {
                     setRightPostits([...rightPostits, updatedNewPostit]);
-                    if (rightPostitsRef.current) {
-                        rightPostitsRef.current.scrollIntoView({ behavior: 'smooth' });
-                    }
                 }
+
                 setRecentPostit(updatedNewPostit);
                 setHighestZIndex(highestZIndex + 1);
+
+                // 스크롤을 화면 상단으로 이동
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (error) {
                 console.error('Error creating postit:', error);
             }
@@ -318,7 +318,7 @@ function Postit() {
             try {
                 await movePostit(postitToFront.userId, {
                     postItId: postitToFront.postItId,
-                    postId: 1, // postId를 1로 고정
+                    postId: postId, // postId를 1로 고정
                     commentId: postitToFront.commentId,
                     userId: postitToFront.userId,
                     x: postitToFront.x,
