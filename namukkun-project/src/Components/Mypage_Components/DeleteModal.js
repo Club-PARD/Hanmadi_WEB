@@ -3,9 +3,13 @@ import styled from "styled-components";
 import { useNavigate } from 'react-router-dom';
 import { GlobalStyle } from "../../Assets/Style/theme";
 import { deletePostAPI } from "../../API/AxiosAPI";
+import { deleteCheck } from "../../Recoil/Atom";
+import { useRecoilState } from "recoil";
 
 // 개발자를 추가, 수정하는 버튼을 눌렀을 때 뜨는 모달
 function DeleteModal({ isOpen, closeModal, postId ,setUpdate, update}) {
+  const [deUpdate, setDeUpdate] = useRecoilState(deleteCheck
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,7 +31,7 @@ function DeleteModal({ isOpen, closeModal, postId ,setUpdate, update}) {
     const DeletePostFunc = async(postId) =>{
       const response =  await deletePostAPI(postId);
       console.log(response);
-      setUpdate(!update);
+      setDeUpdate(!deUpdate);
       closeModal();
   }
 
