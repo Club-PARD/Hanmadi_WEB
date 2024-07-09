@@ -5,6 +5,7 @@ import mypageduck from '../../Assets/Img/mypageduck.svg';
 import uploadarrow from '../../Assets/Img/uploadarrow.svg';
 import arrowleft from '../../Assets/Img/Arrowleft.svg';
 import arrowright from '../../Assets/Img/Arrowright.svg';
+import BackToMyPage from '../../Assets/Img/BackToMyPage.svg';
 import { useNavigate } from 'react-router-dom';
 import DeleteModal from './DeleteModal';
 
@@ -60,8 +61,11 @@ function IngAllPost({ posts }) {
         <IngContainer>
           <TotalIngContainer>
             <TotalTitleContainer>
-              <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
-              진행중인 한마디
+              <TotalTitle>
+                <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
+                진행중인 한마디
+              </TotalTitle>
+              <GoBackMyPage> <img src={BackToMyPage}  alt="back" /> </GoBackMyPage>
             </TotalTitleContainer>
             <TotalContentContainer>
               <AllContentContainer>
@@ -160,13 +164,22 @@ const TotalTitleContainer = styled.div`
   display: flex;
   width: 100%;
   gap: 7px;
+  flex-direction: row;
+  white-space: nowrap; /* 줄 바꿈 방지 */
+  justify-content: space-between;
+`;
+
+const TotalTitle = styled.div`
+  display: flex;
   color: #191919;
   font-family: 'MinSans-Regular';
   font-size: 22.189px;
   font-style: normal;
   font-weight: 600;
-  flex-direction: row;
-  white-space: nowrap; /* 줄 바꿈 방지 */
+`;
+
+const GoBackMyPage = styled.div`
+  cursor: pointer;
 `;
 
 const TotalContentContainer = styled.div`
