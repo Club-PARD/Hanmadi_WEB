@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import {
-    MainContainer, PostitSectionContainer, PostitSection,
+    MainContainer, PostitSectionContainer, PostitSectionLeft, PostitSectionRight,
     ContentContainer, CommentTitle, CommentInputContainer,
     CommentInput, CommentButton, CommentsDisplayContainer, CommentContainer,
     CommentHeader, CommentInfo, CommentNameRegion, CommentDate, CommentLikes,
@@ -22,6 +22,8 @@ import aftercommentlike from '../Assets/Img/aftercommentlike.svg';
 import commentlike from '../Assets/Img/commentlike.svg';
 import aftertaken from '../Assets/Img/aftertaken.svg';
 import takenduck from '../Assets/Img/takenduck.svg';
+import AdviseDelete from '../Components/Postit_Components/AdviseDelete';
+
 
 const intToRegion = {
     0: '경산시',
@@ -369,7 +371,7 @@ function Postit() {
         <div>
             <MainContainer>
                 <PostitSectionContainer ref={leftPostitsRef}>
-                    <PostitSection>
+                    <PostitSectionLeft>
                         {leftPostits.map((postit) => (
                             <DraggablePostit
                                 key={postit.postItId}
@@ -381,7 +383,7 @@ function Postit() {
                                 bringToFront={bringToFront}
                             />
                         ))}
-                    </PostitSection>
+                    </PostitSectionLeft>
                 </PostitSectionContainer>
                 <ContentContainer>
                     <DetailContent />
@@ -442,7 +444,8 @@ function Postit() {
                     </NotMyComment>
                 </ContentContainer>
                 <PostitSectionContainer ref={rightPostitsRef}>
-                    <PostitSection>
+                    <AdviseDelete/>
+                    <PostitSectionRight>
                         {rightPostits.map((postit) => (
                             <DraggablePostit
                                 key={postit.postItId}
@@ -454,7 +457,7 @@ function Postit() {
                                 bringToFront={bringToFront}
                             />
                         ))}
-                    </PostitSection>
+                    </PostitSectionRight>
                 </PostitSectionContainer>
             </MainContainer>
             {isModalOpen && (
