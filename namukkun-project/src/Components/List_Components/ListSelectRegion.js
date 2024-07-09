@@ -37,7 +37,7 @@ function ListSelectRegion() {
   return (
     <Container>
       <GlobalStyle />
-      <BannerImgDiv src={ListBanner}></BannerImgDiv>
+      {/* <BannerImgDiv src={ListBanner}></BannerImgDiv> */}
       <MainContainer>
         <ContentContainer>
           <IntroContainer>
@@ -70,10 +70,10 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const BannerImgDiv = styled.img`
-  height: 301px;
-  flex-shrink: 0;
-`;
+// const BannerImgDiv = styled.img`
+//   height: 301px;
+//   flex-shrink: 0;
+// `;
 
 const MainContainer = styled.div`
   display: flex;

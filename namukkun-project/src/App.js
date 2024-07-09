@@ -23,7 +23,7 @@ function App() {
   return (
     <Routes>  
       <Route element={<Header/>}>
-        {/* <Route path='/' element={<MainPage/>}/> */}
+        <Route path='/yourpage' element={<MainPage/>}/>
         <Route path='/list' element={<ListPage/>}/>
         <Route path='/mypage' element={<MyPage/>}/>
         <Route path='/writing' element={<WritingPage/>}/>
