@@ -7,12 +7,14 @@ import SideHint from '../../Assets/Img/SideHint.svg';
 import { GlobalStyle } from '../../Assets/Style/theme.js';
 import { deleteFileAPI, uploadImageAPI, uploadFileFetch, submitPostAPI, saveTempPostAPI } from '../../API/AxiosAPI.js';
 import ModifyModal from './ModifyModal.js';
+import { useNavigate } from 'react-router-dom';
 
 // Custom font
 const fonts = ['Min Sans-Regular'];
 const Font = Quill.import('formats/font');
 Font.whitelist = fonts;
 Quill.register(Font, true);
+// const navigate =useNavigate();
 
 const Modify = () => {
   const quillRefBackground = useRef(null);
@@ -281,6 +283,7 @@ const Modify = () => {
     try {
       const response = await submitPostAPI(postData);
       console.log('서버 응답:', response.data);
+      // navigate(`/postit/${response.data}`);
     } catch (error) {
       console.error('서버로 값을 보내는 중 오류 발생:', error);
     }

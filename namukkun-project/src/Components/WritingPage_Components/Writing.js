@@ -7,6 +7,7 @@ import SideHint from '../../Assets/Img/SideHint.svg';
 import WritingModal from './WritingModal';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import { deleteFileAPI, uploadImageAPI, uploadFileFetch, submitPostAPI, saveTempPostAPI } from '../../API/AxiosAPI.js';
+import { useNavigate } from 'react-router-dom';
 
 // Custom font
 const fonts = ['Min Sans-Regular'];
@@ -32,6 +33,7 @@ const Writing = () => {
 
   const [isWModalOpen, setIsWModalOpen] = useState(false);
   const [modalMethod, setModalMethod] = useState('');
+  const navigate =useNavigate();
 
   const handleWModalOpen = (modalMethod) => {
     setModalMethod(modalMethod);
@@ -281,6 +283,8 @@ const Writing = () => {
     try {
       const response = await submitPostAPI(postData);
       console.log('서버 응답:', response.data);
+      
+      navigate(`/postit/${response.data}`);
     } catch (error) {
       console.error('서버로 값을 보내는 중 오류 발생:', error);
     }
