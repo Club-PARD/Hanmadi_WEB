@@ -55,10 +55,10 @@ function EndAllPost({ posts }) {
       <Container>
         <IngContainer>
           <TotalIngContainer>
-            <TotalTitleContainer>
-              <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
-              종료된 한마디
-            </TotalTitleContainer>
+              <TotalTitleContainer>
+                <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
+                종료된 한마디
+              </TotalTitleContainer>
             <TotalContentContainer>
               <AllContentContainer>
                 {posts.map(post => (
