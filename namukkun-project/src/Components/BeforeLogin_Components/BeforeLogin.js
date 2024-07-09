@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import BeforeLoginLogo from '../../Assets/Img/BeforeLoginLogo.svg';
 import ThumbsMan from '../../Assets/Img/ThumbsMan.svg';
@@ -8,26 +8,41 @@ import TextImage from '../../Assets/Img/TextImage.svg';
 import PostIt from '../../Assets/Img/PostIt.svg';
 import Comment from '../../Assets/Img/Comment.svg';
 import WhiteArrow from '../../Assets/Img/WhiteArrow.svg';
+import { useNavigate } from 'react-router-dom';
+import LoginModal from '../Login_Components/LoginModal';
 
 function BeforeLogin() {
+  const [showModal, setShowModal] = useState(false);
+  const navigate =useNavigate();
+
+  //로그인  - 이거 추후 서버 연결 후수정 필요함. 로그인 눌렀을 때 바로 로그아웃 상태 뜨지 않게.
+  const handleLoginClick = async () => {
+    setShowModal(true);
+
+  };
+
+  const navigateRegionList = (region) =>{
+    navigate(`/listall?localPageId=${region}`);
+  }
+
   return (
     <SideContainer>
       <SideBar>
         <SideBarContainer>
           <Logo><img src={BeforeLoginLogo} alt="SemiLogo" /></Logo>
-          <LoginButton>카카오계정 로그인</LoginButton>
+          <LoginButton onClick={handleLoginClick}>카카오계정 로그인</LoginButton>
           <RegionList>
             <Title>우리지역 게시판 둘러보기</Title>
-            <RegionItem>경산시</RegionItem>
-            <RegionItem>경주시</RegionItem>
-            <RegionItem>구미시</RegionItem>
-            <RegionItem>김천시</RegionItem>
-            <RegionItem>문경시</RegionItem>
-            <RegionItem>상주시</RegionItem>
-            <RegionItem>안동시</RegionItem>
-            <RegionItem>영주시</RegionItem>
-            <RegionItem>영천시</RegionItem>
-            <RegionItem>포항시</RegionItem>
+            <RegionItem onClick={()=>navigateRegionList(0)}>경산시</RegionItem>
+            <RegionItem onClick={()=>navigateRegionList(1)}>경주시</RegionItem>
+            <RegionItem onClick={()=>navigateRegionList(2)}>구미시</RegionItem>
+            <RegionItem onClick={()=>navigateRegionList(3)}>김천시</RegionItem>
+            <RegionItem onClick={()=>navigateRegionList(4)}>문경시</RegionItem>
+            <RegionItem onClick={()=>navigateRegionList(5)}>상주시</RegionItem>
+            <RegionItem onClick={()=>navigateRegionList(6)}>안동시</RegionItem>
+            <RegionItem onClick={()=>navigateRegionList(7)}>영주시</RegionItem>
+            <RegionItem onClick={()=>navigateRegionList(8)}>영천시</RegionItem>
+            <RegionItem onClick={()=>navigateRegionList(9)}>포항시</RegionItem>
           </RegionList>
         </SideBarContainer>
       </SideBar>
@@ -44,7 +59,7 @@ function BeforeLogin() {
             <SubTitle>
               평소 우리지역을 위해 생각해본 아이디어가 있다면 <br />한마디에 의견을 제안해주세요.
             </SubTitle>
-            <SuggestionButton>
+            <SuggestionButton onClick={handleLoginClick}>
               의견 제안하기 <img src={WhiteArrow} alt="WhiteArrow" />
             </SuggestionButton>
           </Ment>
@@ -118,6 +133,7 @@ function BeforeLogin() {
           </SecondDiv>
         </FourthHeader>
       </Content>
+      <LoginModal show={showModal} onClose={() => setShowModal(false)} />
     </SideContainer>
   );
 }
