@@ -56,11 +56,6 @@ function EndPost({ posts, setUpdate , update}) {
         navigate('/mypage/endall');
     }
 
-    //수정 버튼
-    const navigateModify = (postId) =>{
-        navigate(`/modify/${postId}`);
-    }
-
     return (
         <>
             <GlobalStyle />
@@ -79,7 +74,7 @@ function EndPost({ posts, setUpdate , update}) {
                                             <TitleFunctionContainer>
                                                 <EndButton>종료</EndButton>
                                                 <ContentTitle onClick={()=>navigateToPost(post.postId)}>{truncateText(post.title, 11)}</ContentTitle>
-                                                <AdviseButton onClick={()=>navigateModify(post.postId)}>수정</AdviseButton>
+                                                <AdviseButton>수정</AdviseButton>
                                                 <DeleteButton onClick={()=>handleWModalOpen(post.postId)}>삭제</DeleteButton>
                                             </TitleFunctionContainer>
                                             <InfoContainer>

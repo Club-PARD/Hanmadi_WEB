@@ -475,7 +475,6 @@ export const getUserAllInfoAPI = async() => {
   }
 }
 
-<<<<<<< HEAD
 // 상세 페이지
 
 // 상세 내용 가져오기
@@ -505,7 +504,6 @@ export async function increaseUpCount(postId, userId) {
       throw err;
   }
 }
-=======
 // 마이페이지 포스트 삭제
 export const deletePostAPI = async(postId) => {
   try {
@@ -516,4 +514,3 @@ export const deletePostAPI = async(postId) => {
   }
 }
 
->>>>>>> develop

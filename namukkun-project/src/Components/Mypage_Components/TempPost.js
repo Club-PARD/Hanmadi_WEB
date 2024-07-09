@@ -19,6 +19,12 @@ function TempPost({ posts , setUpdate, update}) {
     return text;
     };
 
+    //상세페이지로 이동
+      const navigateToPost = (postId) => {
+        navigate(`/postit/${postId}`);
+    };
+
+    //삭제 모달
     const handleWModalOpen = (postId) => {
         setIsWModalOpen(!isWModalOpen);
         setGetPostid(postId);
@@ -49,7 +55,7 @@ return (
                     {posts.map((post, index) => (
                         <ContentContainer key={post.postId}>
                             <NumberText>{index + 1}</NumberText>
-                            <TitleText>{truncateText(post.title, 13)}</TitleText>
+                            <TitleText onClick={()=>navigateToPost(post.postId)} >{truncateText(post.title, 13)}</TitleText>
                             <DateText>{post.postTime}</DateText>
                             <ButtonContainer>
                                 <AdviseButton onClick={()=>{navigateModify(post.postId)}}>수정</AdviseButton>

@@ -413,7 +413,7 @@ const Modify = () => {
         </Section>
         <ButtonSection>
           <PostButton onClick={handleSubmit} disabled={isSubmitDisabled}>
-            게시하기
+            수정하기
           </PostButton>
         </ButtonSection>
         <HiddenSection>
