@@ -5,10 +5,18 @@ import mypageduck from '../../Assets/Img/mypageduck.svg';
 import uploadarrow from '../../Assets/Img/uploadarrow.svg';
 import arrowleft from '../../Assets/Img/Arrowleft.svg';
 import arrowright from '../../Assets/Img/Arrowright.svg';
+import BackToMyPage from '../../Assets/Img/BackToMyPage.svg';
+import { useNavigate } from 'react-router-dom';
+import DeleteModal from './DeleteModal';
 
 // 진행중인 한마디 전체를 보여주도록 돕는 컴포넌트
 function IngAllPost({ posts }) {
   const [page, setPage] = useState(1); // 페이지 초기값을 1로 설정
+  const [isWModalOpen, setIsWModalOpen] = useState(false);
+  const [getpostid, setGetPostid] = useState(null);
+  const navigate = useNavigate();
+  const [update, setUpdate] =useState(false);
+
   const url = "https://www.epeople.go.kr/index.jsp";
 
   const truncateText = (text, maxLength) => {
@@ -30,6 +38,22 @@ function IngAllPost({ posts }) {
     setPage(newPage);
   };
 
+  //삭제모달
+  const handleWModalOpen = (postId) => {
+    setIsWModalOpen(!isWModalOpen);
+    setGetPostid(postId);
+  };
+
+  //상세페이지로 이동
+  const navigateToPost = (postId) => {
+      navigate(`/postit/${postId}`);
+  };
+
+  //수정 버튼
+  const navigateModify = (postId) =>{
+      navigate(`/modify/${postId}`);
+  }
+
   return (
     <>
       <GlobalStyle />
@@ -37,8 +61,11 @@ function IngAllPost({ posts }) {
         <IngContainer>
           <TotalIngContainer>
             <TotalTitleContainer>
-              <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
-              진행중인 한마디
+              <TotalTitle>
+                <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
+                진행중인 한마디
+              </TotalTitle>
+              <GoBackMyPage> <img src={BackToMyPage}  alt="back" /> </GoBackMyPage>
             </TotalTitleContainer>
             <TotalContentContainer>
               <AllContentContainer>
@@ -47,9 +74,9 @@ function IngAllPost({ posts }) {
                     <TitleInfoContainer>
                       <TitleFunctionContainer>
                         <IngButton>진행중</IngButton>
-                        <ContentTitle>{truncateText(post.title, 11)}</ContentTitle>
-                        <AdviseButton>수정</AdviseButton>
-                        <DeleteButton>삭제</DeleteButton>
+                        <ContentTitle onClick={()=>navigateToPost(post.postId)}>{truncateText(post.title, 11)}</ContentTitle>
+                        <AdviseButton onClick={()=>navigateModify(post.postId)}>수정</AdviseButton>
+                        <DeleteButton onClick={()=>handleWModalOpen(post.postId)}>삭제</DeleteButton>
                       </TitleFunctionContainer>
                       <InfoContainer>
                         <InfoTextContainer>
@@ -96,6 +123,13 @@ function IngAllPost({ posts }) {
           </TotalIngContainer>
         </IngContainer>
       </Container>
+      <DeleteModal
+            isOpen={isWModalOpen}
+            closeModal={handleWModalOpen}
+            postId ={getpostid}
+            setUpdate ={setUpdate}
+            update= {update}
+        ></DeleteModal>
     </>
   );
 }
@@ -130,13 +164,22 @@ const TotalTitleContainer = styled.div`
   display: flex;
   width: 100%;
   gap: 7px;
+  flex-direction: row;
+  white-space: nowrap; /* 줄 바꿈 방지 */
+  justify-content: space-between;
+`;
+
+const TotalTitle = styled.div`
+  display: flex;
   color: #191919;
   font-family: 'MinSans-Regular';
   font-size: 22.189px;
   font-style: normal;
   font-weight: 600;
-  flex-direction: row;
-  white-space: nowrap; /* 줄 바꿈 방지 */
+`;
+
+const GoBackMyPage = styled.div`
+  cursor: pointer;
 `;
 
 const TotalContentContainer = styled.div`

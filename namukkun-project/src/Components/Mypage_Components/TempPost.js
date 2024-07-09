@@ -3,11 +3,13 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import mypageduck from '../../Assets/Img/mypageduck.svg';
 import DeleteModal from './DeleteModal';
+import { useNavigate } from 'react-router-dom';
 
 function TempPost({ posts , setUpdate, update}) {
 
     const [isWModalOpen, setIsWModalOpen] = useState(false);
     const [getpostid, setGetPostid] = useState(null);
+    const navigate =useNavigate();
 
     const truncateText = (text, maxLength) => {
     if (!text) return ''; // text가 undefined 또는 null인 경우 빈 문자열 반환
@@ -17,11 +19,21 @@ function TempPost({ posts , setUpdate, update}) {
     return text;
     };
 
+    //상세페이지로 이동
+      const navigateToPost = (postId) => {
+        navigate(`/postit/${postId}`);
+    };
+
+    //삭제 모달
     const handleWModalOpen = (postId) => {
         setIsWModalOpen(!isWModalOpen);
         setGetPostid(postId);
     };
 
+    //수정 버튼
+    const navigateModify = (postId) =>{
+        navigate(`/modify/${postId}`);
+    }
 
 return (
 <>
@@ -43,11 +55,11 @@ return (
                     {posts.map((post, index) => (
                         <ContentContainer key={post.postId}>
                             <NumberText>{index + 1}</NumberText>
-                            <TitleText>{truncateText(post.title, 13)}</TitleText>
+                            <TitleText onClick={()=>navigateToPost(post.postId)} >{truncateText(post.title, 13)}</TitleText>
                             <DateText>{post.postTime}</DateText>
                             <ButtonContainer>
-                                <AdviseButton>수정</AdviseButton>
-                                <DeleteButton>삭제</DeleteButton>
+                                <AdviseButton onClick={()=>{navigateModify(post.postId)}}>수정</AdviseButton>
+                                <DeleteButton onClick={()=>handleWModalOpen(post.postId)}>삭제</DeleteButton>
                             </ButtonContainer>
                         </ContentContainer>
                     ))}
