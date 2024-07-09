@@ -528,6 +528,7 @@ export const updatePostGet = async(postId) => {
 
 //수정할 게시물을 수정하기
 export const updatePostPatch = async(postId) => {
+  console.log('patch post', postId)
   try {
 
     const response = await axios.patch(`${server}/post/update?postId=${postId}`);
@@ -536,3 +537,5 @@ export const updatePostPatch = async(postId) => {
     console.error( err);
   }
 }
+
+
