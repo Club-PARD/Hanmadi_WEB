@@ -40,15 +40,20 @@ function EndAllPost({ posts }) {
     setGetPostid(postId);
     };
 
-    //상세페이지로 이동
-    const navigateToPost = (postId) => {
-        navigate(`/postit/${postId}`);
-    };
+  //상세페이지로 이동
+  const navigateToPost = (postId) => {
+      navigate(`/postit/${postId}`);
+  };
 
-    //수정 버튼
-    const navigateModify = (postId) =>{
+  //수정 버튼
+  const navigateModify = (postId) =>{
         navigate(`/modify/${postId}`);
     }
+
+  //뒤로가기
+  const navigateBack = () =>{
+      navigate(`/mypage`);
+  }
 
   return (
     <>
@@ -61,7 +66,7 @@ function EndAllPost({ posts }) {
                 <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
                 종료된 한마디
               </TotalTitle>
-              <GoBackMyPage> <img src={BackToMyPage}  alt="back" /> </GoBackMyPage>
+              <GoBackMyPage onClick={navigateBack}> <img src={BackToMyPage}  alt="back" /> </GoBackMyPage>
             </TotalTitleContainer>
               <TotalTitleContainer>
                 <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
