@@ -318,6 +318,7 @@ const Writing = () => {
     try {
       const response = await saveTempPostAPI(postData);
       console.log('서버 응답:', response.data);
+      navigate('/mypage');
     } catch (error) {
       console.error('임시 저장 중 오류 발생:', error);
     }
