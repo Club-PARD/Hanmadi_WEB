@@ -66,7 +66,7 @@ function GreatIdeaPage() {
                         <TitleText>다른 지역의 한마디도 함께</TitleText>
                     </LineTextContainer>
                 </TextContainer>
-                {allPosts.slice(0, 2).map((content, index) => (
+                {allPosts.length > 0&& allPosts.slice(0, 2).map((content, index) => (
                     <ContentImageContainer key={index}>
                     <ContentTextContainer>
                         <ContentTitleText onClick={()=>navigateToPost(content.postId)}>{truncateText(content.title,25)}</ContentTitleText>

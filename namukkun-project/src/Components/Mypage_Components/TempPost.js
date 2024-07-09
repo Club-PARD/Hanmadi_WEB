@@ -53,7 +53,7 @@ return (
                         <InfoTextContainer $paddingright='320px'>제목</InfoTextContainer>
                         <InfoTextContainer>작성일자</InfoTextContainer>
                     </InfoBarContainer>
-                    {posts.map((post, index) => (
+                    {posts.length > 0 && posts.map((post, index) => (
                         <ContentContainer key={post.postId}>
                             <NumberText>{index + 1}</NumberText>
                             <TitleText onClick={()=>navigateToPost(post.postId)} >{truncateText(post.title, 13)}</TitleText>

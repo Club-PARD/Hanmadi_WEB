@@ -16,6 +16,7 @@ function IngAllPost({ posts }) {
   const [getpostid, setGetPostid] = useState(null);
   const navigate = useNavigate();
   const [update, setUpdate] =useState(false);
+  
 
   const url = "https://www.epeople.go.kr/index.jsp";
 
@@ -74,7 +75,7 @@ function IngAllPost({ posts }) {
             </TotalTitleContainer>
             <TotalContentContainer>
               <AllContentContainer>
-                {currentPosts.map(post => (
+                {currentPosts.length > 0 &&currentPosts.map(post => (
                   <ContentContainer key={post.postId}>
                     <TitleInfoContainer>
                       <TitleFunctionContainer>
