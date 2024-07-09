@@ -1,11 +1,19 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
+import { BrowserRouter, useNavigate } from 'react-router-dom';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import mypageduck from '../../Assets/Img/mypageduck.svg';
 import uploadarrow from '../../Assets/Img/uploadarrow.svg';
+import { deletePostAPI } from '../../API/AxiosAPI';
+import DeleteModal from './DeleteModal';
 
-function IngPost({ posts }) {
+function IngPost({ posts , setUpdate, update}) {
+
+  const [isWModalOpen, setIsWModalOpen] = useState(false);
+  const [getpostid, setGetPostid] = useState(null);
+  const navigate = useNavigate();
+  const url = "https://www.epeople.go.kr/index.jsp"
+
   const truncateText = (text, maxLength) => {
     if (text.length > maxLength) {
       return text.slice(0, maxLength) + '...';
@@ -13,63 +21,90 @@ function IngPost({ posts }) {
     return text;
   };
 
+  //서버에서 받은 날짜 형태 변경
+  const formatDateString = (dateString) => {
+    return dateString.replace(/-/g, '.');
+  };
+
+  //삭제
+  const handleWModalOpen = (postId) => {
+    setIsWModalOpen(!isWModalOpen);
+    setGetPostid(postId);
+  };
+
+  //상세페이지로 이동
+  const navigateToPost = (postId) => {
+    navigate(`/postit/${postId}`);
+  };
+  
+  const navigateEndPost = () =>{
+    navigate('/mypage/ingall');
+  }
+
   return (
     <>
-      <GlobalStyle />
-      <Container>
-        <IngContainer>
-          <TotalIngContainer>
-            <TotalTitleContainer>
-              <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
-              진행중인 한마디
-            </TotalTitleContainer>
-            <TotalContentContainer>
-              <AllContentContainer>
-                {posts.slice(0, 3).map(post => (
-                  <ContentContainer key={post.postId}>
-                    <TitleInfoContainer>
-                      <TitleFunctionContainer>
-                        <IngButton>진행중</IngButton>
-                        <ContentTitle>{truncateText(post.title, 11)}</ContentTitle>
-                        <AdviseButton>수정</AdviseButton>
-                        <DeleteButton>삭제</DeleteButton>
-                      </TitleFunctionContainer>
-                      <InfoContainer>
-                        <InfoTextContainer>
-                          <InfoText>용길이 수</InfoText>
-                          <InfoText>{post.upCountPost}</InfoText>
-                        </InfoTextContainer>
-                        <InfoTextContainer>
-                          <InfoText>한마디 수</InfoText>
-                          <InfoText>{post.postitCount}</InfoText>
-                        </InfoTextContainer>
-                        <InfoTextContainer>
-                          <InfoText>남은 기간</InfoText>
-                          <InfoText>{post.deadline}</InfoText>
-                        </InfoTextContainer>
-                        <InfoTextContainer>
-                          <InfoText>작성일자</InfoText>
-                          <InfoText>{post.postTime}</InfoText>
-                        </InfoTextContainer>
-                      </InfoContainer>
-                    </TitleInfoContainer>
-                    <UploadButton>
-                      국민신문고
-                      <img src={uploadarrow} style={{ width: '14.4px', height: '4.9px' }} ></img>
-                    </UploadButton>
-                  </ContentContainer>
-                ))}
-                <SeeAllRecContainer>
-                  <SeeAllRecord>
-                    <Link to="mypage/ingall">&nbsp;&nbsp;&nbsp;&nbsp;전체글 보러가기 --></Link>
-                  </SeeAllRecord>
-                </SeeAllRecContainer>
-              </AllContentContainer>
-            </TotalContentContainer>
-          </TotalIngContainer>
-        </IngContainer>
-      </Container>
-    </>
+			<GlobalStyle />
+				<Container>
+					<IngContainer>
+            <TotalIngContainer>
+              <TotalTitleContainer>
+                <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
+                  진행중인 한마디
+									</TotalTitleContainer>
+                  <TotalContentContainer>
+                    <AllContentContainer>
+                      {posts.slice(0, 3).map(post => (
+											<ContentContainer key={post.postId}>
+												<TitleInfoContainer>
+                          <TitleFunctionContainer>
+                            <IngButton>진행중</IngButton>
+                            <ContentTitle onClick={()=>navigateToPost(post.postId)}>{truncateText(post.title, 11)}</ContentTitle>
+                            <AdviseButton >수정</AdviseButton>
+                            <DeleteButton onClick={()=>handleWModalOpen(post.postId)}>삭제</DeleteButton>
+                          </TitleFunctionContainer>
+                          <InfoContainer>
+                            <InfoTextContainer>
+															<InfoText>용길이 수</InfoText>
+                              <InfoText>{post.upCountPost}</InfoText>
+														</InfoTextContainer>
+                            <InfoTextContainer>
+															<InfoText>한마디 수</InfoText>
+                              <InfoText>{post.postitCount}</InfoText>
+                            </InfoTextContainer>
+														<InfoTextContainer>
+															<InfoText>남은 기간</InfoText>
+															<InfoText>D-{post.deadLine}</InfoText>
+														</InfoTextContainer>
+														<InfoTextContainer>
+															<InfoText>작성일자</InfoText>
+															<InfoText>{formatDateString(post.postTime)}</InfoText>
+                            </InfoTextContainer>
+                          </InfoContainer>
+                        </TitleInfoContainer>
+                        <UploadButton onClick={()=>{window.open(url)}}>
+                          국민신문고
+                          <img src={uploadarrow} style={{ width: '14.4px', height: '4.9px' }} ></img>
+                        </UploadButton>
+                      </ContentContainer>
+											))}
+											<SeeAllRecContainer>
+                        <SeeAllRecord onClick={navigateEndPost}>
+                          &nbsp;&nbsp;&nbsp;&nbsp;전체글 보러가기 --> 
+                        </SeeAllRecord>
+                      </SeeAllRecContainer>
+                    </AllContentContainer>
+									</TotalContentContainer>
+                </TotalIngContainer>
+							</IngContainer>
+						</Container>
+            <DeleteModal
+            isOpen={isWModalOpen}
+            closeModal={handleWModalOpen}
+            postId ={getpostid}
+            setUpdate ={setUpdate}
+            update= {update}
+        ></DeleteModal>
+					</>
   );
 }
 
@@ -148,6 +183,7 @@ const ContentTitle = styled.div`
     font-style: normal;
     font-weight: 600;
     white-space: nowrap; /* 줄 바꿈 방지 */
+    cursor: pointer;
 `;
 
 const IngButton = styled.button`
@@ -291,4 +327,3 @@ const SeeAllRecord = styled.div`
     cursor: pointer;
     white-space: nowrap; /* 줄 바꿈 방지 */
 `
-

@@ -1,17 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import mypageduck from '../../Assets/Img/mypageduck.svg';
 import uploadarrow from '../../Assets/Img/uploadarrow.svg';
+import arrowleft from '../../Assets/Img/Arrowleft.svg';
+import arrowright from '../../Assets/Img/Arrowright.svg';
 
 // 종료된 한마디 전체를 보여주도록 돕는 컴포넌트
 function EndAllPost({ posts }) {
+  const [page, setPage] = useState(1); // 페이지 초기값을 1로 설정
+  const url = "https://www.epeople.go.kr/index.jsp";
+
   const truncateText = (text, maxLength) => {
-    if (!text) return ''; // text가 undefined 또는 null인 경우 빈 문자열 반환
     if (text.length > maxLength) {
       return text.slice(0, maxLength) + '...';
     }
     return text;
+  };
+
+  const itemsPerPage = 8; // 한 페이지당 보여지는 컨텐츠 갯수
+  // 총 페이지 갯수
+  const totalPages = Math.ceil(posts.length / itemsPerPage);
+
+  // 현재 페이지에 해당하는 포스트들
+  const currentPosts = posts.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+
+  // 페이지 변경 핸들러
+  const handleChangePage = (newPage) => {
+    setPage(newPage);
   };
 
   return (
@@ -54,7 +70,7 @@ function EndAllPost({ posts }) {
                         </InfoTextContainer>
                       </InfoContainer>
                     </TitleInfoContainer>
-                    <UploadButton>
+                    <UploadButton onClick={()=>{window.open(url)}}>
                       국민신문고
                       <img src={uploadarrow} style={{ width: '14.4px', height: '4.9px' }} ></img>
                     </UploadButton>
@@ -62,6 +78,21 @@ function EndAllPost({ posts }) {
                 ))}
               </AllContentContainer>
             </TotalContentContainer>
+
+
+            <Pagenation>
+            <PagenationButton onClick={() => handleChangePage(page - 1)} disabled={page === 1}>
+              <img src={arrowleft} alt="Previous page" />
+            </PagenationButton>
+            {[...Array(totalPages)].map((_, i) => (
+              <PagenationButton key={i} onClick={() => handleChangePage(i + 1)} isSelected={page === i + 1}>
+                {i + 1}
+              </PagenationButton>
+            ))}
+            <PagenationButton onClick={() => handleChangePage(page + 1)} disabled={page === totalPages}>
+              <img src={arrowright} alt="Next page" />
+            </PagenationButton>
+          </Pagenation>
           </TotalIngContainer>
         </IngContainer>
       </Container>
@@ -268,4 +299,32 @@ const InfoText = styled.div`
 const TitleInfoContainer = styled.div`
   width: 328px;
   white-space: nowrap; /* 줄 바꿈 방지 */
+`;
+
+const Pagenation = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 69px;
+  margin-bottom: 63px;
+  gap: 10px;
+`;
+
+const PagenationButton = styled.button`
+  display: flex;
+  width: 31px;
+  height: 31px;
+  padding: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border: none;
+
+  border-radius: var(--Corner-Full, 1000px);
+  background-color: ${(props) => (props.isSelected ? '#F5F5F5' : 'transparent')};
+  cursor: pointer;
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 `;

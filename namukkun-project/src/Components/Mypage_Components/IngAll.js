@@ -8,7 +8,6 @@ import { loginTestState, userinfo } from "../../Recoil/Atom";
 import { useRecoilState } from "recoil";
 import { intToRegion } from "../SelectRegion_Components/IntToRegion";
 
-// MyPage 진행중인 한마디 전체를 보여주는 페이지
 function IngAll() {
   const [isSticky, setIsSticky] = useState(false);
   const [userData, setUserData] = useRecoilState(userinfo);
@@ -93,6 +92,9 @@ export default IngAll;
 const PageContainer = styled.div`
   background-color: #FAFAFA;
   min-height: 100vh; /* 페이지의 최소 높이를 화면 전체 높이로 설정 */
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
 `;
 
 const FixedButton = styled.div.attrs(props => ({

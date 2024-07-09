@@ -5,7 +5,7 @@ import Cancel from '../../Assets/Img/Cancel.svg';
 import { useNavigate } from 'react-router-dom';
 import test1 from '../../Assets/Img/test1.png';
 import changeProfile from '../../Assets/Img/changeProfile.svg';
-import { userPofilePatchAPI } from '../../API/AxiosAPI';
+import { userPofileImagePatchAPI, userPofilePatchAPI } from '../../API/AxiosAPI';
 import { userinfo } from '../../Recoil/Atom';
 import { useRecoilState } from 'recoil';
 import { intToRegion, regionToInt } from '../SelectRegion_Components/IntToRegion';
@@ -91,9 +91,11 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
       id : 1, //나중에 서버 연결 후 수정 필요
       nickName: info.nickName,
       local: regionToInt[selectedButton],
-      profileImage : info.profileImage
     }
     const response =await userPofilePatchAPI(data);
+    //유저 프로필 업데이트
+    const response2 = await userPofileImagePatchAPI(info.profileImage);
+
     setUserData({
       ...userData,
         nickName: info.nickName,

@@ -18,13 +18,15 @@ function MyPage() {
   // 유저 기본 정보 아톰에 저장
   const [userData, setUserData] = useRecoilState(userinfo);
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);
-  
   // New state to manage posts
   const [posts, setPosts] = useState({
     ingPosts: [],
     endPosts: [],
     tempPosts: [],
   });
+
+  //변경사항 체크
+  const [update, setUpdate] =useState(false);
 
   // 모달창 끌지 켤지 다루는 usestate
   const [isWModalOpen, setIsWModalOpen] = useState(false);
@@ -95,7 +97,7 @@ function MyPage() {
     if (isLogin) {
       getUserInfo();
     }
-  }, [isLogin]);
+  }, [isLogin, update]);
 
   return (
     <div>
@@ -104,9 +106,9 @@ function MyPage() {
         endCount={posts.endPosts.length} 
         tempCount={posts.tempPosts.length} 
       />
-      <IngPost posts={posts.ingPosts} />
-      <EndPost posts={posts.endPosts} />
-      <TempPost posts={posts.tempPosts} />
+      <IngPost posts={posts.ingPosts} setUpdate={setUpdate} update={update} />
+      <EndPost posts={posts.endPosts} setUpdate ={setUpdate} update={update}/>
+      <TempPost posts={posts.tempPosts} setUpdate={setUpdate} update={update}/>
       <FixedButton $isSticky={isSticky}>
         <img src={userData.profileImage} style={{ width: '144px', height: '144px', borderRadius: '50%' }} alt="face" />
         <InfoContainer>
