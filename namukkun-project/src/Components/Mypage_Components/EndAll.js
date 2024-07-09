@@ -72,11 +72,6 @@ function EndAll() {
   // 총 페이지 갯수
   const totalPages = Math.ceil(posts.endPosts.length / itemsPerPage);
 
-  // 페이지 변경 핸들러
-  const handleChangePage = (newPage) => {
-    setPage(newPage);
-  };
-
   return (
     <PageContainer>
       <EndPost posts={posts.endPosts} />
