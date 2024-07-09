@@ -65,7 +65,7 @@ function EndPost({ posts }) {
                         </TotalTitleContainer>
                         <TotalContentContainer>
                             <AllContentContainer>
-                                {posts.slice(0, 3).map(post => ( // 게시물을 최대 3개만 보여줌
+                                {posts.length >0 && posts.slice(0, 3).map(post => ( // 게시물을 최대 3개만 보여줌
                                     <ContentContainer key={post.postId}>
                                         <TitleInfoContainer>
                                             <TitleFunctionContainer>
