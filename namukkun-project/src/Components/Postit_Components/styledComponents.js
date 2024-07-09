@@ -434,13 +434,13 @@ export const ModalButtonContainer = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    gap: 4px;
-    margin-right: 29px;
+    gap: 7px;
+    margin-right: 39px;
 `
 
 export const ModalButton = styled.button`
     display: flex;
-    padding: 10px;
+    padding: 10px 15px 10px 15px;
     height: 32px;
     justify-content: center;
     border-radius: var(--Corner-Full, 1000px);
