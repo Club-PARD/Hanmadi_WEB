@@ -4,7 +4,7 @@ import IngPost from '../Mypage_Components/IngAllPost';
 import advisepen from '../../Assets/Img/advisepen.svg';
 import RegionChangeModal from "../Mypage_Components/RegionChangeModal";
 import { getUserAllInfoAPI } from "../../API/AxiosAPI";
-import { loginTestState, userinfo } from "../../Recoil/Atom";
+import { deleteCheck, loginTestState, userinfo } from "../../Recoil/Atom";
 import { useRecoilState } from "recoil";
 import { intToRegion } from "../SelectRegion_Components/IntToRegion";
 
@@ -12,6 +12,8 @@ function IngAll() {
   const [isSticky, setIsSticky] = useState(false);
   const [userData, setUserData] = useRecoilState(userinfo);
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);
+  const [deUpdate, setDeUpdate] = useRecoilState(deleteCheck
+  );
   const [posts, setPosts] = useState({
     ingPosts: [],
     endPosts: [],
@@ -59,7 +61,7 @@ function IngAll() {
     if (isLogin) {
       getUserInfo();
     }
-  }, [isLogin]);
+  }, [isLogin, deUpdate]);
 
   return (
     <PageContainer>

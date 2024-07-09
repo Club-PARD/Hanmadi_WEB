@@ -84,3 +84,9 @@ export const userPostsState = atom({
   key: 'userPostsState',
   default: [],
 });
+
+//유저 게시물 삭제시 변화감지
+export const deleteCheck = atom({
+  key: 'deleteCheck',
+  default: false,
+});

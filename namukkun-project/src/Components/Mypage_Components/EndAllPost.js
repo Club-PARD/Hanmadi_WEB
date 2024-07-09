@@ -8,6 +8,7 @@ import arrowright from '../../Assets/Img/Arrowright.svg';
 import BackToMyPage from '../../Assets/Img/BackToMyPage.svg';
 import { useNavigate } from 'react-router-dom';
 import DeleteModal from './DeleteModal';
+import { deleteCheck } from '../../Recoil/Atom';
 
 // 종료된 한마디 전체를 보여주도록 돕는 컴포넌트
 function EndAllPost({ posts }) {
@@ -15,7 +16,6 @@ function EndAllPost({ posts }) {
   const [getpostid, setGetPostid] = useState(null);
   const navigate = useNavigate();
   const [isWModalOpen, setIsWModalOpen] = useState(false);
-  const [update, setUpdate] =useState(false);
   const url = "https://www.epeople.go.kr/index.jsp";
 
   const truncateText = (text, maxLength) => {
@@ -40,15 +40,32 @@ function EndAllPost({ posts }) {
     setGetPostid(postId);
     };
 
-    //상세페이지로 이동
-    const navigateToPost = (postId) => {
-        navigate(`/postit/${postId}`);
-    };
+  //상세페이지로 이동
+  const navigateToPost = (postId) => {
+      navigate(`/postit/${postId}`);
+  };
 
-    //수정 버튼
-    const navigateModify = (postId) =>{
+  //수정 버튼
+  const navigateModify = (postId) =>{
         navigate(`/modify/${postId}`);
     }
+
+  //뒤로가기
+  const navigateBack = () =>{
+      navigate(`/mypage`);
+  }
+
+  //종료날짜
+  function addDaysToDate(dateStr) {
+    const date = new Date(dateStr);
+    date.setDate(date.getDate() + 7);
+    
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더해줌
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${year}.${month}.${day}`;
+  }
 
   return (
     <>
@@ -61,12 +78,8 @@ function EndAllPost({ posts }) {
                 <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
                 종료된 한마디
               </TotalTitle>
-              <GoBackMyPage> <img src={BackToMyPage}  alt="back" /> </GoBackMyPage>
+              <GoBackMyPage onClick={navigateBack}> <img src={BackToMyPage}  alt="back" /> </GoBackMyPage>
             </TotalTitleContainer>
-              <TotalTitleContainer>
-                <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
-                종료된 한마디
-              </TotalTitleContainer>
             <TotalContentContainer>
               <AllContentContainer>
                 {posts.map(post => (
@@ -89,7 +102,7 @@ function EndAllPost({ posts }) {
                         </InfoTextContainer>
                         <InfoTextContainer>
                           <InfoText>종료 일자</InfoText>
-                          <InfoText>{post.deadline}</InfoText>
+                          <InfoText>{addDaysToDate(post.postTime)}</InfoText>
                         </InfoTextContainer>
                         <InfoTextContainer>
                           <InfoText>작성일자</InfoText>
@@ -127,8 +140,6 @@ function EndAllPost({ posts }) {
             isOpen={isWModalOpen}
             closeModal={handleWModalOpen}
             postId ={getpostid}
-            setUpdate ={setUpdate}
-            update= {update}
         ></DeleteModal>
     </>
   );
@@ -219,6 +230,7 @@ const ContentTitle = styled.div`
   font-style: normal;
   font-weight: 600;
   white-space: nowrap; /* 줄 바꿈 방지 */
+  cursor: pointer;
 `;
 
 const EndButton = styled.button`
@@ -310,7 +322,7 @@ const TitleFunctionContainer = styled.div`
 
 const InfoTextContainer = styled.div`
   display: flex;
-  width: 56px;
+  /* width: 56px; */
   height: 35px;
   flex-direction: column;
   justify-content: center;

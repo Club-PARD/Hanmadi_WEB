@@ -514,3 +514,28 @@ export const deletePostAPI = async(postId) => {
   }
 }
 
+//수정할 게시물을 id를 통해서 읽기
+export const updatePostGet = async(postId) => {
+  try {
+
+    const response = await axios.get(`${server}/post/read/update?id=${postId}`);
+    return response.data;
+  } catch (err) {
+    console.error( err);
+  }
+}
+
+
+//수정할 게시물을 수정하기
+export const updatePostPatch = async(postId, data) => {
+  console.log('patch post', postId)
+  try {
+
+    const response = await axios.patch(`${server}/post/update?postId=${postId}`, data);
+    return response.data;
+  } catch (err) {
+    console.error( err);
+  }
+}
+
+

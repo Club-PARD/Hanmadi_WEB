@@ -9,7 +9,7 @@ import advisepen from '../Assets/Img/advisepen.svg';
 import WritingModal from "../Components/WritingPage_Components/WritingModal";
 import RegionChangeModal from "../Components/Mypage_Components/RegionChangeModal";
 import { getUserAllInfoAPI } from "../API/AxiosAPI";
-import { loginTestState, userinfo } from "../Recoil/Atom";
+import { deleteCheck, loginTestState, userinfo } from "../Recoil/Atom";
 import { useRecoilState } from "recoil";
 import { intToRegion } from "../Components/SelectRegion_Components/IntToRegion";
 
@@ -18,6 +18,7 @@ function MyPage() {
   // 유저 기본 정보 아톰에 저장
   const [userData, setUserData] = useRecoilState(userinfo);
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);
+  const [deUpdate, setDeUpdate] = useRecoilState(deleteCheck);
   // New state to manage posts
   const [posts, setPosts] = useState({
     ingPosts: [],
@@ -97,7 +98,7 @@ function MyPage() {
     if (isLogin) {
       getUserInfo();
     }
-  }, [isLogin, update]);
+  }, [isLogin, deUpdate]);
 
   return (
     <div>

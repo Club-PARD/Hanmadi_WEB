@@ -37,12 +37,17 @@ export const PostitSectionContainer = styled.div`
 `;
 
 // Post-it 섹션 스타일
-export const PostitSection = styled.div`
+export const PostitSectionRight = styled.div`
     width: 378px;
     flex-grow: 1;
     position: relative;
 `;
 
+export const PostitSectionLeft = styled.div`
+    width: 378px;
+    flex-grow: 1;
+    position: relative;
+`
 // 포스티잇 스타일 컴포넌트
 const PostitContainerBase = styled.div`
     width: 224px;

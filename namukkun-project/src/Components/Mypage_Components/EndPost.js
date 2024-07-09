@@ -3,16 +3,15 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import mypageduck from '../../Assets/Img/mypageduck.svg';
 import uploadarrow from '../../Assets/Img/uploadarrow.svg';
-import DeleteModal from './DeleteModal';
 import { useNavigate } from 'react-router-dom';
+import DeleteModal from './DeleteModal';
 
-function EndPost({ posts, setUpdate , update}) {
-
+function EndPost({ posts }) {
+    const navigate = useNavigate();
     const [isWModalOpen, setIsWModalOpen] = useState(false);
     const [getpostid, setGetPostid] = useState(null);
-    const navigate = useNavigate();
-
     const url = "https://www.epeople.go.kr/index.jsp"
+
 
     const truncateText = (text, maxLength) => {
         if (!text) return ''; // text가 undefined 또는 null인 경우 빈 문자열 반환
@@ -22,39 +21,37 @@ function EndPost({ posts, setUpdate , update}) {
         return text;
     };
 
-    //서버에서 받은 날짜 형태 변경
-    const formatDateString = (dateString) => {
-        return dateString.replace(/-/g, '.');
+    const navigateEndall = () =>{
+        navigate('/mypage/endall')
+    }
+  
+    //삭제모달
+    const handleWModalOpen = (postId) => {
+      setIsWModalOpen(!isWModalOpen);
+      setGetPostid(postId);
+      };
+  
+    //상세페이지로 이동
+    const navigateToPost = (postId) => {
+        navigate(`/postit/${postId}`);
     };
+  
+    //수정 버튼
+    const navigateModify = (postId) =>{
+          navigate(`/modify/${postId}`);
+      }
 
-    function addSevenDays(dateString) {
-        // 입력된 날짜 문자열을 Date 객체로 변환
-        const date = new Date(dateString);
-        
-        // 날짜에 7일을 더함
+    //종료날짜
+    function addDaysToDate(dateStr) {
+        const date = new Date(dateStr);
         date.setDate(date.getDate() + 7);
         
-        // 날짜를 다시 문자열로 포맷
         const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // 자바스크립트에서는 월이 0부터 시작
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더해줌
         const day = String(date.getDate()).padStart(2, '0');
         
         return `${year}.${month}.${day}`;
       }
-
-    const handleWModalOpen = (postId) => {
-        setIsWModalOpen(!isWModalOpen);
-        setGetPostid(postId);
-    };
-
-      //상세페이지로 이동
-    const navigateToPost = (postId) => {
-        navigate(`/postit/${postId}`);
-    };
-
-    const navigateEndPost = () =>{
-        navigate('/mypage/endall');
-    }
 
     return (
         <>
@@ -74,7 +71,7 @@ function EndPost({ posts, setUpdate , update}) {
                                             <TitleFunctionContainer>
                                                 <EndButton>종료</EndButton>
                                                 <ContentTitle onClick={()=>navigateToPost(post.postId)}>{truncateText(post.title, 11)}</ContentTitle>
-                                                <AdviseButton>수정</AdviseButton>
+                                                <AdviseButton onClick={()=>navigateModify(post.postId)}>수정</AdviseButton>
                                                 <DeleteButton onClick={()=>handleWModalOpen(post.postId)}>삭제</DeleteButton>
                                             </TitleFunctionContainer>
                                             <InfoContainer>
@@ -86,25 +83,25 @@ function EndPost({ posts, setUpdate , update}) {
                                                     <InfoText>한마디 수</InfoText>
                                                     <InfoText>{post.postitCount}</InfoText>
                                                 </InfoTextContainer>
-                                                <InfoTextContainer style={{marginRight:"16px"}}>
+                                                <InfoTextContainer>
                                                     <InfoText>종료 일자</InfoText>
-                                                    <InfoText>{addSevenDays(post.postTime)}</InfoText>
+                                                    <InfoText >{addDaysToDate(post.postTime)}</InfoText>
                                                 </InfoTextContainer>
                                                 <InfoTextContainer>
                                                     <InfoText>작성일자</InfoText>
-                                                    <InfoText>{formatDateString(post.postTime)}</InfoText>
+                                                    <InfoText>{post.postTime}</InfoText>
                                                 </InfoTextContainer>
                                             </InfoContainer>
                                         </TitleInfoContainer>
-                                        <UploadButton onClick={()=>{window.open(url)}}>
+                                        <UploadButton onClick={() => { window.open(url) }}>
                                             국민신문고
                                             <img src={uploadarrow} style={{ width: '14.4px', height: '4.9px' }} ></img>
                                         </UploadButton>
                                     </ContentContainer>
                                 ))}
                                 <SeeAllRecContainer>
-                                    <SeeAllRecord onClick={navigateEndPost}>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;전체글 보러가기 --> 
+                                    <SeeAllRecord onClick={navigateEndall}>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;종료글 보러가기 --> 
                                     </SeeAllRecord>
                                 </SeeAllRecContainer>
                             </AllContentContainer>
@@ -116,8 +113,6 @@ function EndPost({ posts, setUpdate , update}) {
             isOpen={isWModalOpen}
             closeModal={handleWModalOpen}
             postId ={getpostid}
-            setUpdate ={setUpdate}
-            update= {update}
         ></DeleteModal>
         </>
     );
@@ -292,7 +287,7 @@ const TitleFunctionContainer = styled.div`
 
 const InfoTextContainer = styled.div`
     display: flex;
-    width: 56px;
+    /* width: 56px; */
     height: 35px;
     flex-direction: column;
     justify-content: center;
