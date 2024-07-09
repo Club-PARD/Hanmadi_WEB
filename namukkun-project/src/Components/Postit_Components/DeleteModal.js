@@ -28,7 +28,7 @@ function DeleteModal({ isOpen, closeModal, postId, setUpdate, update }) {
       console.log(response);
       setUpdate(!update);
       closeModal();
-      navigate('/'); // 게시물 삭제 후 메인 페이지로 이동
+      navigate('/mypage'); // 게시물 삭제 후 메인 페이지로 이동
     } catch (error) {
       console.error('게시물 삭제에 실패했습니다:', error);
     }

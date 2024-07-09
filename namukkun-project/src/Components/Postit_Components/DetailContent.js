@@ -8,12 +8,16 @@ import hoversendbrave from '../../Assets/Img/hoversendbrave.svg';
 import fileimg from '../../Assets/Img/fileimg.svg';
 import { getPost, increaseUpCount, decreaseUpCount, getUserInfo } from '../../API/AxiosAPI'; // API 가져오기
 
-// 이미지 URL을 추출하여 <img> 태그로 변환하는 함수
+// 이미지 URL을 추출하여 <img> 태그로 변환하고 문단 띄기를 추가하는 함수
 const convertTextToImages = (text) => {
     const regex = /\[이미지: (https?:\/\/[^\]]+)\]/g;
     const parts = text.split(regex);
     return parts.map((part, index) =>
-        part.startsWith('http') ? <img key={index} src={part} alt={`content-${index}`} style={{ width: '100%', height: 'auto' }} /> : <span key={index}>{part}</span>
+        part.startsWith('http') ? (
+            <img key={index} src={part} alt={`content-${index}`} style={{ width: '100%', height: 'auto' }} />
+        ) : (
+            <span key={index}>{part.split('\n').map((line, i) => <React.Fragment key={i}>{line}<br /></React.Fragment>)}</span>
+        )
     );
 };
 
