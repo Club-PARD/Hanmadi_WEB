@@ -42,19 +42,31 @@ function IdeaPage() {
             console.log("유저 데이터", userData);
     
             const initialSendBraveClicked = {};
+            if(userData){
+
             userData.postUpList.forEach(postId => {
             initialSendBraveClicked[postId] = true;
             });
             setSendBraveClicked(initialSendBraveClicked);
+            }
+        
         });
         }, []);
 
     //모든 인기게시물 불러오기
-    const allPopularFunc = async () =>{
-        const response = await allPostsRecommendGetAPI();
-        setAllPopularPosts(response.data);
-        console.log(response);
-    }
+    const allPopularFunc = async () => {
+        try {
+            const response = await allPostsRecommendGetAPI();
+            if (Array.isArray(response.data)) {
+                setAllPopularPosts(response.data);
+            } else {
+                console.error('API 응답이 배열 형식이 아닙니다:', response.data);
+            }
+            console.log(response);
+        } catch (error) {
+            console.error('Error fetching all popular posts:', error);
+        }
+    };
 
     useEffect(()=>{
         allPopularFunc();

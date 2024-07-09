@@ -28,6 +28,7 @@ function TempPost({ posts , setUpdate, update}) {
     const handleWModalOpen = (postId) => {
         setIsWModalOpen(!isWModalOpen);
         setGetPostid(postId);
+        setUpdate(!update);
     };
 
     //수정 버튼
