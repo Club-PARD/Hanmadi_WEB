@@ -8,7 +8,7 @@ import hoversendbrave from '../../Assets/Img/hoversendbrave.svg';
 import fileimg from '../../Assets/Img/fileimg.svg';
 import { getPost, increaseUpCount, decreaseUpCount, getUserInfo } from '../../API/AxiosAPI'; // API 가져오기
 
-// 텍스트에 태그를 적용하는 함수
+// 텍스트에 태그를 적용하는 함수임
 const applyTags = (text) => {
     return text
         .replace(/\[small\](.*?)\[\/small\]/g, '<h4>$1</h4>')
@@ -18,7 +18,7 @@ const applyTags = (text) => {
         .replace(/\[bold\](.*?)\[\/bold\]/g, '<strong>$1</strong>');
 };
 
-// HTML을 React 컴포넌트로 변환하는 함수
+// HTML을 React 컴포넌트로 변환하는 함수 
 const convertHtmlToReact = (htmlString) => {
     return <div dangerouslySetInnerHTML={{ __html: htmlString }} />;
 };
