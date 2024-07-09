@@ -1,43 +1,37 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Header from "../Components/Layout_Components/Header";
-import StatusBlock from '../Components/Mypage_Components/StatusBlock';
-import IngPost from '../Components/Mypage_Components/IngPost';
-import EndPost from '../Components/Mypage_Components/EndPost';
-import TempPost from '../Components/Mypage_Components/TempPost';
-import advisepen from '../Assets/Img/advisepen.svg';
-import WritingModal from "../Components/WritingPage_Components/WritingModal";
-import RegionChangeModal from "../Components/Mypage_Components/RegionChangeModal";
-import { getUserAllInfoAPI } from "../API/AxiosAPI";
-import { loginTestState, userinfo } from "../Recoil/Atom";
+import Header from "../Layout_Components/Header";
+import StatusBlock from '../Mypage_Components/StatusBlock';
+import EndPost from '../Mypage_Components/EndAllPost';
+import advisepen from '../../Assets/Img/advisepen.svg';
+import WritingModal from "../WritingPage_Components/WritingModal";
+import RegionChangeModal from "../Mypage_Components/RegionChangeModal";
+import { getUserAllInfoAPI } from "../../API/AxiosAPI";
+import { loginTestState, userinfo } from "../../Recoil/Atom";
 import { useRecoilState } from "recoil";
-import { intToRegion } from "../Components/SelectRegion_Components/IntToRegion";
+import { intToRegion } from "../SelectRegion_Components/IntToRegion";
+import arrowleft from '../../Assets/Img/Arrowleft.svg';
+import arrowright from '../../Assets/Img/Arrowright.svg';
 
-function MyPage() {
+// 종료된 한마디 전체를 보여주는 페이지
+function EndAll() {
   const [isSticky, setIsSticky] = useState(false);
-  // 유저 기본 정보 아톰에 저장
   const [userData, setUserData] = useRecoilState(userinfo);
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);
-  // New state to manage posts
+  const [page, setPage] =useState(0);
   const [posts, setPosts] = useState({
     ingPosts: [],
     endPosts: [],
     tempPosts: [],
   });
-
-  //변경사항 체크
-  const [update, setUpdate] =useState(false);
-
-  // 모달창 끌지 켤지 다루는 usestate
   const [isWModalOpen, setIsWModalOpen] = useState(false);
 
-  // 모달창 관리하는 함수
   const handleWModalOpen = () => {
     setIsWModalOpen(!isWModalOpen);
   };
 
   const handleScroll = () => {
-    if (window.scrollY >= 225) { // 400px 스크롤 시 상단에 고정
+    if (window.scrollY >= 225) {
       setIsSticky(true);
     } else {
       setIsSticky(false);
@@ -51,12 +45,9 @@ function MyPage() {
     };
   }, []);
 
-  // 유저 데이터 불러오는 함수 
   const getUserInfo = async () => {
     try {
       const response = await getUserAllInfoAPI();
-      console.log('API Response:', response);
-      // 아톰에 유저 정보 저장
       setUserData({
         ...userData,
         nickName: response.userInfoDTO.nickName,
@@ -64,51 +55,31 @@ function MyPage() {
         profileImage: response.userInfoDTO.profileImage
       });
 
-      // Categorize posts based on their properties
-      const ingPosts = [];
-      const endPosts = [];
-      const tempPosts = [];
-
-      response.posts.forEach(post => {
-        console.log(post);  // 여기에서 post의 실제 값을 출력해봅시다.
-        if (!post.return) {
-          tempPosts.push(post);
-        } else if (post.return && !post.done) {
-          ingPosts.push(post);
-        } else if (post.return && post.done) {
-          endPosts.push(post);
-        }
-      });
-
-      console.log('ingPosts:', ingPosts);
-      console.log('endPosts:', endPosts);
-      console.log('tempPosts:', tempPosts);
-
-      setPosts({ ingPosts, endPosts, tempPosts });
-      
-      console.log(response);
+      const endPosts = response.posts.filter(post => post.return && post.done);
+      setPosts({ ingPosts: [], endPosts, tempPosts: [] });
     } catch (error) {
       console.error('Error fetching user info:', error);
     }
   };
 
   useEffect(() => {
-    // 로그인이 됐을 때 유저 정보를 불러옴.
     if (isLogin) {
       getUserInfo();
     }
-  }, [isLogin, update]);
+  }, [isLogin]);
+
+  const itemsPerPage = 8; // 한 페이지당 보여지는 컨텐츠 갯수
+  // 총 페이지 갯수
+  const totalPages = Math.ceil(posts.endPosts.length / itemsPerPage);
+
+  // 페이지 변경 핸들러
+  const handleChangePage = (newPage) => {
+    setPage(newPage);
+  };
 
   return (
-    <div>
-      <StatusBlock 
-        ingCount={posts.ingPosts.length} 
-        endCount={posts.endPosts.length} 
-        tempCount={posts.tempPosts.length} 
-      />
-      <IngPost posts={posts.ingPosts} setUpdate={setUpdate} update={update} />
-      <EndPost posts={posts.endPosts} setUpdate ={setUpdate} update={update}/>
-      <TempPost posts={posts.tempPosts} setUpdate={setUpdate} update={update}/>
+    <PageContainer>
+      <EndPost posts={posts.endPosts} />
       <FixedButton $isSticky={isSticky}>
         <img src={userData.profileImage} style={{ width: '144px', height: '144px', borderRadius: '50%' }} alt="face" />
         <InfoContainer>
@@ -128,11 +99,16 @@ function MyPage() {
           isOpen={isWModalOpen}
           closeModal={handleWModalOpen}
       ></RegionChangeModal>
-    </div>
+    </PageContainer>
   );
 }
 
-export default MyPage;
+export default EndAll;
+
+const PageContainer = styled.div`
+  background-color: #FAFAFA;
+  min-height: 100vh; /* 페이지의 최소 높이를 화면 전체 높이로 설정 */
+`;
 
 const FixedButton = styled.div.attrs(props => ({
   style: {
@@ -194,3 +170,26 @@ const ProfileAdviseButton = styled.button`
     cursor: pointer;
     border: none;
 `
+const Pagenation = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 69px;
+  margin-bottom: 63px;
+  gap: 10px;
+`;
+
+const PagenationButton = styled.button`
+  display: flex;
+  width: 31px;
+  height: 31px;
+  padding: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border: none;
+
+  border-radius: var(--Corner-Full, 1000px);
+  background-color: ${(props) => (props.isSelected ? '#F5F5F5' : 'transparent')};
+  cursor: pointer
+  `

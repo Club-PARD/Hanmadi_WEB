@@ -346,12 +346,27 @@ export const movePostitSection = async (userId, postitId, section) => {
   }
 };
 
+//유저
+
 // 유저 프로필 수정
 export const userPofilePatchAPI = async(data) =>{
   try {
     const userid = 1; // 디버그용
 
     const response = await axios.patch(`${server}/user/update?userid=${userid}`, data);
+    return response;
+  } catch (err) {
+    console.error(err);
+    throw err ;
+  }
+}
+
+// 유저 프로필 이미지 수정
+export const userPofileImagePatchAPI = async(data) =>{
+  try {
+    const userid = 1; // 디버그용
+
+    const response = await axios.patch(`${server}/user/update/profile?profileImage=${data}&userId=${userid}`);
     return response;
   } catch (err) {
     console.error(err);
@@ -445,6 +460,8 @@ export const allPostsGetAPI =async () =>{
   }
 }
 
+//마이페이지
+
 // 마이페이지 유저 정보 가져오기
 export const getUserAllInfoAPI = async() => {
   try {
@@ -458,6 +475,7 @@ export const getUserAllInfoAPI = async() => {
   }
 }
 
+<<<<<<< HEAD
 // 상세 페이지
 
 // 상세 내용 가져오기
@@ -487,3 +505,15 @@ export async function increaseUpCount(postId, userId) {
       throw err;
   }
 }
+=======
+// 마이페이지 포스트 삭제
+export const deletePostAPI = async(postId) => {
+  try {
+    const response = await axios.delete(`${server}/post/delete?postId=${postId}`);
+    return response.data;
+  } catch (err) {
+    console.error( err);
+  }
+}
+
+>>>>>>> develop
