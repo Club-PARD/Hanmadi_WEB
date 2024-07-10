@@ -483,10 +483,10 @@ function Postit() {
                 <Modal>
                     <ModalContent>
                         <ModalTitle>
-                            포스티잇 한도가 초과되었습니다!
+                            포스트잇 한도가 초과되었습니다!
                         </ModalTitle>
                         <ModalSubText>
-                            포스티잇은 최대 10개까지만 추가할 수 있습니다.
+                            포스트잇은 최대 10개까지만 추가할 수 있습니다.
                         </ModalSubText>
                         <ModalButtonContainer>
                             <ModalButton onClick={closeLimitModal}>&nbsp;확인&nbsp;</ModalButton>
@@ -503,7 +503,7 @@ function Postit() {
                         <ModalSubText>
                             {commentToTake.isTaken 
                                 ? <>채택이 해제된 댓글은<br/> 댓글창에서 그대로 확인할 수 있어요.</>
-                                : <>채택한 댓글은 포스티잇으로 만들어져요.<br/> 포스티잇을 자유롭게 움직여보세요!</>
+                                : <>채택한 댓글은 포스트잇으로 만들어져요.<br/> 포스트잇을 자유롭게 움직여보세요!</>
                             }
                         </ModalSubText>
                         <ModalButtonContainer>

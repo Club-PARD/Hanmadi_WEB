@@ -417,7 +417,6 @@ export const ModalTitle = styled.div`
 `
 
 export const ModalSubText = styled.div`
-    width: 274px;
     color: var(--gray-005, #707070);
     text-align: center;
     font-family: 'MinSans-Regular';
