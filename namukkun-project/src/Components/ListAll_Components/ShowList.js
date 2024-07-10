@@ -7,7 +7,7 @@ import { useRecoilState } from "recoil";
 import { getPopularRegion, getRecentRegion, loginTestState, pagenation, postLikeBtn, userinfo } from "../../Recoil/Atom";
 import LoginModal from "../Login_Components/LoginModal";
 import { useLocation } from "react-router-dom";
-import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
+import { checkPostDeleteAPI, checkPostPostAPI, loginCheckAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
 
 function ShowList() {
   // 필터 버튼 값 설정 [추천/최신]
@@ -22,7 +22,7 @@ function ShowList() {
   const [postLike, setPostLike] = useRecoilState(postLikeBtn);
 
   // 로그인 테스트 상태 - 추후 서버랑 연결해야 함.
-  const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
+  // const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
   const [showModal, setShowModal] = useState(false);
 
   // 포스트 데이터 저장
@@ -31,6 +31,25 @@ function ShowList() {
   //포스트 데이터
   const [PopularData, setPopularData] = useRecoilState(getPopularRegion);
   const [recentData, setRecentData] = useRecoilState(getRecentRegion); 
+
+  const [loginCheck, setLoginCheck] =useState(false);
+
+  const checkloginFunc = async () => {
+    try {
+      const response = await loginCheckAPI();
+      if (response.status === 200) {
+        setLoginCheck(true);
+      } else {
+        setLoginCheck(false);
+      }
+    } catch (error) {
+      console.error("로그인 체크 중 오류 발생:", error);
+    }
+  };
+
+  useEffect(()=>{
+    checkloginFunc();
+  },[]);
 
     // 초기 sendBraveClicked 상태 설정
     useEffect(() => {
@@ -84,7 +103,8 @@ function ShowList() {
 
   // 버튼 클릭 이벤트 핸들러
   const handleSendBraveClick = async (postId, content) => {
-    if (isLogin) {
+
+    if(loginCheck){
       const newSendBraveClicked = {
         ...sendBraveClicked,
         [postId]: !sendBraveClicked[postId]
@@ -93,7 +113,7 @@ function ShowList() {
   
       try {
         let response;
-        if (newSendBraveClicked[postId]) {
+        if (sendBraveClicked[postId]) {
           response = await checkPostIncrease(content.postId); // 좋아요 증가 API 호출
         } else {
           response = await checkPostDecrease(content.postId); // 좋아요 감소 API 호출
@@ -127,11 +147,13 @@ function ShowList() {
   
       } catch (error) {
         console.error("Error updating post:", error);
+        // setShowModal(true);
       }
-    } else {
-      setShowModal(true);
     }
-
+      else{
+        setShowModal(true);
+      }
+    
   };
 
   // 버튼 상태 변화 시 서버에서 유저 데이터를 가져옴

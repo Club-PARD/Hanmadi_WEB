@@ -8,15 +8,18 @@ import TextImage from '../../Assets/Img/TextImage.svg';
 import PostIt from '../../Assets/Img/PostIt.svg';
 import Comment from '../../Assets/Img/Comment.svg';
 import WhiteArrow from '../../Assets/Img/WhiteArrow.svg';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import LoginModal from '../Login_Components/LoginModal';
 import { loginCheckAPI } from '../../API/AxiosAPI';
+import { useRecoilState } from 'recoil';
+import { regionNav } from '../../Recoil/Atom';
 // import  {loginCheckAPI} from "../../API/AxiosAPI";
 
 function BeforeLogin() {
   const [showModal, setShowModal] = useState(false);
   const navigate =useNavigate();
   const [loginCheck, setLoginCheck] =useState(false);
+  const [regionselect, setRegionSelect] = useRecoilState(regionNav);
 
   const checkloginFunc = async () => {
     try {
@@ -46,8 +49,9 @@ function BeforeLogin() {
   }
 
   const navigateRegionList = (region) =>{
-    console.log("Navigating to region:", region);
-    navigate(`listall?localPageId=${region}`);
+    console.log("하이", regionselect);
+    setRegionSelect(region);
+    navigate(`/listall?localPageId=${region}`);
   }
 
   return (

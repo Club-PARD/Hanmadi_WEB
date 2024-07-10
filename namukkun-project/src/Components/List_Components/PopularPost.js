@@ -37,8 +37,9 @@ function PopularPost() {
     const [userData, setUserData] = useRecoilState(userinfo);
 
     const location = useLocation();
-    const getPathRegion = location.search;
-    console.log(getPathRegion)
+    const params = new URLSearchParams(location.search);
+    const localPageId = params.get('localPageId');
+    console.log('sdadafa', localPageId);
 
     // 초기 sendBraveClicked 상태 설정
     useEffect(() => {
@@ -51,7 +52,7 @@ function PopularPost() {
             });
             setSendBraveClicked(initialSendBraveClicked);
         });
-        }, [getPathRegion]);
+        }, [localPageId]);
   
     // 유저 데이터 불러오는 함수 
     const getUserInfo = async () => {
@@ -73,19 +74,21 @@ function PopularPost() {
     };
 
     //선택한 자역에 따라 인기글을 보여줄 수 있도록 하는 함수
-    const getPopularPostFunc = async(getPathRegion) =>{
+    const getPopularPostFunc = async(localPageId) =>{
         try {
-            const response = await popularRegionPostGetAPI(getPathRegion);
-            console.log(response);
-            setPopularData(response.data);
+            if(localPageId){
+                const response = await popularRegionPostGetAPI('?localPageId='+localPageId);
+                console.log(response);
+                setPopularData(response.data);
+            }
         } catch (error) {
             console.error('Failed to fetch popular posts:', error);
         }
     }
 
     useEffect(() => {
-        getPopularPostFunc(getPathRegion);
-    }, [getPathRegion]);
+        getPopularPostFunc(localPageId);
+    }, [localPageId]);
 
     useEffect(() => {
         // popularData 또는 activeButton이 변경될 때마다 필터링 로직 실행

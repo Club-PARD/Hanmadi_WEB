@@ -2,19 +2,40 @@ import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import React, { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { loginTestState, userinfo } from '../../Recoil/Atom';
+import { loginTestState, regionNav, userinfo } from '../../Recoil/Atom';
 import { intToRegion, regionToInt } from '../SelectRegion_Components/IntToRegion';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { loginCheckAPI } from '../../API/AxiosAPI';
 
 function ListSelectRegion() {
   //기본적으로 보여줄 유저 데이터
   const [userData, setUserData] = useRecoilState(userinfo);
-  //로그인 테스트 상태 -추후 서버랑 연결해야함.
-  const [isLogin, setIsLogin] = useRecoilState(loginTestState); 
+  // //로그인 테스트 상태 -추후 서버랑 연결해야함.
+  // const [isLogin, setIsLogin] = useRecoilState(loginTestState); 
   //로그인 했을 때 안 했을 때 디폴트 로그인상태 변화
-  const defaultRegion = isLogin? intToRegion[userData.local]: intToRegion[0]
+  const [regionselect, setRegionSelect] = useRecoilState(regionNav);
+  const [loginCheck, setLoginCheck] =useState(false);
+  const defaultRegion = loginCheck? intToRegion[userData.local]: intToRegion[regionselect]
   const [selectedButton, setSelectedButton] = useState(defaultRegion); 
   const navigate =useNavigate();
+  const location = useLocation();
+
+  const checkloginFunc = async () => {
+    try {
+      const response = await loginCheckAPI();
+      if (response.status === 200) {
+        setLoginCheck(true);
+      } else {
+        setLoginCheck(false);
+      }
+    } catch (error) {
+      console.error("로그인 체크 중 오류 발생:", error);
+    }
+  };
+
+  useEffect(()=>{
+    checkloginFunc();
+  },[]);
 
   const handleButtonClick = (region) => {
     setSelectedButton((prevSelected) => (prevSelected === region ? prevSelected : region));
@@ -22,16 +43,21 @@ function ListSelectRegion() {
       navigate(`?localPageId=${regionToInt[region]}`);
     }
   };
+  
+  useEffect(() => {
+    // URL 파라미터에서 localPageId 값을 읽어와서 해당 지역 버튼 선택
+    const params = new URLSearchParams(location.search);
+    const localPageId = params.get('localPageId');
 
-  useEffect(()=>{
-    //로그인 했을 때 안 했을 때 디폴트 로그인상태 변화
-    const defaultRegion = isLogin? intToRegion[userData.local]: intToRegion[0]
-    
-    setSelectedButton(defaultRegion);
-
-    navigate(`?localPageId=${regionToInt[defaultRegion]}`);
-
-  },[isLogin])
+    // localPageId 값이 있으면 해당 값을 intToRegion을 이용하여 지역명으로 변환
+    if (localPageId && intToRegion[localPageId]) {
+      setSelectedButton(intToRegion[localPageId]);
+    } else {
+      // 기본적으로 선택할 버튼을 여기서 설정할 수 있습니다.
+      setSelectedButton(intToRegion[0]); // 예를 들어, intToRegion[0]은 '경산시'를 의미한다고 가정
+      navigate(`?localPageId=${regionToInt[intToRegion[0]]}`); // 기본 버튼에 해당하는 localPageId로 navigate
+    }
+  }, [location.search]);
 
   return (
     <Container>

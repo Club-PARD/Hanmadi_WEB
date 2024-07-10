@@ -167,7 +167,7 @@ function PopularPost() {
                         </PaginationDotContainer>
                     </Pagination>
                     <TwoContentContainer>
-                        {postsToDisplay.length > 0&&postsToDisplay.map((post, index) => (
+                        {postsToDisplay &&postsToDisplay.map((post, index) => (
                             <ImageContent
                                 key={index}
                                 postImage= {extractImageLink(post)}
