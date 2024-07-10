@@ -47,6 +47,20 @@ export const loginCheckAPI = async() =>{
   }
 }
 
+//로그아웃
+export const logoutAPI = async() =>{
+
+  try{
+    const response = await axios.post(`${server}/login/logout`); 
+    
+    return response;
+  }
+  catch(err){
+    console.error(err);
+  }
+}
+
+
 // 이미지를 먼저 서버로 보냄
 export const uploadImageAPI = async (file) => {
   try {
@@ -144,11 +158,10 @@ export const fetchComments = async (postId) => {
 };
 
 // comment 삭제
-export const deleteComment = async (userid, commentid) => {
+export const deleteComment = async (commentid) => {
   try {
     const response = await axios.delete(`${server}/post/comment`, {
       params: {
-        userid: userid,
         commentid: commentid
       }
     });
@@ -166,13 +179,12 @@ export const deleteComment = async (userid, commentid) => {
 };
 
 // comment 생성
-export const createComment = async (postid, userid, content) => {
+export const createComment = async (postid, content) => {
   try {
-      console.log('Creating comment with:', { postid, userid, content }); // 요청 데이터 로그
-      const response = await axios.post(`${server}/post/comment`, { userId: userid, content: content }, {
+      console.log('Creating comment with:', { postid, content }); // 요청 데이터 로그
+      const response = await axios.post(`${server}/post/comment`, {  content: content }, {
           params: {
               postid,
-              userid
           }
       });
       // 상태 코드와 전체 응답 출력
@@ -207,12 +219,11 @@ export const createComment = async (postid, userid, content) => {
 
 
 // comment 좋아요
-export const toggleLikeComment = async (commentid, userid, up) => {
+export const toggleLikeComment = async (commentid, up) => {
   try {
     const response = await axios.patch(`${server}/post/comment/up`, null, {
       params: {
         commentid,
-        userid,
         up
       }
     });
@@ -223,13 +234,9 @@ export const toggleLikeComment = async (commentid, userid, up) => {
   }
 };
 
-export const getUserInfo = async (userid) => {
+export const getUserInfo = async () => {
   try {
-    const response = await axios.get(`${server}/user/info`, {
-      params: {
-        userid
-      }
-    });
+    const response = await axios.get(`${server}/user/info`);
     return response.data;
   } catch (error) {
     console.error('Error fetching user info:', error);
@@ -237,12 +244,11 @@ export const getUserInfo = async (userid) => {
   }
 };
 
-export const decreaseUpCount = async (postId, userId) => {
+export const decreaseUpCount = async (postId) => {
   try {
     const response = await axios.post(`${server}/post/decrease/UpCount`, null, {
       params: {
         postId: postId,
-        userId: userId
       }
     });
     return response.data;
@@ -255,16 +261,15 @@ export const decreaseUpCount = async (postId, userId) => {
 
 //comment 채택
 // comment 채택
-export const toggleTakeComment = async (commentid, userid, take) => {
+export const toggleTakeComment = async (commentid, take) => {
   try {
       const response = await axios.patch(`${server}/post/comment/take`, null, {
           params: {
               commentid,
-              userid,
               take
           }
       });
-      console.log(`get comment: ${commentid}, ${userid}, ${take}`);
+      console.log(`get comment: ${commentid},${take}`);
       return response.data;
   } catch (error) {
       console.error('Error toggling take comment:', error);
@@ -291,13 +296,10 @@ export const fetchPostits = async (postId) => {
 };
 
 // 포스티잇 생성
-export const createPostit = async (dto, userId) => {
+export const createPostit = async (dto) => {
   console.log('DTO being sent:', dto); // DTO를 로그로 출력
   try {
     const response = await axios.post(`${server}/post/postit/create`, dto, {
-      params: {
-        userid: userId
-      },
       headers: {
         'Content-Type': 'application/json' // 요청 헤더에 Content-Type 추가
       }
@@ -310,12 +312,11 @@ export const createPostit = async (dto, userId) => {
 };
 
 // 포스티잇 삭제 함수 추가
-export const deletePostit = async (userId, postitId) => {
+export const deletePostit = async ( postitId) => {
   try {
-      console.log(`Deleting postit with userId: ${userId}, postitId: ${postitId}`);
+      console.log(` postitId: ${postitId}`);
       const response = await axios.delete(`${server}/post/postit/delete`, {
           params: {
-              userid: userId,
               postitid: postitId
           }
       });
@@ -327,14 +328,10 @@ export const deletePostit = async (userId, postitId) => {
 };
 
 // 포스티잇 위치 이동
-export const movePostit = async (userId, postitData) => {
-  console.log(`Move Postit: ${userId}, ${JSON.stringify(postitData)}`);
+export const movePostit = async ( postitData) => {
+  console.log(`Move Postit: ${JSON.stringify(postitData)}`);
   try {
-      const response = await axios.patch(`${server}/post/postit/move`, postitData, {
-          params: {
-              userid: userId
-          }
-      });
+      const response = await axios.patch(`${server}/post/postit/move`, postitData);
       return response.data;
   } catch (error) {
       console.error('Error moving postit:', error);
@@ -343,16 +340,15 @@ export const movePostit = async (userId, postitData) => {
 };
 
 //postit section이동
-export const movePostitSection = async (userId, postitId, section) => {
+export const movePostitSection = async (postitId, section) => {
   try {
       const response = await axios.patch(`${server}/post/postit/sectionmove`, null, {
           params: {
-              userid: userId,
               postitid: postitId,
               section: section
           }
       });
-      console.log(`Move Postit Section: ${userId}, ${postitId}, ${section}`);
+      console.log(`Move Postit ${postitId}, ${section}`);
       return response.data;
   } catch (error) {
       console.error('Error moving postit section:', error);
@@ -365,9 +361,8 @@ export const movePostitSection = async (userId, postitId, section) => {
 // 유저 프로필 수정
 export const userPofilePatchAPI = async(data) =>{
   try {
-    const userid = 1; // 디버그용
 
-    const response = await axios.patch(`${server}/user/update?userid=${userid}`, data);
+    const response = await axios.patch(`${server}/user/update`, data);
     return response;
   } catch (err) {
     console.error(err);
@@ -378,9 +373,8 @@ export const userPofilePatchAPI = async(data) =>{
 // 유저 프로필 이미지 수정
 export const userPofileImagePatchAPI = async(data) =>{
   try {
-    const userid = 1; // 디버그용
 
-    const response = await axios.patch(`${server}/user/update/profile?profileImage=${data}&userId=${userid}`);
+    const response = await axios.patch(`${server}/user/update/profile?profileImage=${data}`);
     return response;
   } catch (err) {
     console.error(err);
@@ -391,9 +385,8 @@ export const userPofileImagePatchAPI = async(data) =>{
 // 유저 정보 가져오기
 export const userInfoGetAPI = async() =>{
   try {
-    const userid = 1; // 디버그용
 
-    const response = await axios.get(`${server}/user/info?userid=${userid}`);
+    const response = await axios.get(`${server}/user/info`);
     return response;
   } catch (err) {
     console.error(err);
@@ -427,9 +420,7 @@ export const popularRegionPostGetAPI =async (gerPathRegion) =>{
 export const checkPostPostAPI =async (postId) =>{
   try{
 
-    const userid =1; //디버그용
-
-    const response = await axios.post(`${server}/post/increase/UpCount?postId=${postId}&userId=${userid}`);
+    const response = await axios.post(`${server}/post/increase/UpCount?postId=${postId}`);
     return response;
   }
   catch(err){
@@ -441,9 +432,7 @@ export const checkPostPostAPI =async (postId) =>{
 export const checkPostDeleteAPI =async (postId) =>{
   try{
 
-    const userid =1; //디버그용
-
-    const response = await axios.post(`${server}/post/decrease/UpCount?postId=${postId}&userId=${userid}`);
+    const response = await axios.post(`${server}/post/decrease/UpCount?postId=${postId}`);
     return response;
   }
   catch(err){
@@ -479,9 +468,8 @@ export const allPostsGetAPI =async () =>{
 // 마이페이지 유저 정보 가져오기
 export const getUserAllInfoAPI = async() => {
   try {
-    const userid = 1; // 디버그용
 
-    const response = await axios.get(`${server}/user/info/all?userid=${userid}`);
+    const response = await axios.get(`${server}/user/info/all`);
     return response.data;
   } catch (err) {
     console.error('Error fetching all user info:', err);
@@ -504,12 +492,11 @@ export async function getPost(id) {
 }
 
 // post 좋아요
-export async function increaseUpCount(postId, userId) {
+export async function increaseUpCount(postId) {
   try {
       const response = await axios.post(`${server}/post/increase/UpCount`, null, {
           params: {
               postId: postId,
-              userId: userId
           }
       });
       return response.data;
@@ -541,11 +528,11 @@ export const updatePostGet = async(postId) => {
 
 
 //수정할 게시물을 수정하기
-export const updatePostPatch = async(postId, data) => {
+export const updatePostPatch = async(postId) => {
   console.log('patch post', postId)
   try {
 
-    const response = await axios.patch(`${server}/post/update?postId=${postId}`, data);
+    const response = await axios.patch(`${server}/post/update?postId=${postId}`);
     return response.data;
   } catch (err) {
     console.error( err);

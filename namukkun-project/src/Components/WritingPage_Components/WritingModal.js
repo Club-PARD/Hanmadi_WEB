@@ -32,7 +32,7 @@ function WritingModal({ isOpen, closeModal, method, handleSave }) {
     return null;
   }
 
-  const modalcon = method ==='out' ? {title: '정말 나가시겠어요?', content: "저장하지 않은 내용은 날라갈 수 있어요."} : {title: '글이 저장되었어요', content: `임시저장된 글은\n내프로필에서 확인할 수 있어요.`} 
+  const modalcon = method ==='out' ? {title: '정말 나가시겠어요?', content: "저장하지 않은 내용은 삭제될 수 있어요."} : {title: '글이 저장되었어요', content: `임시저장된 글은\n내프로필에서 확인할 수 있어요.`} 
 
   return (
     <Background style={{ display: isOpen ? "block" : "none" }} onClick={closeModal}>
@@ -42,7 +42,7 @@ function WritingModal({ isOpen, closeModal, method, handleSave }) {
         <Contents method ={method}>{modalcon.content}</Contents>
         <BtnContainer  method ={method}>
           <ContinueBtn onClick={closeModal}>계속작성하기</ContinueBtn>
-          <OutButton onClick={onClcikPath}>나가기</OutButton>
+          <OutButton onClick={onClcikPath}>저장</OutButton>
         </BtnContainer>
       </Container>
     </Background>

@@ -7,11 +7,11 @@ import { useRecoilState } from "recoil";
 import { getPopularRegion, getRecentRegion, loginTestState, pagenation, postLikeBtn, userinfo } from "../../Recoil/Atom";
 import LoginModal from "../Login_Components/LoginModal";
 import { useLocation } from "react-router-dom";
-import { checkPostDeleteAPI, checkPostPostAPI, loginCheckAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
+import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
 
 function ShowList() {
   // 필터 버튼 값 설정 [추천/최신]
-  const [filter, setFilter] = useState('recent');
+  const [filter, setFilter] = useState('recommend');
   const [currentPage, setCurrentPage] = useRecoilState(pagenation);
   // 선택한 지역별 상태 확인
   const location = useLocation();
@@ -22,7 +22,7 @@ function ShowList() {
   const [postLike, setPostLike] = useRecoilState(postLikeBtn);
 
   // 로그인 테스트 상태 - 추후 서버랑 연결해야 함.
-  // const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
+  const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
   const [showModal, setShowModal] = useState(false);
 
   // 포스트 데이터 저장
@@ -31,8 +31,6 @@ function ShowList() {
   //포스트 데이터
   const [PopularData, setPopularData] = useRecoilState(getPopularRegion);
   const [recentData, setRecentData] = useRecoilState(getRecentRegion); 
-
-  const [loginCheck, setLoginCheck] =useState(false);
 
     // 초기 sendBraveClicked 상태 설정
     useEffect(() => {
@@ -47,11 +45,10 @@ function ShowList() {
           setPostLike(initialSendBraveClicked);
         }).catch(error => {
           console.error("Error fetching user info:", error);
-          setLoginCheck(false);
         });
     }, []);
 
-  // 전체 글에 대한 추천/최신 필터 버튼
+  // 전체 글에 대한 추천/최신 필터 버튼ㄴ
   const onClickFilterBtn = (filterValue) => {
     setCurrentPage(1);
     setFilter(filterValue);
@@ -64,7 +61,6 @@ function ShowList() {
       return response.data;
     } catch (error) {
       console.error("Error increasing post:", error);
-      setLoginCheck(false);
       throw error;
     }
   }
@@ -76,7 +72,6 @@ function ShowList() {
       return response.data;
     } catch (error) {
       console.error("Error decreasing post:", error);
-      setLoginCheck(false);
       throw error;
     }
   }
@@ -89,7 +84,7 @@ function ShowList() {
 
   // 버튼 클릭 이벤트 핸들러
   const handleSendBraveClick = async (postId, content) => {
-    if (loginCheck) {
+    if (isLogin) {
       const newSendBraveClicked = {
         ...sendBraveClicked,
         [postId]: !sendBraveClicked[postId]
@@ -132,8 +127,6 @@ function ShowList() {
   
       } catch (error) {
         console.error("Error updating post:", error);
-        setLoginCheck(false);
-        setShowModal(true);
       }
     } else {
       setShowModal(true);
@@ -158,7 +151,6 @@ function ShowList() {
       return response.data;
     } catch (error) {
       console.error("Error fetching user info:", error);
-      setLoginCheck(false);
       throw error;
     }
   };
@@ -169,7 +161,6 @@ function ShowList() {
       setPostLike(sendBraveClicked);
     }).catch(error => {
       console.error("Error fetching user info:", error);
-      setLoginCheck(false);
     });
   }, [sendBraveClicked, postLike]);
 
@@ -182,7 +173,6 @@ function ShowList() {
       console.log("데이터 확인", getpostData);
     } catch (error) {
       console.error("Error fetching recent posts:", error);
-      setLoginCheck(false);
     }
   }
 
@@ -195,7 +185,6 @@ function ShowList() {
       console.log(response.data);
     } catch (error) {
       console.error("Error fetching popular posts:", error);
-      setLoginCheck(false);
     }
   }
 
@@ -225,7 +214,7 @@ function ShowList() {
   return (
     <Div>
       <TopHeader>
-        <Title>✏️ {filter === 'recommend' ? '추천' : '전체'}글 모아보기</Title>
+        <Title>✏️ 전체글 모아보기</Title>
         <BtnDiv>
           <FilterBtn onClick={() => onClickFilterBtn('recommend')} isSelected={filter === 'recommend'}>추천</FilterBtn>
           <FilterBtn onClick={() => onClickFilterBtn('recent')} isSelected={filter === 'recent'}>최신</FilterBtn>

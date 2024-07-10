@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
 import { useRecoilState } from 'recoil';
 import { intToRegion } from '../SelectRegion_Components/IntToRegion';
-import { loginCheckAPI, recentRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
+import { loginCheckAPI, logoutAPI, recentRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
 
 
 function Header() {
@@ -59,6 +59,15 @@ function Header() {
     checkloginFunc();
   },[]);
 
+  const handleLogout = async () =>{
+    try{
+      const response = await logoutAPI();
+    }
+    catch(err){
+      console.error(err);
+    }
+  }
+
   //로그인 버튼
   const handleLoginClick = async () => {
 
@@ -69,12 +78,13 @@ function Header() {
   };
 
   //로그아웃
-  const handleLogoutClick = () => {
+  const handleLogoutClick =async () => {
     setLoginCheck(false);
+    await handleLogout();
     //로그아웃 했을 때 로컬 스토리지에 있는 유저의 정보를 제거함. 
     localStorage.removeItem("userData");
     if(path ==='/mypage'||path==='/writing'){
-    navigate('/');
+    // navigate('/');
     }
     window.location.reload();
   };

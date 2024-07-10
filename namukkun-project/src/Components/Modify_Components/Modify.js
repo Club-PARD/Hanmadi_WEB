@@ -322,7 +322,6 @@ const Modify = () => {
       solution: replaceImageSrc(solution, solutionImageNames),
       benefit: replaceImageSrc(effect, effectImageNames),
       fileNames: fileRandomStrings,
-      userId: 1, //
     };
 
     console.log('전송할 데이터:', JSON.stringify(postData));
@@ -357,7 +356,6 @@ const Modify = () => {
       solution: replaceImageSrc(solution, solutionImageNames),
       benefit: replaceImageSrc(effect, effectImageNames),
       fileNames: fileRandomStrings,
-      userId: 1,
       return: false, // 임시저장의 경우 false로 설정
     };
 

@@ -137,7 +137,7 @@ function PopularPost() {
     }
 
     const handleSendBraveClick = async(index, item) => {
-        if(isLogin){
+        // if(isLogin){
             const postId = item.postId;
             const newSendBraveClicked = { ...sendBraveClicked };
             try {
@@ -163,10 +163,11 @@ function PopularPost() {
                 });
             } catch (error) {
                 console.error('API 호출 실패:', error);
+                setShowModal(true);
             }
-        } else {
-            setShowModal(true);
-        }
+        // } else {
+        //     setShowModal(true);
+        // }
     };
 
     const truncateText = (text, maxLength) => {
