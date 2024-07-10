@@ -210,7 +210,7 @@ const ImageContent = ({ postId, image, title, author, due, initialLikes, setShow
                 </DetailContainer>
             </Details>
             <BraveButton onClick={handleClickLike} isLiked={isLiked}>
-                {isLiked ? '공감하기' : '공감하기'}
+                {isLiked ? '추천하기' : '추천하기'}
             </BraveButton>
         </ImageContentContainer>
     );
