@@ -7,7 +7,7 @@ import { useRecoilState } from "recoil";
 import { getPopularRegion, getRecentRegion, loginTestState, pagenation, postLikeBtn, userinfo } from "../../Recoil/Atom";
 import LoginModal from "../Login_Components/LoginModal";
 import { useLocation } from "react-router-dom";
-import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
+import { checkPostDeleteAPI, checkPostPostAPI, loginCheckAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
 
 function ShowList() {
   // 필터 버튼 값 설정 [추천/최신]
@@ -22,7 +22,7 @@ function ShowList() {
   const [postLike, setPostLike] = useRecoilState(postLikeBtn);
 
   // 로그인 테스트 상태 - 추후 서버랑 연결해야 함.
-  const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
+  // const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
   const [showModal, setShowModal] = useState(false);
 
   // 포스트 데이터 저장
@@ -32,19 +32,22 @@ function ShowList() {
   const [PopularData, setPopularData] = useRecoilState(getPopularRegion);
   const [recentData, setRecentData] = useRecoilState(getRecentRegion); 
 
+  const [loginCheck, setLoginCheck] =useState(false);
+
     // 초기 sendBraveClicked 상태 설정
     useEffect(() => {
         getUserInfo().then(userInfo => {
           console.log("유저 데이터", userInfo);
     
           const initialSendBraveClicked = {};
-          userInfo.post.length > 0 && userInfo.postUpList.forEach(postId => {
+          userInfo.postUpList&& userInfo.postUpList.forEach(postId => {
             initialSendBraveClicked[postId] = true;
           });
           setSendBraveClicked(initialSendBraveClicked);
           setPostLike(initialSendBraveClicked);
         }).catch(error => {
           console.error("Error fetching user info:", error);
+          setLoginCheck(false);
         });
     }, []);
 
@@ -61,6 +64,7 @@ function ShowList() {
       return response.data;
     } catch (error) {
       console.error("Error increasing post:", error);
+      setLoginCheck(false);
       throw error;
     }
   }
@@ -72,6 +76,7 @@ function ShowList() {
       return response.data;
     } catch (error) {
       console.error("Error decreasing post:", error);
+      setLoginCheck(false);
       throw error;
     }
   }
@@ -84,7 +89,7 @@ function ShowList() {
 
   // 버튼 클릭 이벤트 핸들러
   const handleSendBraveClick = async (postId, content) => {
-    if (isLogin) {
+    if (loginCheck) {
       const newSendBraveClicked = {
         ...sendBraveClicked,
         [postId]: !sendBraveClicked[postId]
@@ -127,6 +132,8 @@ function ShowList() {
   
       } catch (error) {
         console.error("Error updating post:", error);
+        setLoginCheck(false);
+        setShowModal(true);
       }
     } else {
       setShowModal(true);
@@ -151,6 +158,7 @@ function ShowList() {
       return response.data;
     } catch (error) {
       console.error("Error fetching user info:", error);
+      setLoginCheck(false);
       throw error;
     }
   };
@@ -161,6 +169,7 @@ function ShowList() {
       setPostLike(sendBraveClicked);
     }).catch(error => {
       console.error("Error fetching user info:", error);
+      setLoginCheck(false);
     });
   }, [sendBraveClicked, postLike]);
 
@@ -173,6 +182,7 @@ function ShowList() {
       console.log("데이터 확인", getpostData);
     } catch (error) {
       console.error("Error fetching recent posts:", error);
+      setLoginCheck(false);
     }
   }
 
@@ -185,6 +195,7 @@ function ShowList() {
       console.log(response.data);
     } catch (error) {
       console.error("Error fetching popular posts:", error);
+      setLoginCheck(false);
     }
   }
 

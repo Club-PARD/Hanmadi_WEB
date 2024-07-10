@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import React, { useEffect, useState } from 'react';
-import ListBanner from "../../Assets/Img/ListBanner.svg";
 import { useRecoilState } from 'recoil';
 import { loginTestState, userinfo } from '../../Recoil/Atom';
 import { intToRegion, regionToInt } from '../SelectRegion_Components/IntToRegion';
