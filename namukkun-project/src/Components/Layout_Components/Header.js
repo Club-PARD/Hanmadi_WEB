@@ -96,7 +96,7 @@ function Header() {
   //로고 클릭 -> 메인페이지로 이동
   const handleLogoClick = () => {
     setActiveMenu(null);
-    navigate('/');
+    navigate('/main');
   };
 
   //글쓰기 페이지로 이동

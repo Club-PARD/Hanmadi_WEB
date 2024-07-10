@@ -41,7 +41,7 @@ function BeforeLogin() {
       setShowModal(true);
     }
     else{
-      navigate('/list'); //메인페이지로 수정 필여
+      navigate('/main'); //메인페이지로 수정 필여
     }
   }
 
