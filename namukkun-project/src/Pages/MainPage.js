@@ -17,16 +17,16 @@ function MainPage() {
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);
   const [userData, setUserData] = useRecoilState(userinfo);
 
-  const writingBtn = () =>{
-    if(isLogin){
+  const writingBtn = () => {
+    if (isLogin) {
       navigate('/writing');
     }
-    else{
+    else {
       setShowModal(true);
     }
   }
 
-  const getUserInfo = async () =>{
+  const getUserInfo = async () => {
     const response = await userInfoGetAPI();
     setUserData({
       ...userData,
@@ -39,18 +39,22 @@ function MainPage() {
     console.log(response.data);
   };
 
-  useEffect(()=>{
-    if(isLogin){
+  useEffect(() => {
+    if (isLogin) {
       getUserInfo();
     }
-  },[isLogin]);
+  }, [isLogin]);
+
+  const scrollToNextPage = () => {
+    window.scrollBy({ top: window.innerHeight, left: 0, behavior: 'smooth' });
+  };
 
   return (
     <PageContainer>
       <Banner />
       <IdeaPage />
       <GreatIdeaPage />
-      <FixedButton>
+      <FixedButton onClick={scrollToNextPage}>
         <Container>
           <img src={DownArrow} alt="downarrow" />
         </Container>
@@ -71,11 +75,14 @@ const PageContainer = styled.div`
 const FixedButton = styled.div`
   bottom: 1850px;
   position: relative;
-  left: 50%;
   transform: translateX(-50%);
   background-color: transparent;
   border: none;
   z-index: 1050;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer; /* 클릭 가능한 커서로 변경 */
 `;
 
 const Container = styled.div`
