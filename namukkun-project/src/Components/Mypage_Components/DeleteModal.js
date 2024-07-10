@@ -42,8 +42,8 @@ function DeleteModal({ isOpen, closeModal, postId ,setUpdate, update}) {
         <Title>정말 삭제하시겠어요?</Title>
         <Contents >삭제된 글은 다시 불러올 수 없어요.</Contents>
         <BtnContainer >
-          <ContinueBtn onClick={closeModal}>취소</ContinueBtn>
-          <OutButton onClick={()=>DeletePostFunc(postId)}>확인</OutButton>
+          <ContinueBtn onClick={closeModal}>취소하기</ContinueBtn>
+          <ContinueBtn onClick={()=>DeletePostFunc(postId)}>확인</ContinueBtn>
         </BtnContainer>
       </Container>
     </Background>
@@ -106,36 +106,39 @@ const BtnContainer = styled.div`
   flex-direction: row;
   width: 100%;
   justify-content: flex-end;
-  gap: 4px;
+  gap: 7px;
   margin-top: 46px;
-  margin-right: 29px;
+  margin-right: 39px;
 `;
 
 const ContinueBtn = styled.button`
   display: flex;
-  width: 72px;
-  height: 34px;
-  padding: 10px;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  border-radius: var(--Corner-Full, 1000px);
-  border: 1px solid var(--gray-002, #C7C7C7);
-  background: var(--white-001, #FFF);
+    padding: 10px 15px 10px 15px;
+    height: 32px;
+    font-size: 14px;
+    justify-content: center;
+    border-radius: var(--Corner-Full, 1000px);
+    border: 1px solid var(--gray-002, #C7C7C7);
+    color: var(--gray-004, #959595);
+    background: var(--white-001, #FFF);
+    align-items: center;
+    line-height: 20px;
+  /* 기본 확인 버튼 색상 */
+    &:nth-child(2) {
+        background-color: #005aff;
+        color: white;
+        cursor: pointer;
+    }
 
-  color: var(--gray-004, #959595);
-  text-align: center;
-  font-family: 'MinSans-Regular';
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 150%;
-  white-space: nowrap;
+    &:nth-child(2):hover{
+        background: #0047C7;
+    }
 
-  &:hover {
-    cursor: pointer;
-    background: #F7F7F7;
-  }
+  /* 취소 버튼 호버 시 색상 변경 */
+    &:nth-child(1):hover {
+        cursor: pointer;
+        background-color: var(--white-005, #F5F5F5);
+    }
 `;
 
 const OutButton = styled.button`
