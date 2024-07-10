@@ -310,6 +310,7 @@ const MainTitle = styled.div`
   font-weight: 500;
   line-height:
   line-height: var(--Display-Large-Line-Height, 64px);
+  white-space: nowrap;
 `;
 
 const BoldText = styled.span`
@@ -323,6 +324,7 @@ const SubTitle = styled.div`
   font-style: normal;
   font-weight: 500;
   line-height: 150%;
+  white-space: nowrap;
 `;
 
 const SuggestionButton = styled.button`

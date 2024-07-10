@@ -54,16 +54,11 @@ function MainPage() {
       <Banner />
       <IdeaPage />
       <GreatIdeaPage />
-      <FixedButton
-        onClick={writingBtn}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
+      <FixedButton>
         <Container>
           <img src={DownArrow} alt="downarrow" />
         </Container>
       </FixedButton>
-      <LoginModal show={showModal} onClose={() => setShowModal(false)} />
     </PageContainer>
   );
 }
@@ -74,23 +69,14 @@ const PageContainer = styled.div`
   overflow-x: hidden; /* 가로 스크롤 방지 */
 `;
 
-const FixedButton = styled.button`
+const FixedButton = styled.div`
   bottom: 1850px;
   position: relative;
   left: 50%;
   transform: translateX(-50%);
-  padding: 10px 20px;
   background-color: transparent;
-  color: #191919;
   border: none;
-  font-weight: 600;
-  font-size: 34.71px;
-  cursor: pointer;
   z-index: 1050;
-  &:hover {
-    color: #005AFF; 
-    cursor: pointer; 
-  }
 `;
 
 const Container = styled.div`
