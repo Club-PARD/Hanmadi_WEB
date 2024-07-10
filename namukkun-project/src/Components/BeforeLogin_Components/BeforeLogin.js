@@ -144,7 +144,7 @@ function BeforeLogin() {
               </MainTitle>
               <SubTitle>
                 작성한 글을 이웃들과 공유하며 <br />추천과 댓글을 주고받아 보세요.
-                <br /><br />괜찮은 댓글은 '의견up' 버튼을 통해 <br />더 많은 사람이 볼 수 있게 포스트잇으로 고정해보세요.
+                <br /><br />괜찮은 댓글은 '포스트잇up' 버튼을 통해 <br />더 많은 사람이 볼 수 있게 고정해보세요.
               </SubTitle>
             </LeftDiv>
             <RightDiv>
@@ -181,6 +181,7 @@ const SideBarContainer = styled.div`
   align-items: flex-start;
   margin-left: 60px;
   margin-right: 38px;
+  margin-bottom: 100px;
   position: sticky;
   top: 0;
 `;
@@ -195,7 +196,7 @@ const Logo = styled.div`
 
 const LoginButton = styled.button`
   display: flex;
-  height: 50px;
+  height: 67px;
   width: 307px;
   padding: 18px;
   margin-bottom: 56px;
@@ -233,11 +234,11 @@ const RegionList = styled.div`
 const Title = styled.div`
   color: #000;
   font-family: "Min Sans-Regualr";
-  font-size: 24px;
+  font-size: 18px;
   font-style: normal;
   font-weight: 600;
   line-height: 28.636px;
-  margin-bottom: 30px;
+  margin-bottom: 18px;
 `;
 
 const RegionItem = styled.button`
@@ -260,7 +261,10 @@ const RegionItem = styled.button`
   cursor: pointer;
 
   &:hover {
-    background: #F3F3F3;
+    background: #F8F8F8;
+    color: #005AFF;
+    border-radius: 16px;
+    
   }
 `;
 
@@ -273,16 +277,15 @@ const Content = styled.div`
   align-items: center;
   justify-content: center;
 
-  border-radius: 100px 0 0 100px;
+  border-radius: 100px 0 0 0;
 `;
 
 const Header = styled.div`
   display: inline-flex;
-  align-items: flex-end;
-  gap: 37px;
-  margin-bottom: 206.52px;
-  margin-top: 155px;
-  margin-left: 106px;
+  align-items: center;
+  gap: 100px;
+  margin-bottom: 230px;
+  margin-top: 600px;
 `;
 
 const ThumbMan = styled.div`
@@ -304,7 +307,7 @@ const Ment = styled.div`
 const MainTitle = styled.div`
   color: #393939;
   font-family: "Min Sans-Regular";
-  font-size: 46px;
+  font-size: 52px;
   font-style: normal;
   font-weight: 500;
   line-height:
@@ -324,6 +327,8 @@ const SubTitle = styled.div`
   font-weight: 500;
   line-height: 150%;
   white-space: nowrap;
+
+  margin-bottom: 30px;
 `;
 
 const SuggestionButton = styled.button`
@@ -352,15 +357,14 @@ const SecondHeader = styled.div`
   width: 777px;
   flex-direction: column;
   align-items: flex-start;
-  gap: 59px;
-  margin-left: 106px;
+  gap: 36px;
   margin-bottom: 311px;
 `;
 
 const RegionBoard = styled.div`
   color: #393939;
   font-family: "Min Sans-Regular";
-  font-size: 46px;
+  font-size: 52px;
   font-style: normal;
   font-weight: 700;
   line-height: 64px;
@@ -380,6 +384,7 @@ const Discription = styled.div`
   align-items: center;
   gap: 23px;
   align-self: stretch;
+  margin-top: 35px;
 `;
 
 const FirstDisc = styled.div`
@@ -422,8 +427,7 @@ const ThirdHeader = styled.div`
   width: 777px;
   flex-direction: column;
   align-items: flex-start;
-  gap: 73px;
-  margin-left: 106px;
+  gap: 36px;
 `;
 
 const ThirdImage = styled.div`
@@ -438,8 +442,7 @@ const FourthHeader = styled.div`
   align-items: flex-start;
   gap: 78px;
   margin-top: 311px;
-  margin-left: 125px;
-  margin-bottom: 176.53px;
+  margin-bottom: 500px;
 `;
 
 const FirstDiv = styled.div`
@@ -454,6 +457,7 @@ const LeftDiv = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 36px;
+  margin-right: 100px;
 `;
 
 const RightDiv = styled.div`
