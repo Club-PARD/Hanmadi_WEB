@@ -83,5 +83,5 @@ const Container = styled.div`
   background-color: transparent;
   justify-content: center;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 200px;
 `;
