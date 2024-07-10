@@ -10,7 +10,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { getPopularRegion, loginTestState, postLikeBtn, regionNav, userinfo } from '../../Recoil/Atom';
 import LoginModal from '../Login_Components/LoginModal';
-import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
+import { checkPostDeleteAPI, checkPostPostAPI, loginCheckAPI, popularRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
 
 function PopularPost() {
     const navigate = useNavigate();
@@ -41,6 +41,26 @@ function PopularPost() {
     const params = new URLSearchParams(location.search);
     const localPageId = params.get('localPageId');
     console.log('sdadafa', localPageId);
+
+    const [loginCheck, setLoginCheck] =useState(false);
+
+    const checkloginFunc = async () => {
+      try {
+        const response = await loginCheckAPI();
+        if (response.status === 200) {
+          setLoginCheck(true);
+        } else {
+          setLoginCheck(false);
+        }
+      } catch (error) {
+        console.error("로그인 체크 중 오류 발생:", error);
+      }
+    };
+  
+    useEffect(()=>{
+      checkloginFunc();
+    },[]);
+  
 
     // 초기 sendBraveClicked 상태 설정
     useEffect(() => {
@@ -141,7 +161,7 @@ function PopularPost() {
     }
 
     const handleSendBraveClick = async(index, item) => {
-        // if(isLogin){
+        if(loginCheck){
             const postId = item.postId;
             const newSendBraveClicked = { ...sendBraveClicked };
             try {
@@ -169,9 +189,9 @@ function PopularPost() {
                 console.error('API 호출 실패:', error);
                 setShowModal(true);
             }
-        // } else {
-        //     setShowModal(true);
-        // }
+        } else {
+            setShowModal(true);
+        }
     };
 
     const truncateText = (text, maxLength) => {

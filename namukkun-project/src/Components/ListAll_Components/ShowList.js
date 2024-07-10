@@ -113,7 +113,7 @@ function ShowList() {
   
       try {
         let response;
-        if (sendBraveClicked[postId]) {
+        if (newSendBraveClicked[postId]) {
           response = await checkPostIncrease(content.postId); // 좋아요 증가 API 호출
         } else {
           response = await checkPostDecrease(content.postId); // 좋아요 감소 API 호출

@@ -8,7 +8,7 @@ import { useRecoilState } from 'recoil';
 import { getRecentRegion, loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
 import LoginModal from '../Login_Components/LoginModal';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { checkPostDeleteAPI, checkPostPostAPI, recentRegionPostGetAPI } from '../../API/AxiosAPI';
+import { checkPostDeleteAPI, checkPostPostAPI, loginCheckAPI, recentRegionPostGetAPI } from '../../API/AxiosAPI';
 
 function PopularPost() {
     const [isClicked, setIsClicked] = useState(false);
@@ -32,6 +32,25 @@ function PopularPost() {
     const location = useLocation();
     const getPathRegion = location.search;
 
+    const [loginCheck, setLoginCheck] =useState(false);
+
+    const checkloginFunc = async () => {
+      try {
+        const response = await loginCheckAPI();
+        if (response.status === 200) {
+          setLoginCheck(true);
+        } else {
+          setLoginCheck(false);
+        }
+      } catch (error) {
+        console.error("로그인 체크 중 오류 발생:", error);
+      }
+    };
+  
+    useEffect(()=>{
+      checkloginFunc();
+    },[]);
+
     const handleDotClick = (index) => {
         setActiveDot(index);
     };
@@ -53,6 +72,7 @@ function PopularPost() {
 
     useEffect(()=>{
         const recent = async() =>{
+            console.log("Newpost", getPathRegion)
             const response = await recentRegionPostGetAPI(getPathRegion);
             setRecentData(response.data);
         };
@@ -78,7 +98,7 @@ function PopularPost() {
     }
 
     const handleLike = async(post) => {
-        if (isLogin) {
+        if (loginCheck) {
             const postId = post.postId;
             console.log(postId);
             const newSendBraveClicked = { ...sendBraveClicked };

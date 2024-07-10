@@ -397,7 +397,7 @@ export const userInfoGetAPI = async() =>{
 // 선택된 지역 게시물 중 최신순으로 나열 
 export const recentRegionPostGetAPI =async (gerPathRegion) =>{
   try{
-    const response = await axios.get(`${server}/post/read/by-local?localPageId${gerPathRegion}`);
+    const response = await axios.get(`${server}/post/read/by-local${gerPathRegion}`);
     return response;
   } 
   catch(err){
