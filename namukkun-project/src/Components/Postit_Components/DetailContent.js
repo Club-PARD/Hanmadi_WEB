@@ -8,14 +8,29 @@ import hoversendbrave from '../../Assets/Img/hoversendbrave.svg';
 import fileimg from '../../Assets/Img/fileimg.svg';
 import { getPost, increaseUpCount, decreaseUpCount, getUserInfo } from '../../API/AxiosAPI'; // API 가져오기
 
+// 이미지 URL을 추출하여 <img> 태그로 변환하고 문단 띄기를 추가하는 함수
+const convertTextToImages = (text) => {
+    const regex = /\[이미지: (https?:\/\/[^\]]+)\]/g;
+    const parts = text.split(regex);
+    return parts.map((part, index) =>
+        part.startsWith('http') ? (
+            `<img key=${index} src=${part} alt=content-${index} style="width: 100%; height: auto;" />`
+        ) : (
+            part.split('\n').map((line) => `${line}<br />`).join('')
+        )
+    ).join('');
+};
+
 // 텍스트에 태그를 적용하는 함수임
 const applyTags = (text) => {
-    return text
-        .replace(/\[small\](.*?)\[\/small\]/g, '<h4>$1</h4>')
-        .replace(/\[normal\](.*?)\[\/normal\]/g, '<h3>$1</h3>')
-        .replace(/\[large\](.*?)\[\/large\]/g, '<h2>$1</h2>')
-        .replace(/\[huge\](.*?)\[\/huge\]/g, '<h1>$1</h1>')
-        .replace(/\[bold\](.*?)\[\/bold\]/g, '<strong>$1</strong>');
+    return convertTextToImages(
+        text
+            .replace(/\[small\](.*?)\[\/small\]/g, '<h4>$1</h4>')
+            .replace(/\[normal\](.*?)\[\/normal\]/g, '<h3>$1</h3>')
+            .replace(/\[large\](.*?)\[\/large\]/g, '<h2>$1</h2>')
+            .replace(/\[huge\](.*?)\[\/huge\]/g, '<h1>$1</h1>')
+            .replace(/\[bold\](.*?)\[\/bold\]/g, '<strong>$1</strong>')
+    );
 };
 
 // HTML을 React 컴포넌트로 변환하는 함수 

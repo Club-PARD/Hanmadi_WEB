@@ -1,15 +1,41 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import Header from "../Components/Layout_Components/Header";
-import SelectRegions from "../Components/SelectRegion_Components/SelectRegions";
+import notfoundimg from '../Assets/Img/notfoundimg.svg';
 
 function NotFound(){
-
   return(
     <div>
-      404페이지
+      <Header/>
+      <Div>
+        <ImgContainer>
+          <StyledImg src={notfoundimg} alt='notfoundimg'></StyledImg>
+        </ImgContainer>
+      </Div>
     </div>
   );
 }
 
 export default NotFound;
+
+const Div = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`
+
+const ImgContainer = styled.div`
+  width: 100%;
+  display: flex;
+  border-bottom: 6px solid var(--gray-007, #393939);
+  position: relative;
+  padding-top: 281px;
+  justify-content: center;
+`
+
+const StyledImg = styled.img`
+  position: relative;
+  top: 70px;
+`
