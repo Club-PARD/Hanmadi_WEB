@@ -89,7 +89,7 @@ function ShowList() {
 
   // 버튼 클릭 이벤트 핸들러
   const handleSendBraveClick = async (postId, content) => {
-    if (loginCheck) {
+    // if (loginCheck) {
       const newSendBraveClicked = {
         ...sendBraveClicked,
         [postId]: !sendBraveClicked[postId]
@@ -134,10 +134,10 @@ function ShowList() {
         console.error("Error updating post:", error);
         setLoginCheck(false);
         setShowModal(true);
-      }
-    } else {
-      setShowModal(true);
-    }
+    //   }
+    // } else {
+    //   setShowModal(true);
+    // }
 
   };
 

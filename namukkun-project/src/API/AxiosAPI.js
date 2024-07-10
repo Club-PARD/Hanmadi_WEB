@@ -47,6 +47,20 @@ export const loginCheckAPI = async() =>{
   }
 }
 
+//로그아웃
+export const logoutAPI = async() =>{
+
+  try{
+    const response = await axios.post(`${server}/login/logout`); 
+    
+    return response;
+  }
+  catch(err){
+    console.error(err);
+  }
+}
+
+
 // 이미지를 먼저 서버로 보냄
 export const uploadImageAPI = async (file) => {
   try {
@@ -391,9 +405,8 @@ export const userPofileImagePatchAPI = async(data) =>{
 // 유저 정보 가져오기
 export const userInfoGetAPI = async() =>{
   try {
-    const userid = 1; // 디버그용
 
-    const response = await axios.get(`${server}/user/info?userid=${userid}`);
+    const response = await axios.get(`${server}/user/info`);
     return response;
   } catch (err) {
     console.error(err);
