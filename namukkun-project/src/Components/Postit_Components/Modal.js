@@ -7,8 +7,8 @@ const CustomModal = ({ title, subText, onCancel, onConfirm }) => (
             <ModalTitle>{title}</ModalTitle>
             <ModalSubText>{subText}</ModalSubText>
             <ModalButtonContainer>
-                <ModalButton onClick={onCancel}>&nbsp;취소하기&nbsp;</ModalButton>
-                <ModalButton onClick={onConfirm}>&nbsp;확인&nbsp;</ModalButton>
+                <ModalButton className="cancel" onClick={onCancel}>&nbsp;취소하기&nbsp;</ModalButton>
+                <ModalButton className="confirm" onClick={onConfirm}>&nbsp;확인&nbsp;</ModalButton>
             </ModalButtonContainer>
         </ModalContent>
     </Modal>
