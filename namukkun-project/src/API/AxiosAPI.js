@@ -12,7 +12,7 @@ axios.defaults.withCredentials = true;
 // 로그인 성공/실패 했을 때 페이지 이동이 필요함
 export const getSendCodeAPI = async (code) => {
   try {
-    const response = await axios.get(`${kakaoserver}?code=${code}`, { withCredentials: true });
+    const response = await axios.get(`${kakaoserver}?code=${code}`);
     return response;
   } catch (err) {
     console.error(err);
@@ -37,9 +37,8 @@ export const postRegisterRegion = async (region) =>{
 //로그인 체크
 export const loginCheckAPI = async() =>{
 
-  const userid = 1;
   try{
-    const response = await axios.post(`${server}/login/check?userId=${userid}`); 
+    const response = await axios.post(`${server}/login/check`); 
     
     return response;
   }

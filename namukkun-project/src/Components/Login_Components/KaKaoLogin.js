@@ -7,7 +7,7 @@ import { myCode } from "../../Recoil/Atom";
 //카카오 로그인을 위해 카카오 로그인 페이지에서 인가코드를 추출해 서버에 보내는 함수
 function KaKaoLogin(){
   const navigate = useNavigate();
-  let state =1;
+  const [hasSentCode, setHasSentCode] = useState(false);
 
   const params = new URL(document.location.toString()).searchParams;
   const code = params.get('code');
@@ -28,11 +28,11 @@ function KaKaoLogin(){
   };
 
   useEffect(()=>{
-    if (code && (state===1)) {
+    if (code && (!hasSentCode)) {
       sendCode(code);
-      ++state;
+      setHasSentCode(true);
     }
-  },[])
+  },[hasSentCode])
 
   //아래에 스피너 등의 화면이 보여야 할 것 같음
   return(

@@ -39,20 +39,20 @@ export const userinfo = atom({
       ]
     },
 
-  effects: [
-    ({ setSelf, onSet }) => {
-      const saveSessionData = localStorage.getItem("userData");
-      if (saveSessionData) {
-        setSelf(JSON.parse(saveSessionData));
-      }
+  // effects: [
+  //   ({ setSelf, onSet }) => {
+  //     const saveSessionData = localStorage.getItem("userData");
+  //     if (saveSessionData) {
+  //       setSelf(JSON.parse(saveSessionData));
+  //     }
 
-      onSet((newValue, _, isReset) => {
-        isReset
-          ? localStorage.removeItem("userData")
-          : localStorage.setItem("userData", JSON.stringify(newValue));
-      });
-    }
-  ]
+  //     onSet((newValue, _, isReset) => {
+  //       isReset
+  //         ? localStorage.removeItem("userData")
+  //         : localStorage.setItem("userData", JSON.stringify(newValue));
+  //     });
+  //   }
+  // ]
 });
 
 //포스트 좋아요 버튼 상태

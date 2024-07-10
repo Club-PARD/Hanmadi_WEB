@@ -8,47 +8,69 @@ import { useNavigate } from 'react-router-dom';
 import { loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
 import { useRecoilState } from 'recoil';
 import { intToRegion } from '../SelectRegion_Components/IntToRegion';
-import { recentRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
+import { loginCheckAPI, recentRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
 
 
 function Header() {
   const [showModal, setShowModal] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const navigate = useNavigate();
-  //로그인 테스트 상태 - 추후 서버랑 연결해야함.
-  const [isLogin, setIsLogin] = useRecoilState(loginTestState);
+  // //로그인 테스트 상태 - 추후 서버랑 연결해야함.
+  // const [isLogin, setIsLogin] = useRecoilState(loginTestState);
   //유저 기본 정보 아톰에 저장
   const [userData, setUserData] = useRecoilState(userinfo);
+  //로그인 체크
+  const [loginCheck, setLoginCheck] =useState(false);
 
   const path = new URL(document.location.toString()).pathname;
 
   //버튼 상태지정 
   const [postLike, setPostLike] = useRecoilState(postLikeBtn);
 
-  //로그인  - 이거 추후 서버 연결 후수정 필요함. 로그인 눌렀을 때 바로 로그아웃 상태 뜨지 않게.
+  //로그인 체크
+  const checkloginFunc = async () => {
+    try {
+      const response = await loginCheckAPI();
+      if (response.status === 200) {
+        setLoginCheck(true);
+
+        //추후 로그인 모달 이후 작동할 로직
+        const response =  await userInfoGetAPI();
+        setUserData({
+          ...userData,
+          nickName: response.data.nickName,
+          local: response.data.local,
+          profileImage: response.data.profileImage,
+          postUpList: response.data.postUpList,
+          commentUpList: response.data.commentUpList
+        });
+        setPostLike(response.data.postUpList);
+
+      console.log("로긴",postLike);
+      } else {
+        setLoginCheck(false);
+      }
+    } catch (error) {
+      console.error("로그인 체크 중 오류 발생:", error);
+    }
+  };
+
+  useEffect(()=>{
+    checkloginFunc();
+  },[]);
+
+  //로그인 버튼
   const handleLoginClick = async () => {
-    setIsLogin(true);
-    setShowModal(true);
 
-    //추후 로그인 모달 이후 작동할 로직
-    const response =  await userInfoGetAPI();
-    setUserData({
-      ...userData,
-      nickName: response.data.nickName,
-      local: response.data.local,
-      profileImage: response.data.profileImage,
-      postUpList: response.data.postUpList,
-      commentUpList: response.data.commentUpList
-    });
-    setPostLike(response.data.postUpList);
-
-    console.log("로긴",postLike);
+    if(!loginCheck){
+      setShowModal(true);
+    }
 
   };
 
   //로그아웃
   const handleLogoutClick = () => {
-    setIsLogin(false);
+    setLoginCheck(false);
     //로그아웃 했을 때 로컬 스토리지에 있는 유저의 정보를 제거함. 
     localStorage.removeItem("userData");
     if(path ==='/mypage'||path==='/writing'){
@@ -79,12 +101,16 @@ function Header() {
 
   //글쓰기 페이지로 이동
   const handleWriting = () => {
-    navigate('/writing');
+    if(loginCheck){
+      navigate('/writing');
+    }
   }
 
   //마이 페이지로 이동
   const handleMypage = () => {
-    navigate('/mypage');
+    if(loginCheck){
+      navigate('/mypage');
+    }
   }
 
   return (
@@ -117,7 +143,7 @@ function Header() {
           </MenuButton>
         </Menu>
         <Login>
-          {isLogin ? (
+          {loginCheck ? (
             <LoggedInContainer>
               <ProposalButton onClick={handleWriting}>제안하러가기</ProposalButton>
               <UserInfo>
