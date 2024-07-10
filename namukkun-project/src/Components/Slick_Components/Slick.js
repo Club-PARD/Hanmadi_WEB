@@ -5,8 +5,6 @@ import Slider1 from "../../Assets/Img/Slider1.svg";
 import Slider2 from "../../Assets/Img/Slider2.svg";
 import Slider3 from "../../Assets/Img/Slider3.svg";
 import Slider4 from "../../Assets/Img/Slider4.svg";
-import Slider5 from "../../Assets/Img/Slider5.svg";
-import Slider6 from "../../Assets/Img/Slider6.svg";
 
 const Slick = () => {
 
@@ -34,12 +32,6 @@ const Slick = () => {
         </div>
         <div>
           <img src={Slider4} alt='Slider4' />
-        </div>
-        <div>
-          <img src={Slider5} alt='Slider5' />
-        </div>
-        <div>
-          <img src={Slider6} alt='Slider6' />
         </div>
       </Slider>
     </div>
