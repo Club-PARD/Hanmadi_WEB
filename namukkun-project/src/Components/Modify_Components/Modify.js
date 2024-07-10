@@ -5,7 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 import '../../Assets/Style/quill.snow.custom.css';
 import SideHint from '../../Assets/Img/SideHint.svg';
 import { GlobalStyle } from '../../Assets/Style/theme.js';
-import { deleteFileAPI, uploadImageAPI, uploadFileFetch, getPost, updatePostPatch, saveTempPostAPI } from '../../API/AxiosAPI.js'; // updatePostPatch 추가
+import { deleteFileAPI, uploadImageAPI, uploadFileFetch, getPost, updatePostPatch, saveTempPostAPI, getUserAllInfoAPI } from '../../API/AxiosAPI.js'; // updatePostPatch 추가
 import ModifyModal from './ModifyModal.js';
 import { useNavigate, useParams } from 'react-router-dom'; // useParams 추가
 
@@ -51,18 +51,21 @@ const Modify = () => {
 
   const navigate = useNavigate();
 
+  //게시하기/임시저장을 위한 유저 아이디
+  const [userid, setUserid] =useState(null);
+  //유저 아이디
+  const getUserID = async () =>{
+    const response = await getUserAllInfoAPI();
+    setUserid(response.userId);
+  }
+
+  useEffect(()=>{
+    getUserID();
+  },[])
+
   const handleWModalOpen = (modalMethod) => {
     setModalMethod(modalMethod);
     setIsWModalOpen(!isWModalOpen);
-  };
-
-  const handleUpdateModalOpen = () => {
-    setIsUpdateModalOpen(true);
-  };
-
-  const handleUpdateModalClose = () => {
-    setIsUpdateModalOpen(false);
-    navigate('/mypage'); // 수정 후 마이페이지로 이동
   };
 
   const handleButtonClick = (region) => {
@@ -322,14 +325,13 @@ const Modify = () => {
       solution: replaceImageSrc(solution, solutionImageNames),
       benefit: replaceImageSrc(effect, effectImageNames),
       fileNames: fileRandomStrings,
-      userId: 1,
-      return: true
+      userId: userid,
     };
 
     console.log('전송할 데이터:', JSON.stringify(postData));
 
     try {
-      const response = await updatePostPatch(postId, postData); // updatePostPatch를 사용하여 게시물 수정
+      const response = await updatePostPatch(postId, userid, postData); // updatePostPatch를 사용하여 게시물 수정 
       console.log('서버 응답:', response);
       navigate(`/postit/${postId}`);
     } catch (error) {
@@ -358,7 +360,7 @@ const Modify = () => {
       solution: replaceImageSrc(solution, solutionImageNames),
       benefit: replaceImageSrc(effect, effectImageNames),
       fileNames: fileRandomStrings,
-      userId: 1,
+      userId: userid,
       return: false, // 임시저장의 경우 false로 설정
     };
 

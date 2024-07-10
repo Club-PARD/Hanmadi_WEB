@@ -20,6 +20,7 @@ function MyPage() {
   const [userData, setUserData] = useRecoilState(userinfo);
   // const [isLogin, setIsLogin] = useRecoilState(loginTestState);
   const [deUpdate, setDeUpdate] = useRecoilState(deleteCheck);
+  const [loginCheck, setLoginCheck] =useState(false);
   
   // New state to manage posts
   const [posts, setPosts] = useState({
@@ -37,8 +38,6 @@ function MyPage() {
 
   //로그인 체크 
   const navigate =useNavigate();
-
-  const [loginCheck, setLoginCheck] =useState(false);
 
   const checkloginFunc = async () => {
     try {
@@ -115,18 +114,15 @@ function MyPage() {
       console.log(response);
     } catch (error) {
       console.error('Error fetching user info:', error);
+      navigate('/main');
     }
   };
 
   useEffect(() => {
     // 로그인이 됐을 때 유저 정보를 불러옴.
-    if (loginCheck) {
       getUserInfo();
-    }
-    else{
-      navigate('/main');
-    }
-  }, [loginCheck, deUpdate]);
+
+  }, [deUpdate]);
 
   return (
     <div>

@@ -54,6 +54,16 @@ function BeforeLogin() {
     navigate(`/listall?localPageId=${region}`);
   }
 
+  //의견 제안하기 버튼
+  const handleWritingfunc = () =>{
+    if(!loginCheck){
+      setShowModal(!showModal);
+    }
+    else{
+      navigate('/writing');
+    }
+  }
+
   return (
     <SideContainer>
       <SideBar>
@@ -86,7 +96,7 @@ function BeforeLogin() {
             <SubTitle>
               평소 우리지역을 위해 생각해본 아이디어가 있다면 <br />한마디에 의견을 제안해주세요.
             </SubTitle>
-            <SuggestionButton onClick={handleLogin}>
+            <SuggestionButton onClick={handleWritingfunc}>
               의견 제안하기 <img src={WhiteArrow} alt="WhiteArrow" />
             </SuggestionButton>
           </Ment>
@@ -160,6 +170,7 @@ function BeforeLogin() {
           </SecondDiv>
         </FourthHeader>
       </Content>
+      <LoginModal show={showModal} onClose={() => setShowModal(false)} />
       <LoginModal show={showModal} onClose={() => setShowModal(false)} />
     </SideContainer>
   );
@@ -311,7 +322,6 @@ const MainTitle = styled.div`
   font-size: 46px;
   font-style: normal;
   font-weight: 500;
-  line-height:
   line-height: var(--Display-Large-Line-Height, 64px);
   white-space: nowrap;
 `;
