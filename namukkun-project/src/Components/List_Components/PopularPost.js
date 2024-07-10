@@ -8,7 +8,7 @@ import rightarrow from '../../Assets/Img/rightarrow.svg';
 import defaultwhite from '../../Assets/Img/defaultwhite.svg';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { getPopularRegion, loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
+import { getPopularRegion, loginTestState, postLikeBtn, regionNav, userinfo } from '../../Recoil/Atom';
 import LoginModal from '../Login_Components/LoginModal';
 import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
 
@@ -35,6 +35,7 @@ function PopularPost() {
 
     // 기본적으로 보여줄 유저 데이터
     const [userData, setUserData] = useRecoilState(userinfo);
+    const [regionselect, setRegionSelect] = useRecoilState(regionNav);
 
     const location = useLocation();
     const params = new URLSearchParams(location.search);
@@ -181,7 +182,7 @@ function PopularPost() {
     };
 
     const goToListall = () =>{
-        navigate('/listall');
+        navigate(`/listall?localPageId=${regionselect}`);
     };
 
       // 이미지 링크 추출 함수

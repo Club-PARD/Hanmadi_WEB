@@ -40,10 +40,11 @@ function ListSelectRegion() {
   const handleButtonClick = (region) => {
     setSelectedButton((prevSelected) => (prevSelected === region ? prevSelected : region));
     if (region) {
+      setRegionSelect(regionToInt[region]);
       navigate(`?localPageId=${regionToInt[region]}`);
     }
   };
-  
+
   useEffect(() => {
     // URL 파라미터에서 localPageId 값을 읽어와서 해당 지역 버튼 선택
     const params = new URLSearchParams(location.search);
