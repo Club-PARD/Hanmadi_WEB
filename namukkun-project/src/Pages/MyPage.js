@@ -111,7 +111,9 @@ function MyPage() {
       <EndPost posts={posts.endPosts} setUpdate ={setUpdate} update={update}/>
       <TempPost posts={posts.tempPosts} setUpdate={setUpdate} update={update}/>
       <FixedButton $isSticky={isSticky}>
+        <ImgContainer>
         <img src={userData.profileImage} style={{ width: '144px', height: '144px', borderRadius: '50%' }} alt="face" />
+        </ImgContainer>
         <InfoContainer>
             <InfoName>이름</InfoName>
             <InfoContent>{userData.nickName}</InfoContent>
@@ -153,6 +155,10 @@ const FixedButton = styled.div.attrs(props => ({
   background: transparent;
 `;
 
+const ImgContainer = styled.div`
+  margin-bottom: 10px;
+`
+
 const InfoContainer = styled.div`
     width: 100%;
     height: 32px;
@@ -173,7 +179,7 @@ const InfoName = styled.div`
 const InfoContent = styled.div`
     color: var(--gray-006, #575757);
     font-family: 'MinSans-Regular';
-    font-size: 12px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
 `
@@ -181,7 +187,7 @@ const InfoContent = styled.div`
 const ProfileAdviseButton = styled.button`
     margin-top: 14px;
     display: flex;
-    width: 100px;
+    width: 125px;
     height: 30px;
     justify-content: center;
     align-items: center;
@@ -189,7 +195,7 @@ const ProfileAdviseButton = styled.button`
     background: var(--gray-001, #E0E0E0);
     color: var(--gray-008, #191919);
     font-family: 'MinSans-Regular';
-    font-size: 10px;
+    font-size: 14px;
     font-style: normal;
     font-weight: 400;
     cursor: pointer;

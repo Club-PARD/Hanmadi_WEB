@@ -101,7 +101,7 @@ function EndPost({ posts }) {
                                 ))}
                                 <SeeAllRecContainer>
                                     <SeeAllRecord onClick={navigateEndall}>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;종료글 보러가기 --> 
+                                        &nbsp;&nbsp;&nbsp;&nbsp;전체글 보러가기 --> 
                                     </SeeAllRecord>
                                 </SeeAllRecContainer>
                             </AllContentContainer>
@@ -333,7 +333,7 @@ const SeeAllRecContainer = styled.div`
 const SeeAllRecord = styled.div`
     color: var(--gray-007, #393939);
     font-family: 'MinSans-Regular';
-    font-size: 14px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 500;
     line-height: 20px; /* 142.857% */
