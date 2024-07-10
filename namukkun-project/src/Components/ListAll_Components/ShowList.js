@@ -11,7 +11,7 @@ import { checkPostDeleteAPI, checkPostPostAPI, loginCheckAPI, popularRegionPostG
 
 function ShowList() {
   // 필터 버튼 값 설정 [추천/최신]
-  const [filter, setFilter] = useState('recent');
+  const [filter, setFilter] = useState('recommend');
   const [currentPage, setCurrentPage] = useRecoilState(pagenation);
   // 선택한 지역별 상태 확인
   const location = useLocation();

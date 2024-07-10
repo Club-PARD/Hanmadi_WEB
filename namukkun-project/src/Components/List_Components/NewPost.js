@@ -226,7 +226,7 @@ const ImageContent = ({ postImage, title, author, due, initialLikes, truncateTex
                 <DetailText $color="#5A5A5A">{initialLikes}</DetailText>
             </DetailContainer>
             <BraveButton onClick={handleLike} isLiked={isLiked}>
-                {isLiked ? '용길이 보내기' : '용길이 보내기'}
+                {isLiked ? '추천하기' : '추천하기'}
             </BraveButton>
         </ImageContentContainer>
     );
