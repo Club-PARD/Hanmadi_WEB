@@ -34,10 +34,19 @@ const Container = styled.div`
 `;
 
 const SlickWrapper = styled.div`
-  width: 1440px;
+  width: 100%;
+  max-width: 1440px;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (min-width: 1441px) and (max-width: 1650px) {
+    max-width: 105%;
+  }
+
+  @media (min-width: 1651px) and (max-width: 1800px) {
+    max-width: 120%;
+  }
 `;
 
 const SlickContainer = styled.div`
@@ -93,7 +102,7 @@ const BannerBtn = styled.button`
   gap: 10px;
   cursor: pointer;
 
-  &: hover {
+  &:hover {
     background: #0045C3;
   }
 `;
