@@ -62,7 +62,10 @@ function MainPage() {
 export default MainPage;
 
 const PageContainer = styled.div`
-  overflow-x: hidden; /* 가로 스크롤 방지 */
+  overflow: hidden; /* 가로 스크롤 방지와 세로 스크롤 방지 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const FixedButton = styled.div`
@@ -80,5 +83,5 @@ const Container = styled.div`
   background-color: transparent;
   justify-content: center;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 200px;
 `;
