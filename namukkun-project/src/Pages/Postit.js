@@ -427,12 +427,7 @@ function Postit() {
                                             isTaken={comment.isTaken} 
                                             onClick={() => handleTakeButtonClick(comment)}
                                         >
-                                            <img 
-                                                src={comment.isTaken ? aftertaken : takenduck} 
-                                                alt="takenduck" 
-                                                style={{ width: '15px', height: '19px' }} 
-                                            />
-                                            <TakenButtonText isTaken={comment.isTaken}>{comment.isTaken ? "해제하기" : "채택하기"}</TakenButtonText>
+                                            <TakenButtonText isTaken={comment.isTaken}>{comment.isTaken ? "포스트잇 UP" : "포스트잇 UP"}</TakenButtonText>
                                         </TakeButton>
                                     </CommentDisplayButtonContainer>
                                     <CommentDeleteButton onClick={() => handleCommentDelete(comment.userId, comment.id)}>

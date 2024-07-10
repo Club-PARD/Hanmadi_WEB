@@ -5,12 +5,12 @@ import brownbackground from '../../Assets/Img/brownbackground.svg';
 
 export const ScrollButton = styled.button`
     color: var(--white-006, #E8E8E8);
-    font-family: "UhBeeJJIBBABBA";
-    width: 109px;
-    height: 25px;
-    font-size: 14px;
+    font-family: 'MinSans-Regular';
+    width: 98px;
+    height: 30px;
+    font-size: 13px;
     font-style: normal;
-    font-weight: 400;
+    font-weight: 600;
     line-height: 20px; /* 142.857% */
     margin-left: 13px;
     border: none;
@@ -100,7 +100,7 @@ export const PostitInfo = styled.div`
     height: 22.938px;
     color: var(--gray-007, #393939);
     font-family: 'MinSans-Regular';
-    font-size: 12px;
+    font-size: 14px;
     font-style: normal;
     font-weight: 600;
 `;
@@ -337,24 +337,24 @@ export const TakeButton = styled.div`
     padding: 10px;
     border-radius: 5px;
     border: 1px solid ${props => props.isTaken ? '#d3d3d3' : '#96B948'};
-    background: ${props => props.isTaken ? '#AFCD6D' : 'rgba(175, 205, 109, 0.06)'};
+    background: ${props => props.isTaken ? '#CEE49C' : '#8FD000'};
     cursor: pointer;
 
     ${props => !props.isTaken && `
         &:hover {
-            background: rgba(175, 205, 109, 0.30);
+            background: #ACDA49;
         }
     `}
 `;
 
 export const TakenButtonText = styled.div`
     padding-top: 4px;
-    color: ${props => props.isTaken ? 'var(--white-001, #FFF)' : '#96B948'};
+    color: ${props => props.isTaken ? '#F3FFD9' : 'var(--white-001, #FFF)'};
     text-align: center;
     font-family: "MinSans-Regular";
-    font-size: 14px;
+    font-size: 16px;
     font-style: normal;
-    font-weight: 600;
+    font-weight: 700;
 `;
 
 // 댓글 삭제 버튼 스타일

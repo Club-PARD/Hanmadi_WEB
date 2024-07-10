@@ -7,7 +7,7 @@ import {
     PostitInfo, PostWriting, ButtonContainer, MoveButton,
     ScrollButton, DeleteButtonContainer, DeleteButton
 } from './styledComponents';
-import nextbutton from '../../Assets/Img/nexbutton.svg';
+import nextbutton from '../../Assets/Img/nextbutton.svg';
 import close from '../../Assets/Img/close.svg';
 import { useParams } from "react-router-dom";
 
@@ -96,7 +96,7 @@ const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment,
                                 e.stopPropagation(); // 이벤트 버블링 방지
                                 onMove();
                             }}>
-                                <img src={nextbutton} alt='nextbutton' style={{ width: '67px', height: '30px' }}/>
+                                <img src={nextbutton} alt='nextbutton' style={{ width: '72px'}}/>
                             </MoveButton>
                             <ScrollButton onClick={(e) => {
                                 e.stopPropagation(); // 이벤트 버블링 방지
