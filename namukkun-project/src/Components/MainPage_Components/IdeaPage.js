@@ -5,7 +5,7 @@ import hanmadiv from '../../Assets/Img/hanmadiv.svg';
 import { useRecoilState } from 'recoil';
 import { loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
 import LoginModal from '../Login_Components/LoginModal';
-import { allPostsRecommendGetAPI, checkPostDeleteAPI, checkPostPostAPI, userInfoGetAPI } from '../../API/AxiosAPI';
+import { allPostsRecommendGetAPI, checkPostDeleteAPI, checkPostPostAPI, loginCheckAPI, userInfoGetAPI } from '../../API/AxiosAPI';
 import { useNavigate } from 'react-router-dom';
 
 function IdeaPage() { 
@@ -171,12 +171,29 @@ function IdeaPage() {
 
 const ImageContent = ({ postId, image, title, author, due, initialLikes, setShowModal, isLiked, handleLike }) => {
 
-    //로그인 테스트 상태 -추후 서버랑 연결해야함.
-    const [isLogin, setIsLogin] = useRecoilState(loginTestState); 
+    const [loginCheck, setLoginCheck] =useState(false);
+
+    const checkloginFunc = async () => {
+      try {
+        const response = await loginCheckAPI();
+        if (response.status === 200) {
+          setLoginCheck(true);
+        } else {
+          setLoginCheck(false);
+        }
+      } catch (error) {
+        console.error("로그인 체크 중 오류 발생:", error);
+      }
+    };
+  
+    useEffect(()=>{
+      checkloginFunc();
+    },[]);
+  
     const navigate = useNavigate();
 
     const handleClickLike = () => {
-        if(isLogin){
+        if(loginCheck){
             handleLike(postId);
         }
         else{
