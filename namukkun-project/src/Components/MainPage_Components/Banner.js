@@ -92,4 +92,5 @@ const BannerBtn = styled.button`
   align-items: center;
   justify-content: center;
   gap: 10px;
+  cursor: pointer;
 `;
