@@ -225,7 +225,7 @@ function ShowList() {
   return (
     <Div>
       <TopHeader>
-        <Title>✏️ {filter === 'recommend' ? '추천' : '전체'}글 모아보기</Title>
+        <Title>✏️ 전체글 모아보기</Title>
         <BtnDiv>
           <FilterBtn onClick={() => onClickFilterBtn('recommend')} isSelected={filter === 'recommend'}>추천</FilterBtn>
           <FilterBtn onClick={() => onClickFilterBtn('recent')} isSelected={filter === 'recent'}>최신</FilterBtn>

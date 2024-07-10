@@ -188,7 +188,9 @@ const SideBarContainer = styled.div`
 `;
 
 const Logo = styled.div`
-  width: 254px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
   height: 213px;
 `;
 
