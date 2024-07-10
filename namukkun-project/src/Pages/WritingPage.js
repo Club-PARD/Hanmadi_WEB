@@ -8,13 +8,15 @@ import { useNavigate } from "react-router-dom";
 
 function WritingPage(){
   const navigate =useNavigate();
+  const [loginCheck, setLoginCheck] =useState(false);
 
   const checkloginFunc = async () => {
     try {
       const response = await loginCheckAPI();
       if (response.status === 200) {
-        
+        setLoginCheck(true);
       } else {
+        setLoginCheck(false);
         navigate('/main')
       }
     } catch (error) {
@@ -24,7 +26,7 @@ function WritingPage(){
 
   useEffect(()=>{
     checkloginFunc();
-  },[]);
+  },[loginCheck]);
 
   return(
     <div>

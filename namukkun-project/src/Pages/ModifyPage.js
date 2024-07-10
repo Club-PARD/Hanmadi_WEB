@@ -9,14 +9,16 @@ import { loginCheckAPI } from "../API/AxiosAPI";
 
 function ModifyPage(){
 
+  const [loginCheck, setLoginCheck] =useState(false);
   const navigate =useNavigate();
 
   const checkloginFunc = async () => {
     try {
       const response = await loginCheckAPI();
       if (response.status === 200) {
-        
+        setLoginCheck(true);  
       } else {
+        setLoginCheck(false);
         navigate('/main')
       }
     } catch (error) {
@@ -26,7 +28,7 @@ function ModifyPage(){
 
   useEffect(()=>{
     checkloginFunc();
-  },[]);
+  },[loginCheck]);
 
   return(
     <div>

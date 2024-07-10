@@ -18,7 +18,7 @@ function MyPage() {
   const [isSticky, setIsSticky] = useState(false);
   // 유저 기본 정보 아톰에 저장
   const [userData, setUserData] = useRecoilState(userinfo);
-  const [isLogin, setIsLogin] = useRecoilState(loginTestState);
+  // const [isLogin, setIsLogin] = useRecoilState(loginTestState);
   const [deUpdate, setDeUpdate] = useRecoilState(deleteCheck);
   
   // New state to manage posts
@@ -38,13 +38,15 @@ function MyPage() {
   //로그인 체크 
   const navigate =useNavigate();
 
+  const [loginCheck, setLoginCheck] =useState(false);
+
   const checkloginFunc = async () => {
     try {
       const response = await loginCheckAPI();
       if (response.status === 200) {
-        
+        setLoginCheck(true);
       } else {
-        navigate('/main')
+        setLoginCheck(false);
       }
     } catch (error) {
       console.error("로그인 체크 중 오류 발생:", error);
@@ -118,10 +120,13 @@ function MyPage() {
 
   useEffect(() => {
     // 로그인이 됐을 때 유저 정보를 불러옴.
-    if (isLogin) {
+    if (loginCheck) {
       getUserInfo();
     }
-  }, [isLogin, deUpdate]);
+    else{
+      navigate('/main');
+    }
+  }, [loginCheck, deUpdate]);
 
   return (
     <div>
