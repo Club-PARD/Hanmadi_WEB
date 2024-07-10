@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Banner from '../Components/MainPage_Components/Banner';
-import pointer from '../Assets/Img/pointer.svg';
-import minilogo from '../Assets/Img/minilogo.svg';
 import IdeaPage from "../Components/MainPage_Components/IdeaPage";
 import GreatIdeaPage from "../Components/MainPage_Components/GreatIdeaPage";
-import onclickminilogo from '../Assets/Img/onclickminilogo.svg';
-import onclickpointer from '../Assets/Img/onclickpointer.svg';
 import { useRecoilState } from "recoil";
 import { loginTestState, userinfo } from "../Recoil/Atom";
 import { useNavigate } from 'react-router-dom';

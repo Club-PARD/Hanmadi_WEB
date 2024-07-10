@@ -26,11 +26,11 @@ function Banner() {
 export default Banner;
 
 const Container = styled.div`
-  height: 758px;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
+  overflow: hidden;
 `;
 
 const SlickWrapper = styled.div`
@@ -38,7 +38,6 @@ const SlickWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
 `;
 
 const SlickContainer = styled.div`
