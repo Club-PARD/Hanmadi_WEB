@@ -179,10 +179,6 @@ const SideBarContainer = styled.div`
   width: 308px;
   flex-direction: column;
   align-items: flex-start;
-<<<<<<< HEAD
-  gap: 39px;
-=======
->>>>>>> develop
   margin-left: 60px;
   margin-right: 38px;
   margin-bottom: 100px;
@@ -289,7 +285,7 @@ const Header = styled.div`
   align-items: center;
   gap: 100px;
   margin-bottom: 230px;
-  margin-top: 300px;
+  margin-top: 600px;
 `;
 
 const ThumbMan = styled.div`
