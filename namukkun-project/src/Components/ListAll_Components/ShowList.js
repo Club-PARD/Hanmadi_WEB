@@ -11,7 +11,7 @@ import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI, recentRe
 
 function ShowList() {
   // 필터 버튼 값 설정 [추천/최신]
-  const [filter, setFilter] = useState('recent');
+  const [filter, setFilter] = useState('recommend');
   const [currentPage, setCurrentPage] = useRecoilState(pagenation);
   // 선택한 지역별 상태 확인
   const location = useLocation();
@@ -214,7 +214,7 @@ function ShowList() {
   return (
     <Div>
       <TopHeader>
-        <Title>✏️ {filter === 'recommend' ? '추천' : '전체'}글 모아보기</Title>
+        <Title>✏️ 전체글 모아보기</Title>
         <BtnDiv>
           <FilterBtn onClick={() => onClickFilterBtn('recommend')} isSelected={filter === 'recommend'}>추천</FilterBtn>
           <FilterBtn onClick={() => onClickFilterBtn('recent')} isSelected={filter === 'recent'}>최신</FilterBtn>
