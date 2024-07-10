@@ -541,11 +541,11 @@ export const updatePostGet = async(postId) => {
 
 
 //수정할 게시물을 수정하기
-export const updatePostPatch = async(postId, data) => {
+export const updatePostPatch = async(postId) => {
   console.log('patch post', postId)
   try {
 
-    const response = await axios.patch(`${server}/post/update?postId=${postId}`, data);
+    const response = await axios.patch(`${server}/post/update?postId=${postId}`);
     return response.data;
   } catch (err) {
     console.error( err);

@@ -32,7 +32,7 @@ function ModifyModal({ isOpen, closeModal, method, handleSave }) {
     return null;
   }
 
-  const modalcon = method ==='out' ? {title: '정말 나가시겠어요?', content: "저장하지 않은 내용은 날라갈 수 있어요."} : {title: '글이 저장되었어요', content: `임시저장된 글은\n내프로필에서 확인할 수 있어요.`} 
+  const modalcon = method ==='out' ? {title: '정말 나가시겠어요?', content: "저장하지 않은 내용은 삭제될 수 있어요."} : {title: '글이 저장되었어요', content: `임시저장된 글은\n내프로필에서 확인할 수 있어요.`} 
 
   return (
     <Background style={{ display: isOpen ? "block" : "none" }} onClick={closeModal}>
@@ -42,7 +42,7 @@ function ModifyModal({ isOpen, closeModal, method, handleSave }) {
         <Contents method ={method}>{modalcon.content}</Contents>
         <BtnContainer  method ={method}>
           <ContinueBtn onClick={closeModal}>계속작성하기</ContinueBtn> 
-          <OutButton onClick={onClcikPath}>나가기</OutButton>
+          <OutButton onClick={onClcikPath}>저장</OutButton>
         </BtnContainer>
       </Container>
     </Background>
@@ -104,16 +104,16 @@ const BtnContainer = styled.div`
   flex-direction: row;
   width: 100%;
   justify-content: flex-end;
-  gap: 4px;
+  gap: 7px;
   margin-top: ${(props)=> props.method ==='out'? 46: 25}px;
-  margin-right: 29px;
+  margin-right: 39px;
 `;
 
 const ContinueBtn = styled.button`
   display: flex;
   width: 112px;
   height: 34px;
-  padding: 10px;
+  padding: 10px 15px 10px 15px;
   justify-content: center;
   align-items: center;
   gap: 10px;
@@ -132,7 +132,7 @@ const ContinueBtn = styled.button`
 
   &:hover {
     cursor: pointer;
-    background: #F7F7F7;
+    background: var(--white-005, #F5F5F5);
   }
 `;
 
@@ -140,7 +140,7 @@ const OutButton = styled.button`
   display: flex;
   width: 72px;
   height: 34px;
-  padding: 10px;
+  padding: 10px 15px 10px 15px;
   justify-content: center;
   align-items: center;
   gap: 10px;
@@ -152,7 +152,7 @@ const OutButton = styled.button`
   color: var(--white-001, #FFF);
   text-align: center;
   font-family: 'MinSans-Regular';
-  font-size: 16px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 500;
   line-height: 150%;
@@ -161,6 +161,7 @@ const OutButton = styled.button`
   border: none;
   &:hover {
     cursor: pointer;
+    background: #0047C7;
   }
 `;
 

@@ -205,7 +205,7 @@ const ImageContent = ({ postId, image, title, author, due, initialLikes, setShow
                     <DetailText $color="#5A5A5A">{due}</DetailText>
                 </DetailContainer>
                 <DetailContainer>
-                    <DetailText>공감수</DetailText>
+                    <DetailText>추천수</DetailText>
                     <DetailText $color="#5A5A5A">{initialLikes}</DetailText>
                 </DetailContainer>
             </Details>

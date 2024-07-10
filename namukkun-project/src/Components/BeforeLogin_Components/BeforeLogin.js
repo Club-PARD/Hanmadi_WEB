@@ -180,7 +180,6 @@ const SideBarContainer = styled.div`
   width: 308px;
   flex-direction: column;
   align-items: flex-start;
-  gap: 56px;
   margin-left: 60px;
   margin-right: 38px;
   position: sticky;
@@ -188,7 +187,10 @@ const SideBarContainer = styled.div`
 `;
 
 const Logo = styled.div`
-  width: 254px;
+  margin-top: 30px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
   height: 213px;
 `;
 
@@ -197,6 +199,8 @@ const LoginButton = styled.button`
   height: 50px;
   width: 307px;
   padding: 18px;
+  margin-bottom: 56px;
+  margin-top: 30px;
   justify-content: center;
   align-items: center;
   gap: 10px;
