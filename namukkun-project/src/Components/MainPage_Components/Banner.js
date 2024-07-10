@@ -1,95 +1,95 @@
-import styled, { createGlobalStyle } from 'styled-components';
-import blueduck from '../../Assets/Img/blueduck.svg';
-import whiteduck from '../../Assets/Img/whiteduck.svg';
-import bannerimg from '../../Assets/Img/bannerimg.svg';
-
-import { BrowserRouter } from 'react-router-dom';
-import { GlobalStyle } from '../../Assets/Style/theme';
+import React from "react";
+import styled from 'styled-components';
+import Slick from '../../Components/Slick_Components/Slick';
+import WhiteArrow from '../../Assets/Img/WhiteArrow.svg';
 
 function Banner() {
-    return (
-        <>
-            <GlobalStyle/>
-            <Container>
-                <WhiteduckContainer>
-                    <WhiteduckImg src={blueduck} />
-                </WhiteduckContainer>
-                <BannerTextContainer>
-                    <LineTextContainer>
-                        <BannerText>나의{' '}<BannerText $color='#005AFF'>한마디</BannerText><BannerText>가 만드는</BannerText></BannerText>
-                    </LineTextContainer>
-                    <LineTextContainer>
-                        <BannerText>우리 지역</BannerText><BannerText>의 변화</BannerText>
-                    </LineTextContainer>
-                </BannerTextContainer>
-                <BlueduckContainer>
-                    <BlueduckImg src={whiteduck} />
-                </BlueduckContainer>
-            </Container>
-        </>
-    );
+  return (
+    <Container>
+      <SlickWrapper>
+        <SlickContainer>
+          <Slick />
+        </SlickContainer>
+        <BannerDiv>
+          <Ment>
+            더 나은 우리지역을 위한 <br /><BoldText>용기낸 한마디</BoldText>
+          </Ment>
+          <BannerBtn>
+            의견 제안하기 <img src={WhiteArrow} alt="WhiteArrow" />
+          </BannerBtn>
+        </BannerDiv>
+      </SlickWrapper>
+    </Container>
+  );
 }
 
 export default Banner;
 
 const Container = styled.div`
-    width: 100%;
-    height: 818px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden; /* Add this line */
+  height: 758px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 `;
 
-const WhiteduckContainer = styled.div`
-    width: 33%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: end;
-    margin: 0;
+const SlickWrapper = styled.div`
+  width: 1440px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 `;
 
-const WhiteduckImg = styled.img`
-    height: 559px;
-    width: 621px;
-    align-items: flex-start
+const SlickContainer = styled.div`
+  width: 100%;
+  position: relative;
+  z-index: 0; /* Ensure this is behind the BannerDiv */
 `;
 
-const BannerTextContainer = styled.div`
-    width: 33%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center; /* 텍스트 세로 가운데 정렬을 위해 */
+const BannerDiv = styled.div`
+  display: flex;
+  width: 434px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  position: absolute;
+  top: 40%;
+  left: 25%;
+  transform: translateX(-50%);
+  z-index: 1; /* Ensure this is above the Slick images */
+  padding: 20px;
+  border-radius: 10px;
 `;
 
-const LineTextContainer = styled.div`
-    justify-content: center;
+const Ment = styled.div`
+  color: #FFF;
+  font-family: "Min Sans-Regular";
+  font-size: 46px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 64px;
+  white-space: nowrap;
 `;
 
-const BlueduckContainer = styled.div`
-    width: 33%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: end;
+const BoldText = styled.span`
+  font-weight: 700;
 `;
 
-const BlueduckImg = styled.img`
-    width: 600px;
-    height: 529px;
-`;
-
-const BannerText = styled.span`
-    color: ${(props) => props.$color || '#191919'};
-    font-size: 60px;
-    font-style: normal;
-    font-family: 'UhBeeJJIBBABBA';
-    font-weight: 400;
-    line-height: 70.89px;
-    letter-spacing: -1.84px;
-    white-space: nowrap;
-
+const BannerBtn = styled.button`
+  width: 238.496px;
+  height: 74.476px;
+  border-radius: 9.714px;
+  border: none;
+  background: rgba(0, 90, 255, 0.80);
+  color: #FFF;
+  font-family: "Min Sans-Regular";
+  font-size: 28.098px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 32.415px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 `;
