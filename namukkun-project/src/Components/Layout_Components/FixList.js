@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from "recoil";
 import { pagenation, stateListCategory, userinfo } from "../../Recoil/Atom";
 import { recentRegionPostGetAPI } from "../../API/AxiosAPI";
+import { GlobalStyle } from '../../Assets/Style/theme';
 
 function FixList() {
   const navigate = useNavigate();
@@ -33,6 +34,7 @@ function FixList() {
 
   return (
     <FixedButtonContainer>
+      <GlobalStyle/>
       <FixedButton
         onClick={() => onClickListMenu('recent')}
         isSelected={selectedCategory === 'recent'}
@@ -50,7 +52,7 @@ function FixList() {
 }
 
 const FixedButtonContainer = styled.div`
-  width: 180px;
+  width: 160px;
   position: fixed;
   left: 60px;
   top: 448px;
@@ -61,20 +63,20 @@ const FixedButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
   border: none;
-  border-radius: 4px;
+  border-radius: 16px;
   cursor: pointer;
   gap: 13px;
   z-index: 1000; /* 가장 앞으로 오도록 설정 */
 `;
 
 const FixedButton = styled.button`
-  width: 145px;
+  width: 160px;
   height: 30px;
   align-items: center;
   border: none;
   background: ${({ isSelected }) => (isSelected ? 'rgba(0, 90, 255, 0.06)' : 'transparent')};
-  border-radius: 5px;
-  font-family: "Min Sans";
+  border-radius: 12px;
+  font-family: 'MinSans-Regular';
   font-size: 18px;
   white-space: nowrap;
   color: #4B6FB2;
