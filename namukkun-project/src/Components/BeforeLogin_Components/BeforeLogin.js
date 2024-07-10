@@ -46,7 +46,8 @@ function BeforeLogin() {
   }
 
   const navigateRegionList = (region) =>{
-    navigate(`/listall?localPageId=${region}`);
+    console.log("Navigating to region:", region);
+    navigate(`listall?localPageId=${region}`);
   }
 
   return (
@@ -57,16 +58,14 @@ function BeforeLogin() {
           <LoginButton onClick={handleLogin}>카카오계정 로그인</LoginButton>
           <RegionList>
             <Title>우리지역 게시판 둘러보기</Title>
-            <RegionItem onClick={()=>navigateRegionList(0)}>경산시</RegionItem>
-            <RegionItem onClick={()=>navigateRegionList(1)}>경주시</RegionItem>
-            <RegionItem onClick={()=>navigateRegionList(2)}>구미시</RegionItem>
-            <RegionItem onClick={()=>navigateRegionList(3)}>김천시</RegionItem>
-            <RegionItem onClick={()=>navigateRegionList(4)}>문경시</RegionItem>
-            <RegionItem onClick={()=>navigateRegionList(5)}>상주시</RegionItem>
-            <RegionItem onClick={()=>navigateRegionList(6)}>안동시</RegionItem>
-            <RegionItem onClick={()=>navigateRegionList(7)}>영주시</RegionItem>
-            <RegionItem onClick={()=>navigateRegionList(8)}>영천시</RegionItem>
-            <RegionItem onClick={()=>navigateRegionList(9)}>포항시</RegionItem>
+            {[
+              '경산시', '경주시', '구미시', '김천시', '문경시',
+              '상주시', '안동시', '영주시', '영천시', '포항시'
+            ].map((region, index) => (
+              <RegionItem key={index} onClick={() => navigateRegionList(index)}>
+                {region}
+              </RegionItem>
+            ))}
           </RegionList>
         </SideBarContainer>
       </SideBar>

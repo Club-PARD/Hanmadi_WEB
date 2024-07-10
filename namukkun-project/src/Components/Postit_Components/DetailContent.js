@@ -61,7 +61,6 @@ function DetailContent() {
     const [sendBraveClicked, setSendBraveClicked] = useState(false); // sendbravebutton 클릭 상태
     const [commentsCount, setCommentsCount] = useState(0); // 한마디 수 상태 추가, 초기값을 0으로 설정
     const [postData, setPostData] = useState(null); // API 데이터를 저장할 상태 추가
-    const [userId] = useState(1); // 사용자 ID (예시로 1로 설정)
     const [isProcessing, setIsProcessing] = useState(false); // 버튼 클릭 중복 방지 상태
 
     // API 호출을 통해 데이터를 가져옴
@@ -71,13 +70,13 @@ function DetailContent() {
             setPostData(data); // 가져온 데이터를 상태에 저장
             setCommentsCount(data.upCountPost); // postData.upCountPost로 한마디 수 설정
 
-            const userInfo = await getUserInfo(userId);
+            const userInfo = await getUserInfo();
             if (userInfo.postUpList.includes(Number(postId))) {
                 setSendBraveClicked(true); // 좋아요를 누른 상태로 설정
             }
         }
         fetchData(); // fetchData 함수 호출
-    }, [postId, userId]);
+    }, [postId]);
 
     // 버튼 클릭 핸들러
     const handleButtonClick = (button) => {
@@ -96,7 +95,7 @@ function DetailContent() {
                 setCommentsCount(prevCount => prevCount - 1); // 한마디 수 즉시 업데이트
                 setSendBraveClicked(false); // 좋아요 상태 토글
 
-                response = await decreaseUpCount(postId, userId);
+                response = await decreaseUpCount(postId);
                 if (!response[0].state) {
                     // 서버 요청 실패 시 롤백
                     setCommentsCount(prevCount => prevCount + 1);
@@ -107,7 +106,7 @@ function DetailContent() {
                 setCommentsCount(prevCount => prevCount + 1); // 한마디 수 즉시 업데이트
                 setSendBraveClicked(true); // 좋아요 상태 토글
 
-                response = await increaseUpCount(postId, userId);
+                response = await increaseUpCount(postId);
                 if (!response[0].state) {
                     // 서버 요청 실패 시 롤백
                     setCommentsCount(prevCount => prevCount - 1);
