@@ -55,7 +55,7 @@ function Contents({ content, isClicked, onClick }) {
         <KeyValueWrapper>
           <KeyValueDiv>
             <KeyTextDiv>작성자</KeyTextDiv> 
-            <KeyTextDiv>공감수</KeyTextDiv> 
+            <KeyTextDiv>추천수</KeyTextDiv> 
             <KeyTextDiv>응원 한마디</KeyTextDiv> 
             <KeyTextDiv>작성일자</KeyTextDiv> 
           </KeyValueDiv>

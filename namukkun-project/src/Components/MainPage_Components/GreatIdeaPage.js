@@ -75,7 +75,7 @@ function GreatIdeaPage() {
                         <DetailText $color="#5A5A5A">{content.userName}</DetailText>
                         </DetailContainer>
                         <DetailContainer>
-                        <DetailText>공감수</DetailText>
+                        <DetailText>추천수</DetailText>
                         <DetailText $color="#5A5A5A">{content.upCountPost}</DetailText>
                         </DetailContainer>
                         <DetailContainer>
