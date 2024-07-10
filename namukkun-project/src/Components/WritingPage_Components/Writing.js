@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
-import styled, { css } from 'styled-components';
+import styled, { css, createGlobalStyle } from 'styled-components';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import '../../Assets/Style/quill.snow.custom.css';
@@ -14,6 +14,20 @@ const fonts = ['Min Sans-Regular'];
 const Font = Quill.import('formats/font');
 Font.whitelist = fonts;
 Quill.register(Font, true);
+
+const GlobalQuillStyles = createGlobalStyle`
+  .ql-editor.ql-blank::before {
+    color: #C7C7C7;
+    font-family: "Min Sans-Regular";
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 400;
+
+    left: 32px;
+    content: attr(data-placeholder);
+    pointer-events: none; // Ensures the placeholder is not interactive
+  }
+`;
 
 const Writing = () => {
   const quillRefBackground = useRef(null);
@@ -33,7 +47,7 @@ const Writing = () => {
 
   const [isWModalOpen, setIsWModalOpen] = useState(false);
   const [modalMethod, setModalMethod] = useState('');
-  const navigate =useNavigate();
+  const navigate = useNavigate();
 
   const handleWModalOpen = (modalMethod) => {
     setModalMethod(modalMethod);
@@ -69,7 +83,7 @@ const Writing = () => {
     try {
       const fileNameToRemove = fileRandomStrings[index];
       console.log('Removing file with name:', fileNameToRemove);
-      
+
       await deleteFileAPI(fileNameToRemove);
 
       const updatedFileNames = [...fileNames];
@@ -326,6 +340,7 @@ const Writing = () => {
 
   return (
     <Container>
+      <GlobalQuillStyles />
       <GlobalStyle />
       <Intro>
         <TopButtonContainer>
@@ -368,6 +383,7 @@ const Writing = () => {
               onChange={handleTextChange(setBackground, setBackgroundImageNames, quillRefBackground)}
               modules={backgroundModules}
               formats={formats}
+              placeholder="이런 생각이 들어서 제안하러 왔어요"
             />
           </QuillContainer>
         </Section>
@@ -383,6 +399,7 @@ const Writing = () => {
               onChange={handleTextChange(setSolution, setSolutionImageNames, quillRefSolution)}
               modules={solutionModules}
               formats={formats}
+              placeholder="이렇게 해보면 좋을거 같아요"
             />
           </QuillContainer>
         </Section>
@@ -396,6 +413,7 @@ const Writing = () => {
               onChange={handleTextChange(setEffect, setEffectImageNames, quillRefEffect)}
               modules={effectModules}
               formats={formats}
+              placeholder="그러면 우리 지역이 이렇게 되지 않을까요?"
             />
           </QuillContainer>
         </Section>
