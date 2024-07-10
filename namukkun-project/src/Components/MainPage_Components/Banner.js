@@ -26,31 +26,28 @@ function Banner() {
 export default Banner;
 
 const Container = styled.div`
+  width: 100%;
+  height: 758px;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-  overflow: hidden;
+  overflow: hidden; /* 배너 영역에서 스크롤 방지 */
 `;
 
 const SlickWrapper = styled.div`
   width: 100%;
-  max-width: 1440px;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-
-  @media (min-width: 1441px) and (max-width: 1650px) {
-    max-width: 105%;
-  }
-
-  @media (min-width: 1651px) and (max-width: 1800px) {
-    max-width: 120%;
-  }
+  position: relative;
+  overflow: hidden; /* 배너 영역에서 스크롤 방지 */
 `;
 
 const SlickContainer = styled.div`
   width: 100%;
+  height: 100%;
   position: relative;
   z-index: 0; /* Ensure this is behind the BannerDiv */
 `;
@@ -101,8 +98,4 @@ const BannerBtn = styled.button`
   justify-content: center;
   gap: 10px;
   cursor: pointer;
-
-  &:hover {
-    background: #0045C3;
-  }
 `;
