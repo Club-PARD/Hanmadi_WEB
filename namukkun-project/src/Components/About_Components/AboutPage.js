@@ -14,6 +14,7 @@ const GlobalStyle = createGlobalStyle`
   body {
     overflow-x: hidden;
     margin: 0; /* 기본 margin 제거 */
+    user-select: none; /* 텍스트 선택 방지 */
   }
 `;
 
@@ -22,8 +23,12 @@ function AboutPage() {
     <div>
       <GlobalStyle />
       <Intro>
-        <BackgroundImage src={AboutPageBG} alt="Background" />
+        <BackgroundImage src={AboutPageBG} alt="Background" draggable="false" />
         <ContentWrapper>
+<<<<<<< HEAD
+=======
+          <Logo src={logo} alt="logo" draggable="false" />
+>>>>>>> develop
           <Title>
             <TextAnimation fadeinTime={1}>
               <LogoContianer>
@@ -51,19 +56,19 @@ function AboutPage() {
       </Intro>
       <Icons>
         <IconBox>
-          <Icon src={Idea} alt="Idea" />
+          <Icon src={Idea} alt="Idea" draggable="false" />
           <IconTitle>아이디어 제안</IconTitle>
           <IconText>우리 지역을 위해<br />용기내어 목소리를 내주세요</IconText>
         </IconBox>
-        <ArrowIcon src={Arrow} alt="Arrow" />
+        <ArrowIcon src={Arrow} alt="Arrow" draggable="false" />
         <IconBox>
-          <Icon src={Chat} alt="Chat" />
+          <Icon src={Chat} alt="Chat" draggable="false" />
           <IconTitle>주민들과 소통</IconTitle>
           <IconText>주민들과 한마디씩 주고받으며<br />내 의견에 확신을 얻어요</IconText>
         </IconBox>
-        <ArrowIcon src={Arrow} alt="Arrow" />
+        <ArrowIcon src={Arrow} alt="Arrow" draggable="false" />
         <IconBox>
-          <Icon src={Mail} alt="Mail" />
+          <Icon src={Mail} alt="Mail" draggable="false" />
           <IconTitle>국민신문고 투고</IconTitle>
           <IconText>사람들의 한마디로 힘을 얻은<br />아이디어를 국민신문고에 전달해요</IconText>
         </IconBox>
@@ -82,10 +87,10 @@ function AboutPage() {
             여러분이 보낸 용길이가 우리지역 소통의 활력이 됩니다!
           </MentBody>
         </MentWrapper>
-        <SendYonggilImage src={HowAbout} alt="Send Yonggil" />
+        <SendYonggilImage src={HowAbout} alt="Send Yonggil" draggable="false" />
       </MentYonggilWrapper>
       <SupportYouWrapper>
-        <SupportYouImage src={SupportYonggil} alt="Support Yonggil" />
+        <SupportYouImage src={SupportYonggil} alt="Support Yonggil" draggable="false" />
       </SupportYouWrapper>
     </div>
   );
@@ -98,6 +103,7 @@ const Intro = styled.div`
   align-items: center;
   position: relative;
   overflow: hidden; /* 가로 스크롤 방지 */
+  user-select: none; /* 텍스트 선택 방지 */
 `;
 
 const BackgroundImage = styled.img`
