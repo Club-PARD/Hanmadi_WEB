@@ -45,7 +45,7 @@ export const PostitSectionRight = styled.div`
 
 export const PostitSectionLeft = styled.div`
     width: 378px;
-    margin-top: 117px;
+    padding-top: 117px;
     flex-grow: 1;
     position: relative;
 `
