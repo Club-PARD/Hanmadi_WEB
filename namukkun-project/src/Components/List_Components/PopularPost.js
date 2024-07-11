@@ -400,6 +400,7 @@ const StatusButton = styled.button`
     position: relative;
     cursor: pointer;
     color: ${({ $isActive }) => ($isActive ? '#000000' : '#A6A6A6')};
+    transition: border-bottom 0.3s ease-in-out;
     &:hover::after,
     ${({ $isActive }) =>
         $isActive &&
