@@ -4,6 +4,7 @@ import { GlobalStyle } from '../../Assets/Style/theme';
 import rightpagearrow from '../../Assets/Img/rightpagearrow.svg';
 import leftpagearrow from '../../Assets/Img/leftpagearrow.svg';
 import defaultblue from '../../Assets/Img/defaultblue.svg';
+import nopost from '../../Assets/Img/nopost.svg'; // nopost 이미지 import
 import { useRecoilState } from 'recoil';
 import { getRecentRegion, loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
 import LoginModal from '../Login_Components/LoginModal';
@@ -167,22 +168,28 @@ function PopularPost() {
                         </PaginationDotContainer>
                     </Pagination>
                     <TwoContentContainer>
-                        {postsToDisplay.length > 0&&postsToDisplay.map((post, index) => (
-                            <ImageContent
-                                key={index}
-                                postImage= {extractImageLink(post)}
-                                title={post.title}
-                                author={post.userName}
-                                due={'D-'+post.deadLine}
-                                initialLikes={post.upCountPost}
-                                truncateText={truncateText}
-                                isLogin ={isLogin}
-                                setShowModal ={setShowModal}
-                                handleLike={() => handleLike(post)} 
-                                isLiked={sendBraveClicked[post.postId]} 
-                                postId = {post.postId}
-                            />
-                        ))}
+                        {postsToDisplay.length > 0 ? (
+                            postsToDisplay.map((post, index) => (
+                                <ImageContent
+                                    key={index}
+                                    postImage= {extractImageLink(post)}
+                                    title={post.title}
+                                    author={post.userName}
+                                    due={'D-'+post.deadLine}
+                                    initialLikes={post.upCountPost}
+                                    truncateText={truncateText}
+                                    isLogin ={isLogin}
+                                    setShowModal ={setShowModal}
+                                    handleLike={() => handleLike(post)} 
+                                    isLiked={sendBraveClicked[post.postId]} 
+                                    postId = {post.postId}
+                                />
+                            ))
+                        ) : (
+                            <NoPostImageContainer>
+                                <img src={nopost} alt="No post available" />
+                            </NoPostImageContainer>
+                        )}
                     </TwoContentContainer>
                 </PopularContentContainer>
                 <RightArrowContainer>
@@ -413,4 +420,13 @@ const ImageContentContainer = styled.div`
     width: 424px;
     display: flex;
     flex-direction: column;
+`;
+
+const NoPostImageContainer = styled.div` // 빈 포스트 이미지 컨테이너 추가
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 460px;
+    margin-bottom: 119px;
 `;
