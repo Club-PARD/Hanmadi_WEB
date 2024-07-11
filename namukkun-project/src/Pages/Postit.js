@@ -90,6 +90,7 @@ function Postit() {
 
     useEffect(() => {
         getPostandCommentsIds();
+        console.log("내 댓글 리스트", mycomments);
     }, []);
 
     useEffect(() => {
