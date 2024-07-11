@@ -15,7 +15,8 @@ import {
     fetchComments, deleteComment, createComment, toggleLikeComment,
     toggleTakeComment, fetchPostits, createPostit, deletePostit, movePostit,
     movePostitSection, getUserInfo,
-    getUserAllInfoAPI
+    getUserAllInfoAPI,
+    getUserCommentsList
 } from '../API/AxiosAPI';
 import DetailContent from "../Components/Postit_Components/DetailContent";
 import sendcomment from '../Assets/Img/sendcomment.svg';
@@ -58,6 +59,8 @@ function Postit() {
     const [commentToDelete, setCommentToDelete] = useState(null);
     const [commentToTake, setCommentToTake] = useState(null);
     const [highestZIndex, setHighestZIndex] = useState(1000);
+    //유저 댓글 리스트
+    const [commentsList, stCommentsList] =useState([]);
 
     //내 아이디
     const [userId, setUserId] =useState(null);
@@ -65,10 +68,6 @@ function Postit() {
     //내 포스트만 수정 삭제
     const [myPostCheck, setMyPostCheck] =useState(false); 
     const [postIds, setPostIds] = useState([]);
-
-    //내 댓글만
-    const [mycommentsCheck, setMycommentsCheck] =useState(false);
-    const [mycomments, setMycomments] =useState([]);
 
     const getPostandCommentsIds = async () => {
         try {
@@ -85,10 +84,16 @@ function Postit() {
         }
     };
 
-    const CommentsCheckfunc = async() =>{
-        const response = await getUserAllInfoAPI();
-        const conids = response.comments.map(commen => commen.id);
-        setMycomments(conids);
+    // const CommentsCheckfunc = async() =>{
+    //     const response = await getUserAllInfoAPI();
+    //     const conids = response.comments.map(commen => commen.id);
+    //     setMycomments(conids);
+    // }
+
+    //댓글 리스트 
+    const commentgetFunc = async () =>{
+        const response =await getUserCommentsList();
+        stCommentsList(response);
     }
 
     useEffect(() => {
@@ -105,8 +110,9 @@ function Postit() {
     }, [postIds, postId]);
 
     useEffect(()=>{
-        CommentsCheckfunc();
-        console.log("내 댓글 리스트", mycomments);
+        // CommentsCheckfunc();
+        commentgetFunc();
+        // console.log("내 댓글 리스트", mycomments);
     },[comments]);
 
     useEffect(() => {
@@ -473,7 +479,7 @@ function Postit() {
                                         <CommentDisplayBox>
                                             <Comment>{comment.content}</Comment>
                                         </CommentDisplayBox>
-                                        {mycomments.includes(comment.id)&& 
+                                        {myPostCheck&& 
                                         <TakeButton 
                                             isTaken={comment.isTaken} 
                                             onClick={() => handleTakeButtonClick(comment)}
@@ -482,7 +488,7 @@ function Postit() {
                                         </TakeButton>
                                         }
                                     </CommentDisplayButtonContainer>
-                                    {mycomments.includes(comment.id) &&
+                                    {commentsList.includes(comment.id) &&
                                     <CommentDeleteButton onClick={() => handleCommentDelete(comment.userId, comment.id)}>
                                         삭제
                                     </CommentDeleteButton>

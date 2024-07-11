@@ -98,7 +98,7 @@ function PopularPost() {
         }).catch(error => {
         console.error("Error fetching user info:", error);
         });
-    }, []);
+    }, [postLike]);
 
 
     // 버튼 클릭 상태 관리
@@ -208,12 +208,12 @@ function PopularPost() {
 
     useEffect(() => {
         getUserInfo().then(response => {
-          console.log("유저 데이터", response);
-          setPostLike(sendBraveClicked);
+        console.log("유저 데이터", response);
+        setPostLike(sendBraveClicked);
         }).catch(error => {
-          console.error("Error fetching user info:", error);
+        console.error("Error fetching user info:", error);
         });
-      }, [sendBraveClicked, postLike]);
+    }, [sendBraveClicked, postLike]);
 
     //////////////
     const truncateText = (text, maxLength) => {
@@ -234,12 +234,12 @@ function PopularPost() {
         for (let field of fields) {
             const value = postData[field];
             if (value) { // value가 undefined나 null이 아닌 경우에만 match 메서드 호출
-              const match = value.match(/\[이미지:\s*(https?:\/\/[^\s\]]+)\]/);
-              if (match) {
+            const match = value.match(/\[이미지:\s*(https?:\/\/[^\s\]]+)\]/);
+            if (match) {
                 return match[1];
-              }
             }
-          }
+            }
+        }
 
         return defaultwhite;
         };

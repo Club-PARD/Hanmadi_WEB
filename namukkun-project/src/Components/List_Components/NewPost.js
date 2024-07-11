@@ -8,20 +8,17 @@ import { useRecoilState } from 'recoil';
 import { getRecentRegion, loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
 import LoginModal from '../Login_Components/LoginModal';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { checkPostDeleteAPI, checkPostPostAPI, loginCheckAPI, recentRegionPostGetAPI } from '../../API/AxiosAPI';
+import { checkPostDeleteAPI, checkPostPostAPI, loginCheckAPI, recentRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
 
 function PopularPost() {
     const [isClicked, setIsClicked] = useState(false);
     // 진행중이 기본값
     const [activeButton, setActiveButton] = useState('진행중'); 
     // sendbravebutton 클릭 상태
-    const [sendBraveClicked, setSendBraveClicked] = useRecoilState(postLikeBtn);
+    // const [sendBraveClicked, setSendBraveClicked] = useRecoilState(postLikeBtn);
     // const [sendBraveClicked, setSendBraveClicked] = useState({});
     const [activeDot, setActiveDot] = useState(0); // pagination 상태
 
-    //로그인 테스트 상태 -추후 서버랑 연결해야함.
-    const [isLogin, setIsLogin] = useRecoilState(loginTestState); 
-    
     const [recentData, setRecentData] = useRecoilState(getRecentRegion); 
    
     const [showModal, setShowModal] = useState(false);
@@ -33,6 +30,49 @@ function PopularPost() {
     const getPathRegion = location.search;
 
     const [loginCheck, setLoginCheck] =useState(false);
+
+      //누른 버튼 상태
+    const [postLike, setPostLike] = useRecoilState(postLikeBtn);
+
+
+    // 유저 데이터 불러오는 함수 
+    const getUserInfo = async () => {
+        try {
+            const response = await userInfoGetAPI();
+            setUserData({
+                ...userData,
+                nickName: response.data.nickName,
+                local: response.data.local,
+                profileImage: response.data.profileImage,
+                postUpList: response.data.postUpList,
+                commentUpList: response.data.commentUpList
+            });
+            return response.data;
+        } catch (error) {
+            console.error('Failed to fetch user info:', error);
+            return null;
+        }
+    };
+
+    // 초기 sendBraveClicked 상태 설정
+    useEffect(() => {
+        getUserInfo().then(userInfo => {
+            console.log("유저 데이터", userInfo);
+    
+            const initialSendBraveClicked = {};
+            userInfo.postUpList&& userInfo.postUpList.forEach(postId => {
+            initialSendBraveClicked[postId] = true;
+            });
+            setSendBraveClicked(initialSendBraveClicked);
+            setPostLike(initialSendBraveClicked);
+        }).catch(error => {
+            console.error("Error fetching user info:", error);
+        });
+    }, [postLike]);
+
+
+    // 버튼 클릭 상태 관리
+    const [sendBraveClicked, setSendBraveClicked] = useState(postLike)
 
     const checkloginFunc = async () => {
       try {
@@ -97,51 +137,71 @@ function PopularPost() {
         return response.data;
     }
 
-    const handleLike = async(post) => {
-        if (loginCheck) {
-            const postId = post.postId;
-            console.log(postId);
-            const newSendBraveClicked = { ...sendBraveClicked };
+  // 버튼 클릭 이벤트 핸들러
+  const handleSendBraveClick = async (post) => {
 
-            try {
-                let response;
-                if (newSendBraveClicked[postId]) {
-                    response = await checkPostDecrease(postId); // 좋아요 감소 API 호출
-                    delete newSendBraveClicked[postId]; // postId에 대한 클릭 상태 삭제
-                } else {
-                    response = await checkPostIncrease(postId); // 좋아요 증가 API 호출
-                    newSendBraveClicked[postId] = true; // postId에 대한 클릭 상태 true로 설정
-                }
+    const postId = post.postId;
 
-                setSendBraveClicked(newSendBraveClicked); // 상태 업데이트
-
-                console.log("배열확인",userData);
-                setUserData(prevUserData => ({
-                    ...prevUserData,
-                    postUpList: Object.keys(newSendBraveClicked).map(key => parseInt(key)), // 클릭된 postId들을 배열로 저장
-                }));
-
-                const updatedPostData = recentData.map(post => {
-                    if (post.postId === postId) {
-                        return {
-                            ...post,
-                            upCountPost: response.postUpCount
-                        };
-                    }
-                    return post;
-                });
-    
-                setRecentData(updatedPostData);
-
-            } catch (error) {
-                console.error('API 호출 실패:', error);
-                
-            }
-
+    if(loginCheck){
+      const newSendBraveClicked = {
+        ...sendBraveClicked,
+        [postId]: !sendBraveClicked[postId]
+      };
+      setSendBraveClicked(newSendBraveClicked);
+  
+      try {
+        let response;
+        if (newSendBraveClicked[postId]) {
+          response = await checkPostIncrease(postId); // 좋아요 증가 API 호출
         } else {
-            setShowModal(true);
+          response = await checkPostDecrease(postId); // 좋아요 감소 API 호출
         }
-    };
+      
+      if(response.postId ===postId){
+        // 유저 데이터 업데이트
+        setUserData({
+          ...userData,
+          postUpList: response.postId
+        });
+
+      }
+
+      // postId에 해당하는 포스트의 upCount 추출
+      const upcount = response.find(post => post.postId === postId)?.postUpCount;
+
+      // 포스트 데이터 업데이트
+      const updatedPostData = recentData.map(post => {
+        if (post.postId === postId) {
+          return {
+            ...post,
+            upCountPost: upcount || 0
+          };
+        }
+        return post;
+      });
+  
+      setRecentData(updatedPostData);
+      console.log("hi", sendBraveClicked);
+  
+      } catch (error) {
+        console.error("Error updating post:", error);
+        // setShowModal(true);
+      }
+    }
+      else{
+        setShowModal(true);
+      }
+    
+  };
+
+    useEffect(() => {
+        getUserInfo().then(response => {
+        console.log("유저 데이터", response);
+        setPostLike(sendBraveClicked);
+        }).catch(error => {
+        console.error("Error fetching user info:", error);
+        });
+  }, [sendBraveClicked, postLike]);
 
 
     // 이미지 링크 추출 함수
@@ -196,9 +256,8 @@ function PopularPost() {
                                 due={'D-'+post.deadLine}
                                 initialLikes={post.upCountPost}
                                 truncateText={truncateText}
-                                isLogin ={isLogin}
                                 setShowModal ={setShowModal}
-                                handleLike={() => handleLike(post)} 
+                                handleLike={() => handleSendBraveClick(post)} 
                                 isLiked={sendBraveClicked[post.postId]} 
                                 postId = {post.postId}
                             />

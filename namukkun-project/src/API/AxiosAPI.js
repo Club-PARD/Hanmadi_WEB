@@ -143,7 +143,21 @@ export const deleteFileAPI = async (fileName) => {
   }
 };
 
+
 //댓글 부분
+
+// 유저 댓글 리스트 받기
+export const getUserCommentsList = async () => {
+  try {
+      const response = await axios.get(`${server}/post/comment/list/mycomment`);
+      console.log(response.data);
+      return response.data;
+  } catch (error) {
+      console.error(error);
+      throw error;
+  }
+};
+
 
 // comment 읽어오기
 export const fetchComments = async (postId) => {
