@@ -38,32 +38,29 @@ const convertHtmlToReact = (htmlString) => {
     return <div dangerouslySetInnerHTML={{ __html: htmlString }} />;
 };
 
-const truncateFileName = (fileName, maxLength) => {
-    const fileExtension = fileName.slice(fileName.lastIndexOf('.'));
-    const nameWithoutExtension = fileName.slice(0, fileName.lastIndexOf('.'));
-    const nameParts = nameWithoutExtension.split('_');
-    const truncatedName = nameParts.length > 1 ? nameParts[1] : nameParts[0]; // 첫 번째 언더바 다음의 이름만 사용
-
-    if (encodedName.length > maxLength) {
-        return encodedName.slice(0, maxLength) + '...' + fileExtension;
-    }
-    return encodedName + fileExtension;
-};
-
 // const truncateFileName = (fileName, maxLength) => {
 //     const fileExtension = fileName.slice(fileName.lastIndexOf('.'));
 //     const nameWithoutExtension = fileName.slice(0, fileName.lastIndexOf('.'));
 //     const nameParts = nameWithoutExtension.split('_');
 //     const truncatedName = nameParts.length > 1 ? nameParts[1] : nameParts[0]; // 첫 번째 언더바 다음의 이름만 사용
 
-//     // UTF-8 인코딩
-//     const encodedName = Buffer.from(truncatedName, 'utf8').toString();
-
-//     if (encodedName.length > maxLength) {
-//         return encodedName.slice(0, maxLength) + '...' + fileExtension;
-//     }
-//     return encodedName + fileExtension;
 // };
+
+// 파일 이름을 자르고 형식을 붙여주는 함수
+const truncateFileName = (fileName, maxLength) => {
+    const fileExtension = fileName.slice(fileName.lastIndexOf('.'));
+    const nameWithoutExtension = fileName.slice(0, fileName.lastIndexOf('.'));
+    const nameParts = nameWithoutExtension.split('_');
+    let truncatedName = nameParts.length > 1 ? nameParts[1] : nameParts[0]; // 첫 번째 언더바 다음의 이름만 사용
+    
+    // 디코딩
+    truncatedName = decodeURIComponent(truncatedName);
+
+    if (truncatedName.length > maxLength) {
+        return truncatedName.slice(0, maxLength) + '…' + fileExtension;
+    }
+    return truncatedName + fileExtension;
+};
 
 function DetailContent() {
     // URL 파라미터에서 postId를 가져옴

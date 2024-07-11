@@ -5,7 +5,7 @@ import Cancel from '../../Assets/Img/Cancel.svg';
 import { useNavigate } from 'react-router-dom';
 import test1 from '../../Assets/Img/test1.png';
 import changeProfile from '../../Assets/Img/changeProfile.svg';
-import { userPofileImagePatchAPI, userPofilePatchAPI } from '../../API/AxiosAPI';
+import { getUserAllInfoAPI, userPofileImagePatchAPI, userPofilePatchAPI } from '../../API/AxiosAPI';
 import { userinfo } from '../../Recoil/Atom';
 import { useRecoilState } from 'recoil';
 import { intToRegion, regionToInt } from '../SelectRegion_Components/IntToRegion';
@@ -17,9 +17,28 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
   // const navigate = useNavigate();
   const imageInput =useRef();
 
+  const [userIds, setUserIds] = useState(null);
+
+    
+  const getuserId = async () => {
+          try {
+              const response = await getUserAllInfoAPI();
+              //내가 작성한 포스트 아이디를 불러옴
+              setUserIds(response.userId);
+  
+          } catch (err) {
+              console.error(err);
+          }
+      };
+  
+      useEffect(() => {
+          getuserId();
+      }, []);
+  
+
   //프로필 인풋값 입력 및 변경을 위함
   const [info, setInfo] =useState({
-    id : 1, //나중에 서버 연결 후 수정 필요
+    id : userIds,
     nickName: userData.nickName,
     local: selectedButton,
     profileImage : userData.profileImage
@@ -88,7 +107,7 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
   //유저 데이터 수정하는 함수 
   const patchUserInfo = async () =>{
     const data ={
-      id : 1, //나중에 서버 연결 후 수정 필요
+      id : userIds,
       nickName: info.nickName,
       local: regionToInt[selectedButton],
     }

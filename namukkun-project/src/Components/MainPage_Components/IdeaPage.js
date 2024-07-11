@@ -82,7 +82,7 @@ function IdeaPage() {
     useEffect(() => {
         getUserInfo().then(response => {
         console.log("유저 데이터", response);
-        // setPostLike(sendBraveClicked);
+        setPostLike(sendBraveClicked);
         }).catch(error => {
         console.error("Error fetching user info:", error);
         });
@@ -104,7 +104,7 @@ function IdeaPage() {
 
     useEffect(()=>{
         allPopularFunc();
-    },[sendBraveClicked]);
+    },[sendBraveClicked, userData]);
 
     // 포스트 채택
     const checkPostIncrease = async (postId) => {
@@ -128,19 +128,7 @@ function IdeaPage() {
       };
       setSendBraveClicked(newSendBraveClicked);
 
-      //추가한 코드
-      const updatedPostData = allPopularPosts.map(post => {
-        if (post.postId === postId) {
-            return {
-                ...post,
-                upCountPost: post.upCountPost + (newSendBraveClicked[postId] ? 1 : -1)
-            };
-        }
-        return post;
-        });
 
-        setAllPopularPosts(updatedPostData);
-  
       try {
         let response;
         if (newSendBraveClicked[postId]) {
@@ -159,14 +147,14 @@ function IdeaPage() {
         }
 
         // postId에 해당하는 포스트의 upCount 추출
-        const upcount = response.find(post => post.postId === postId)?.postUpCount;
+        // const upcount = response.find(post => post.postId === postId)?.postUpCount;
 
         // 포스트 데이터 업데이트
         const updatedPostData = allPopularPosts.map(post => {
             if (post.postId === postId) {
             return {
                 ...post,
-                upCountPost: upcount
+                upCountPost: response.upCountPost
             };
             }
             return post;
@@ -186,7 +174,6 @@ function IdeaPage() {
     
   };
 
-    
     //글자수 컷
     const truncateText = (text, maxLength) => {
         if (text.length > maxLength) {

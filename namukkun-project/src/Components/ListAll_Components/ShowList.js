@@ -128,14 +128,17 @@ function ShowList() {
 
       }
 
-      // postId에 해당하는 포스트의 upCount 추출
-      const upcount = response.find(post => post.postId === postId)?.postUpCount;
+      // // postId에 해당하는 포스트의 upCount 추출
+      const upcount = response.find(post => post.postId == postId)?.postUpCount;
 
+      console.log("upcount", upcount);
+      console.log("post")
       // 포스트 데이터 업데이트
       const updatedPostData = getpostData.map(post => {
         if (post.postId === postId) {
           return {
             ...post,
+            // upCountPost: upcount || 0
             upCountPost: upcount || 0
           };
         }
