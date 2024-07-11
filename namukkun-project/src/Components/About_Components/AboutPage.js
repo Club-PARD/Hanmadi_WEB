@@ -25,10 +25,7 @@ function AboutPage() {
       <Intro>
         <BackgroundImage src={AboutPageBG} alt="Background" draggable="false" />
         <ContentWrapper>
-<<<<<<< HEAD
-=======
           <Logo src={logo} alt="logo" draggable="false" />
->>>>>>> develop
           <Title>
             <TextAnimation fadeinTime={1}>
               <LogoContianer>
