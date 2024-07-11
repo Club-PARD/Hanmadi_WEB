@@ -3,9 +3,11 @@ import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import '../../Assets/Style/quill.snow.custom.css';
-import { deleteFileAPI, uploadImageAPI, uploadFileFetch, getPostUpdate, updatePostPatch, saveTempPostAPI } from '../../API/AxiosAPI.js';
+import SideHint from '../../Assets/Img/SideHint.svg';
+import { GlobalStyle } from '../../Assets/Style/theme.js';
+import { deleteFileAPI, uploadImageAPI, uploadFileFetch, getPost, updatePostPatch, saveTempPostAPI } from '../../API/AxiosAPI.js'; // updatePostPatch 추가
 import ModifyModal from './ModifyModal.js';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom'; // useParams 추가
 
 // Custom font
 const fonts = ['Min Sans-Regular'];
@@ -15,15 +17,15 @@ Quill.register(Font, true);
 
 // 이미지 URL을 추출하여 <img> 태그로 변환하고 문단 띄기를 추가하는 함수
 const convertTextToImages = (text) => {
-  const regex = /\[이미지: (https?:\/\/[^\]]+)\]/g;
-  const parts = text.split(regex);
-  return parts.map((part, index) =>
-    part.startsWith('http') ? (
-      `<img key=${index} src=${part} alt=content-${index} style="width: 100%; height: auto;" />`
-    ) : (
-      part.split('\n').map((line) => `${line}<br />`).join('')
-    )
-  ).join('');
+    const regex = /\[이미지: (https?:\/\/[^\]]+)\]/g;
+    const parts = text.split(regex);
+    return parts.map((part, index) =>
+        part.startsWith('http') ? (
+            `<img key=${index} src=${part} alt=content-${index} style="width: 100%; height: auto;" />`
+        ) : (
+            part.split('\n').map((line) => `${line}<br />`).join('')
+        )
+    ).join('');
 };
 
 const Modify = () => {
@@ -42,7 +44,6 @@ const Modify = () => {
   const [backgroundImageNames, setBackgroundImageNames] = useState([]);
   const [solutionImageNames, setSolutionImageNames] = useState([]);
   const [effectImageNames, setEffectImageNames] = useState([]);
-  const [displayFileNames, setDisplayFileNames] = useState([]); // Display file names
 
   const [isWModalOpen, setIsWModalOpen] = useState(false);
   const [modalMethod, setModalMethod] = useState('');
@@ -77,7 +78,6 @@ const Modify = () => {
     const files = Array.from(e.target.files);
     const fileNamesArray = files.map(file => file.name);
     setFileNames([...fileNames, ...fileNamesArray]);
-    setDisplayFileNames([...fileNames, ...fileNamesArray]); // Display file names
 
     try {
       const uploadedFiles = await Promise.all(files.map(file => uploadFileFetch(file)));
@@ -94,20 +94,17 @@ const Modify = () => {
     try {
       const fileNameToRemove = fileRandomStrings[index];
       console.log('Removing file with name:', fileNameToRemove);
-
+      
       await deleteFileAPI(fileNameToRemove);
 
       const updatedFileNames = [...fileNames];
       const updatedFileRandomStrings = [...fileRandomStrings];
-      const updatedDisplayFileNames = [...displayFileNames]; // Display file names
 
       updatedFileNames.splice(index, 1);
       updatedFileRandomStrings.splice(index, 1);
-      updatedDisplayFileNames.splice(index, 1); // Display file names
 
       setFileNames(updatedFileNames);
       setFileRandomStrings(updatedFileRandomStrings);
-      setDisplayFileNames(updatedDisplayFileNames); // Display file names
 
       console.log('파일이 성공적으로 제거되었습니다:', fileNameToRemove);
     } catch (error) {
@@ -182,19 +179,16 @@ const Modify = () => {
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        const userId = 1; // 예시로 사용자 ID를 1로 설정
-        const post = await getPostUpdate(userId, postId); // userId와 postId로 게시물 내용 가져오기
-        console.log('Fetched post data:', post); // Fetch log
+        const post = await getPost(postId); // postId로 게시물 내용 가져오기
         setTitle(post.title);
         setBackground(convertTextToImages(post.proBackground)); // 이미지와 문단 띄기 처리
         setSolution(convertTextToImages(post.solution)); // 이미지와 문단 띄기 처리
         setEffect(convertTextToImages(post.benefit)); // 이미지와 문단 띄기 처리
         setSelectedButton(Object.keys(regionToInt).find(key => regionToInt[key] === post.postLocal));
-
+        
         // 첨부 파일 설정
         setFileNames(post.s3Attachments.map(file => file.name));
         setFileRandomStrings(post.s3Attachments.map(file => file.randomString));
-        setDisplayFileNames(post.s3Attachments.map(file => file.name)); // Display file names
 
       } catch (error) {
         console.error('게시물 데이터를 가져오는 중 오류 발생:', error);
@@ -212,7 +206,7 @@ const Modify = () => {
         ['image']
       ],
       handlers: {
-        image: function () {
+        image: function() {
           const input = document.createElement('input');
           input.setAttribute('type', 'file');
           input.setAttribute('accept', 'image/*');
@@ -239,7 +233,7 @@ const Modify = () => {
         ['image']
       ],
       handlers: {
-        image: function () {
+        image: function() {
           const input = document.createElement('input');
           input.setAttribute('type', 'file');
           input.setAttribute('accept', 'image/*');
@@ -266,7 +260,7 @@ const Modify = () => {
         ['image']
       ],
       handlers: {
-        image: function () {
+        image: function() {
           const input = document.createElement('input');
           input.setAttribute('type', 'file');
           input.setAttribute('accept', 'image/*');
@@ -304,7 +298,7 @@ const Modify = () => {
 
   const isSubmitDisabled = !selectedButton || !title || !background || !solution || !effect;
 
-  // 수정하기
+  //수정하기
   const handleSubmit = async (postId) => {
     if (isSubmitDisabled) {
       return;
@@ -336,14 +330,13 @@ const Modify = () => {
     try {
       const response = await updatePostPatch(postId, postData); // updatePostPatch를 사용하여 게시물 수정
       console.log('서버 응답:', response);
-      setDisplayFileNames(postData.fileNames); // Display file names after submit
       navigate(`/postit/${postId}`);
     } catch (error) {
       console.error('서버로 값을 보내는 중 오류 발생:', error);
     }
   };
 
-  // 임시저장
+  //임시저장
   const handleSave = async () => {
     const replaceImageSrc = (html, imageNames) => {
       const div = document.createElement('div');
@@ -353,7 +346,7 @@ const Modify = () => {
         const fileName = imageNames[index];
         img.setAttribute('src', fileName);
       });
-
+      
       return div.innerHTML;
     };
 
@@ -381,128 +374,130 @@ const Modify = () => {
   };
 
   return (
-    <div className="container">
-      <div className="intro">
-        <div className="top-button-container">
-          <button className="back-button" onClick={() => handleWModalOpen('out')}>나가기</button>
-          <button className="save-button" onClick={() => handleWModalOpen('temp')}>임시저장</button>
-        </div>
-        <div className="region-container">
-          <div className="select-region">제안지역 선택하기</div>
-          <div className="region-button-container">
+    <Container>
+      <GlobalStyle />
+      <Intro>
+        <TopButtonContainer>
+          <BackButton onClick={() => handleWModalOpen('out')}>나가기</BackButton>
+          <SaveButton onClick={()=>handleWModalOpen('temp')}>임시저장</SaveButton>
+        </TopButtonContainer>
+        <RegionContainer>
+          <SelectRegion>제안지역 선택하기</SelectRegion>
+          <RegionButtonContainer>
             {['경산시', '경주시', '구미시', '김천시', '문경시', '상주시', '안동시', '영주시', '영천시', '포항시'].map((region) => (
-              <button
+              <LocalButton
                 key={region}
                 onClick={() => handleButtonClick(region)}
-                className={`local-button ${selectedButton === region ? 'selected' : ''}`}
+                selected={selectedButton === region}
               >
                 {region}
-              </button>
+              </LocalButton>
             ))}
-          </div>
-        </div>
-      </div>
-      <div className="writing-body">
-        <div className="section">
-          <label>제목</label>
-          <input
+          </RegionButtonContainer>
+        </RegionContainer>
+      </Intro>
+      <WritingBody>
+        <Section>
+          <Label>제목</Label>
+          <InputBox
             placeholder="제목을 입력해주세요"
             value={title}
             onChange={(e) => handleInputChange(setTitle)(e.target.value)}
-            className="input-box"
           />
-        </div>
-        <div className="section">
-          <label>
-            제안배경 <span className="hint-wrapper"><img src={SideHint} alt="Alert" className="hint-icon" /><span className="hint">장소나 기사 링크를 함께 넣어주면 다른 지역 주민들이 공감하기 쉬워요!</span></span>
-          </label>
-          <div className="quill-container">
-            <ReactQuill
+        </Section>
+        <Section>
+          <Label>
+            제안배경 <HintWrapper><HintIcon src={SideHint} alt="Alert" /><Hint>장소나 기사 링크를 함께 넣어주면 다른 지역 주민들이 공감하기 쉬워요!</Hint></HintWrapper>
+          </Label>
+          <QuillContainer>
+            <StyledQuill
               ref={quillRefBackground}
               theme="snow"
               value={background}
               onChange={handleTextChange(setBackground, setBackgroundImageNames, quillRefBackground)}
               modules={backgroundModules}
               formats={formats}
-              className="styled-quill"
             />
-          </div>
-        </div>
-        <div className="section">
-          <label>
-            해결방안 <span className="hint-wrapper"><img src={SideHint} alt="Alert" className="hint-icon" /><span className="hint">사례 사진을 함께 넣어주면 다른 지역주민들이 이해하기 쉬워요!</span></span>
-          </label>
-          <div className="quill-container">
-            <ReactQuill
+          </QuillContainer>
+        </Section>
+        <Section>
+          <Label>
+            해결방안 <HintWrapper><HintIcon src={SideHint} alt="Alert" /><Hint>사례 사진을 함께 넣어주면 다른 지역주민들이 이해하기 쉬워요!</Hint></HintWrapper>
+          </Label>
+          <QuillContainer>
+            <StyledQuill
               ref={quillRefSolution}
               theme="snow"
               value={solution}
               onChange={handleTextChange(setSolution, setSolutionImageNames, quillRefSolution)}
               modules={solutionModules}
               formats={formats}
-              className="styled-quill"
             />
-          </div>
-        </div>
-        <div className="section">
-          <label>기대효과</label>
-          <div className="quill-container">
-            <ReactQuill
+          </QuillContainer>
+        </Section>
+        <Section>
+          <Label>기대효과</Label>
+          <QuillContainer>
+            <StyledQuill
               ref={quillRefEffect}
               theme="snow"
               value={effect}
               onChange={handleTextChange(setEffect, setEffectImageNames, quillRefEffect)}
               modules={effectModules}
               formats={formats}
-              className="styled-quill"
             />
-          </div>
-        </div>
-        <div className="section">
-          <label>첨부파일</label>
-          <div className="file-wrapper">
-            <div className="file-box">
-              <div className="file-input-wrapper">
-                <input type="file" multiple onChange={handleFileChange} id="file-upload" className="file-input" />
-                {displayFileNames.map((name, index) => ( // Display file names
-                  <div key={index} className="file-item">
-                    <div className="file-name">{name}</div>
-                    <button className="remove-button" onClick={() => handleFileRemove(index)}>제거</button>
-                  </div>
+          </QuillContainer>
+        </Section>
+        <Section>
+          <Label>첨부파일</Label>
+          <FileWrapper>
+            <FileBox>
+              <FileInputWrapper>
+                <FileInput type="file" multiple onChange={handleFileChange} id="file-upload" />
+                {fileNames.map((name, index) => (
+                  <FileItem key={index}>
+                    <FileName>{name}</FileName>
+                    <RemoveButton onClick={() => handleFileRemove(index)}>제거</RemoveButton>
+                  </FileItem>
                 ))}
-              </div>
-            </div>
-            <label htmlFor="file-upload" className="file-input-label">추가</label>
-          </div>
-        </div>
-        <div className="button-section">
-          <button onClick={() => handleSubmit(postId)} disabled={isSubmitDisabled} className="post-button">
+              </FileInputWrapper>
+            </FileBox>
+            <FileInputLabel htmlFor="file-upload">추가</FileInputLabel>
+          </FileWrapper>
+        </Section>
+        <ButtonSection>
+          <PostButton onClick={()=>handleSubmit(postId)} disabled={isSubmitDisabled}>
             수정하기
-          </button>
-        </div>
-        <div className="hidden-section">
-          <label>파일 랜덤 문자열 상태 확인:</label>
+          </PostButton>
+        </ButtonSection>
+        <HiddenSection>
+          <Label>파일 랜덤 문자열 상태 확인:</Label>
           <pre>{JSON.stringify(fileRandomStrings, null, 2)}</pre>
-        </div>
-        <div className="hidden-section">
-          <label>이미지 파일 이름 상태 확인:</label>
+        </HiddenSection>
+        <HiddenSection>
+          <Label>이미지 파일 이름 상태 확인:</Label>
           <pre>{JSON.stringify(backgroundImageNames, null, 2)}</pre>
           <pre>{JSON.stringify(solutionImageNames, null, 2)}</pre>
           <pre>{JSON.stringify(effectImageNames, null, 2)}</pre>
-        </div>
-      </div>
+        </HiddenSection>
+      </WritingBody>
       <ModifyModal
         isOpen={isWModalOpen}
         closeModal={() => handleWModalOpen(modalMethod)}
         method={modalMethod}
-        handleSave={handleSave}
+        handleSave= {handleSave}
       ></ModifyModal>
-    </div>
+      {/* <ModifyModal
+        isOpen={isUpdateModalOpen}
+        closeModal={handleUpdateModalClose}
+        method="update"
+        handleSave ={handleSave}
+      ></ModifyModal> */}
+    </Container>
   );
 };
 
 export default Modify;
-
 
 const Container = styled.div`
   display: flex;
@@ -835,3 +830,4 @@ const RemoveButton = styled.button`
   font-family: "MinSans-Regular";
   font-size: 14px;
 `;
+

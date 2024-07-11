@@ -540,7 +540,7 @@ export const updatePostPatch = async(postId) => {
   }
 }
 
-// 게시물 수정할 때 불러오기
+
 export const getPostUpdate = async (userId, id) => {
   try {
     const response = await axios.get(`${server}/post/read/update`, {
