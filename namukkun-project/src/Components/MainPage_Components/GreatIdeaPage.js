@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import defaultblue from '../../Assets/Img/defaultblue.svg';
-import bottomimg from '../../Assets/Img/bottomimg.svg';
+import bottomimgwd from '../../Assets/Img/bottomimgwd.svg';
+import bottomimgbd from '../../Assets/Img/bottomimgbd.svg';
 import { useEffect, useState } from 'react';
 import { allPostsGetAPI } from '../../API/AxiosAPI';
 import { useNavigate } from 'react-router-dom';
@@ -88,7 +89,12 @@ function GreatIdeaPage() {
                 ))}
             </GreatContentContainer>
             <DuckContainer>
-                <img src={bottomimg} alt="bottomimg" style={{ width: '553px', height: '334px'}}/>
+                <BottomBlueDuck>
+                    <img src={bottomimgbd} alt="bottomimg" />
+                </BottomBlueDuck>
+                <BottomWhiteDuck>
+                    <img src={bottomimgwd} alt="bottomimg" />
+                </BottomWhiteDuck>
             </DuckContainer>
         </Container>
     );
@@ -209,7 +215,6 @@ const ImageContainer = styled.div`
 `;
 
 const BottomBlueDuck = styled.div`
-    margin-left: 193px;
     background: transparent;
 `;
 
@@ -223,7 +228,7 @@ const DuckContainer = styled.div`
     display: flex;
     flex-direction: row;
     align-items: flex-end;
-    justify-content: flex-end;
+    justify-content: space-between;
     position: absolute;
     top: calc(100% - 100px);  
     z-index: 1;

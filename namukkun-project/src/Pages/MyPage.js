@@ -156,7 +156,7 @@ const FixedButton = styled.div.attrs(props => ({
 `;
 
 const ImgContainer = styled.div`
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 `
 
 const InfoContainer = styled.div`
