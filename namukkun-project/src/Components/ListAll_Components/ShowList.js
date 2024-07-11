@@ -8,6 +8,7 @@ import { getPopularRegion, getRecentRegion, loginTestState, pagenation, postLike
 import LoginModal from "../Login_Components/LoginModal";
 import { useLocation } from "react-router-dom";
 import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
+import { GlobalStyle } from "../../Assets/Style/theme";
 
 function ShowList() {
   // 필터 버튼 값 설정 [추천/최신]
@@ -213,6 +214,7 @@ function ShowList() {
 
   return (
     <Div>
+      <GlobalStyle/>
       <TopHeader>
         <Title>✏️ 전체글 모아보기</Title>
         <BtnDiv>
@@ -285,7 +287,7 @@ const FilterBtn = styled.button`
 
   color: var(--Main-001, #005AFF);
   text-align: center;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 18px;
   font-style: normal;
   font-weight: 500;
