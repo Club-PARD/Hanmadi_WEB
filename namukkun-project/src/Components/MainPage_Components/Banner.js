@@ -2,10 +2,12 @@ import React from "react";
 import styled from 'styled-components';
 import Slick from '../../Components/Slick_Components/Slick';
 import WhiteArrow from '../../Assets/Img/WhiteArrow.svg';
+import { GlobalStyle } from "../../Assets/Style/theme";
 
 function Banner() {
   return (
     <Container>
+      <GlobalStyle/>
       <SlickWrapper>
         <SlickContainer>
           <Slick />
@@ -69,7 +71,7 @@ const BannerDiv = styled.div`
 
 const Ment = styled.div`
   color: #FFF;
-  font-family: "Min Sans-Regular";
+  font-family: 'MinSans-Regular';
   font-size: 46px;
   font-style: normal;
   font-weight: 500;
@@ -88,7 +90,7 @@ const BannerBtn = styled.button`
   border: none;
   background: rgba(0, 90, 255, 0.80);
   color: #FFF;
-  font-family: "Min Sans-Regular";
+  font-family: 'MinSans-Regular';
   font-size: 28.098px;
   font-style: normal;
   font-weight: 500;
