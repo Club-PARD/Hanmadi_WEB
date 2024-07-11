@@ -9,6 +9,7 @@ import { loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
 import { useRecoilState } from 'recoil';
 import { intToRegion } from '../SelectRegion_Components/IntToRegion';
 import { loginCheckAPI, logoutAPI, recentRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
+import { GlobalStyle } from '../../Assets/Style/theme';
 
 
 function Header() {
@@ -125,6 +126,7 @@ function Header() {
 
   return (
     <Container>
+      <GlobalStyle/>
       <Head> 
         <Logo onClick={handleLogoClick}>
           <img src={logo} alt="Logo" />
@@ -229,7 +231,7 @@ const MenuTextContainer = styled.div`
 const MenuText = styled.div`
   color: ${props => (props.isActive ? '#005AFF' : '#191919')};
   text-align: center;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 20px;
   font-style: normal;
   font-weight: 600;
@@ -265,7 +267,7 @@ const LoginButtonContainer = styled.div`
 
 const LoginButton = styled.button`
   color: #000;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 17px;
   font-style: normal;
   font-weight: 500;
@@ -311,7 +313,7 @@ const ProposalButton = styled.button`
 
   color: var(--Black-main, #191919);
   text-align: center;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 17px;
   font-style: normal;
   font-weight: 600;
@@ -329,7 +331,7 @@ const UserInfo = styled.div`
 
   color: var(--Black-main, #191919);
   text-align: right;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 17px;
   font-style: normal;
   font-weight: 500;
@@ -355,7 +357,7 @@ const MyPage = styled.button`
 
   color: var(--Black-main, #191919);
   text-align: right;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 17px;
   font-style: normal;
   font-weight: 500;
@@ -374,7 +376,7 @@ const Logout = styled.button`
 
   color: var(--Black-main, #191919);
   text-align: right;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 17px;
   font-style: normal;
   font-weight: 500;
