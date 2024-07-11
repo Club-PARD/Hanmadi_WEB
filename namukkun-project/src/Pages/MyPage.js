@@ -187,15 +187,16 @@ const InfoContent = styled.div`
 const ProfileAdviseButton = styled.button`
     margin-top: 14px;
     display: flex;
-    width: 125px;
+    width: 130px;
     height: 30px;
+    padding: 8px;
     justify-content: center;
     align-items: center;
     border-radius: 3px;
     background: var(--gray-001, #E0E0E0);
     color: var(--gray-008, #191919);
     font-family: 'MinSans-Regular';
-    font-size: 18px;
+    font-size: 14px;
     font-style: normal;
     font-weight: 400;
     cursor: pointer;

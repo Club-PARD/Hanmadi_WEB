@@ -6,6 +6,7 @@ import uploadarrow from '../../Assets/Img/uploadarrow.svg';
 import arrowleft from '../../Assets/Img/Arrowleft.svg';
 import arrowright from '../../Assets/Img/Arrowright.svg';
 import BackToMyPage from '../../Assets/Img/BackToMyPage.svg';
+import nopost from '../../Assets/Img/nopost.svg';
 import { useNavigate } from 'react-router-dom';
 import DeleteModal from './DeleteModal';
 
@@ -15,8 +16,7 @@ function IngAllPost({ posts }) {
   const [isWModalOpen, setIsWModalOpen] = useState(false);
   const [getpostid, setGetPostid] = useState(null);
   const navigate = useNavigate();
-  const [update, setUpdate] =useState(false);
-  
+  const [update, setUpdate] = useState(false);
 
   const url = "https://www.epeople.go.kr/index.jsp";
 
@@ -47,17 +47,17 @@ function IngAllPost({ posts }) {
 
   //상세페이지로 이동
   const navigateToPost = (postId) => {
-      navigate(`/postit/${postId}`);
+    navigate(`/postit/${postId}`);
   };
 
   //수정 버튼
-  const navigateModify = (postId) =>{
-      navigate(`/modify/${postId}`);
+  const navigateModify = (postId) => {
+    navigate(`/modify/${postId}`);
   }
-  
+
   //뒤로가기
-    const navigateBack = () =>{
-      navigate(`/mypage`);
+  const navigateBack = () => {
+    navigate(`/mypage`);
   }
 
   return (
@@ -71,71 +71,78 @@ function IngAllPost({ posts }) {
                 <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
                 진행중인 한마디
               </TotalTitle>
-              <GoBackMyPage  onClick={navigateBack}> <img src={BackToMyPage}  alt="back" /> </GoBackMyPage>
+              <GoBackMyPage onClick={navigateBack}><img src={BackToMyPage} alt="back" /></GoBackMyPage>
             </TotalTitleContainer>
             <TotalContentContainer>
-              <AllContentContainer>
-                {currentPosts.length > 0 &&currentPosts.map(post => (
-                  <ContentContainer key={post.postId}>
-                    <TitleInfoContainer>
-                      <TitleFunctionContainer>
-                        <IngButton>진행중</IngButton>
-                        <ContentTitle onClick={()=>navigateToPost(post.postId)}>{truncateText(post.title, 11)}</ContentTitle>
-                        <AdviseButton onClick={()=>navigateModify(post.postId)}>수정</AdviseButton>
-                        <DeleteButton onClick={()=>handleWModalOpen(post.postId)}>삭제</DeleteButton>
-                      </TitleFunctionContainer>
-                      <InfoContainer>
-                        <InfoTextContainer>
-                          <InfoText>용길이 수</InfoText>
-                          <InfoText>{post.upCountPost}</InfoText>
-                        </InfoTextContainer>
-                        <InfoTextContainer>
-                          <InfoText>한마디 수</InfoText>
-                          <InfoText>{post.postitCount}</InfoText>
-                        </InfoTextContainer>
-                        <InfoTextContainer>
-                          <InfoText>남은 기간</InfoText>
-                          <InfoText>{post.deadline}</InfoText>
-                        </InfoTextContainer>
-                        <InfoTextContainer>
-                          <InfoText>작성일자</InfoText>
-                          <InfoText>{post.postTime}</InfoText>
-                        </InfoTextContainer>
-                      </InfoContainer>
-                    </TitleInfoContainer>
-                    <UploadButton onClick={() => { window.open(url) }}>
-                      국민신문고
-                      <img src={uploadarrow} style={{ width: '14.4px', height: '4.9px' }} alt="upload arrow" />
-                    </UploadButton>
-                  </ContentContainer>
-                ))}
-              </AllContentContainer>
+              {currentPosts.length > 0 ? ( // 현재 페이지의 포스트가 있는 경우
+                <AllContentContainer>
+                  {currentPosts.map(post => (
+                    <ContentContainer key={post.postId}>
+                      <TitleInfoContainer>
+                        <TitleFunctionContainer>
+                          <IngButton>진행중</IngButton>
+                          <ContentTitle onClick={() => navigateToPost(post.postId)}>{truncateText(post.title, 11)}</ContentTitle>
+                          <AdviseButton onClick={() => navigateModify(post.postId)}>수정</AdviseButton>
+                          <DeleteButton onClick={() => handleWModalOpen(post.postId)}>삭제</DeleteButton>
+                        </TitleFunctionContainer>
+                        <InfoContainer>
+                          <InfoTextContainer>
+                            <InfoText>용길이 수</InfoText>
+                            <InfoText>{post.upCountPost}</InfoText>
+                          </InfoTextContainer>
+                          <InfoTextContainer>
+                            <InfoText>한마디 수</InfoText>
+                            <InfoText>{post.postitCount}</InfoText>
+                          </InfoTextContainer>
+                          <InfoTextContainer>
+                            <InfoText>남은 기간</InfoText>
+                            <InfoText>{post.deadline}</InfoText>
+                          </InfoTextContainer>
+                          <InfoTextContainer>
+                            <InfoText>작성일자</InfoText>
+                            <InfoText>{post.postTime}</InfoText>
+                          </InfoTextContainer>
+                        </InfoContainer>
+                      </TitleInfoContainer>
+                      <UploadButton onClick={() => { window.open(url) }}>
+                        국민신문고
+                        <img src={uploadarrow} style={{ width: '14.4px', height: '4.9px' }} alt="upload arrow" />
+                      </UploadButton>
+                    </ContentContainer>
+                  ))}
+                </AllContentContainer>
+              ) : ( // 현재 페이지의 포스트가 없는 경우
+                <NoPostImageContainer>
+                  <img src={nopost} alt="No post available" />
+                </NoPostImageContainer>
+              )}
             </TotalContentContainer>
 
-            
-            <Pagenation>
-            <PagenationButton onClick={() => handleChangePage(page - 1)} disabled={page === 1}>
-              <img src={arrowleft} alt="Previous page" />
-            </PagenationButton>
-            {[...Array(totalPages)].map((_, i) => (
-              <PagenationButton key={i} onClick={() => handleChangePage(i + 1)} isSelected={page === i + 1}>
-                {i + 1}
-              </PagenationButton>
-            ))}
-            <PagenationButton onClick={() => handleChangePage(page + 1)} disabled={page === totalPages}>
-              <img src={arrowright} alt="Next page" />
-            </PagenationButton>
-          </Pagenation>
+            {currentPosts.length > 0 && ( // 현재 페이지의 포스트가 있는 경우에만 페이지네이션 표시
+              <Pagenation>
+                <PagenationButton onClick={() => handleChangePage(page - 1)} disabled={page === 1}>
+                  <img src={arrowleft} alt="Previous page" />
+                </PagenationButton>
+                {[...Array(totalPages)].map((_, i) => (
+                  <PagenationButton key={i} onClick={() => handleChangePage(i + 1)} isSelected={page === i + 1}>
+                    {i + 1}
+                  </PagenationButton>
+                ))}
+                <PagenationButton onClick={() => handleChangePage(page + 1)} disabled={page === totalPages}>
+                  <img src={arrowright} alt="Next page" />
+                </PagenationButton>
+              </Pagenation>
+            )}
           </TotalIngContainer>
         </IngContainer>
       </Container>
       <DeleteModal
-            isOpen={isWModalOpen}
-            closeModal={handleWModalOpen}
-            postId ={getpostid}
-            setUpdate ={setUpdate}
-            update= {update}
-        ></DeleteModal>
+        isOpen={isWModalOpen}
+        closeModal={handleWModalOpen}
+        postId={getpostid}
+        setUpdate={setUpdate}
+        update={update}
+      ></DeleteModal>
     </>
   );
 }
@@ -201,6 +208,14 @@ const AllContentContainer = styled.div`
   display: flex;
   width: 680px;
   flex-direction: column;
+`;
+
+const NoPostImageContainer = styled.div` // 빈 포스트 이미지 컨테이너 추가
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-top: 100px;
 `;
 
 const ContentContainer = styled.div`
@@ -348,7 +363,6 @@ const TitleInfoContainer = styled.div`
   width: 328px;
   white-space: nowrap; /* 줄 바꿈 방지 */
 `;
-
 
 const Pagenation = styled.div`
   display: flex;
