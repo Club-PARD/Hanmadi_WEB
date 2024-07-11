@@ -3,6 +3,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import mypageduck from '../../Assets/Img/mypageduck.svg';
 import uploadarrow from '../../Assets/Img/uploadarrow.svg';
+import nopost from '../../Assets/Img/nopost.svg'; // nopost 이미지 import
 import { useNavigate } from 'react-router-dom';
 import DeleteModal from './DeleteModal';
 
@@ -64,56 +65,62 @@ function EndPost({ posts }) {
                             종료된 한마디
                         </TotalTitleContainer>
                         <TotalContentContainer>
-                            <AllContentContainer>
-                                {posts.length >0 && posts.slice(0, 3).map(post => ( // 게시물을 최대 3개만 보여줌
-                                    <ContentContainer key={post.postId}>
-                                        <TitleInfoContainer>
-                                            <TitleFunctionContainer>
-                                                <EndButton>종료</EndButton>
-                                                <ContentTitle onClick={()=>navigateToPost(post.postId)}>{truncateText(post.title, 11)}</ContentTitle>
-                                                <AdviseButton onClick={()=>navigateModify(post.postId)}>수정</AdviseButton>
-                                                <DeleteButton onClick={()=>handleWModalOpen(post.postId)}>삭제</DeleteButton>
-                                            </TitleFunctionContainer>
-                                            <InfoContainer>
-                                                <InfoTextContainer>
-                                                    <InfoText>용길이 수</InfoText>
-                                                    <InfoText>{post.upCountPost}</InfoText>
-                                                </InfoTextContainer>
-                                                <InfoTextContainer>
-                                                    <InfoText>한마디 수</InfoText>
-                                                    <InfoText>{post.postitCount}</InfoText>
-                                                </InfoTextContainer>
-                                                <InfoTextContainer>
-                                                    <InfoText>종료 일자</InfoText>
-                                                    <InfoText >{addDaysToDate(post.postTime)}</InfoText>
-                                                </InfoTextContainer>
-                                                <InfoTextContainer>
-                                                    <InfoText>작성일자</InfoText>
-                                                    <InfoText>{post.postTime}</InfoText>
-                                                </InfoTextContainer>
-                                            </InfoContainer>
-                                        </TitleInfoContainer>
-                                        <UploadButton onClick={() => { window.open(url) }}>
-                                            국민신문고
-                                            <img src={uploadarrow} style={{ width: '14.4px', height: '4.9px' }} ></img>
-                                        </UploadButton>
-                                    </ContentContainer>
-                                ))}
-                                <SeeAllRecContainer>
-                                    <SeeAllRecord onClick={navigateEndall}>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;전체글 보러가기 --> 
-                                    </SeeAllRecord>
-                                </SeeAllRecContainer>
-                            </AllContentContainer>
+                            {posts.length > 0 ? ( // 게시물이 있는 경우
+                                <AllContentContainer>
+                                    {posts.slice(0, 3).map(post => ( // 게시물을 최대 3개만 보여줌
+                                        <ContentContainer key={post.postId}>
+                                            <TitleInfoContainer>
+                                                <TitleFunctionContainer>
+                                                    <EndButton>종료</EndButton>
+                                                    <ContentTitle onClick={()=>navigateToPost(post.postId)}>{truncateText(post.title, 11)}</ContentTitle>
+                                                    <AdviseButton onClick={()=>navigateModify(post.postId)}>수정</AdviseButton>
+                                                    <DeleteButton onClick={()=>handleWModalOpen(post.postId)}>삭제</DeleteButton>
+                                                </TitleFunctionContainer>
+                                                <InfoContainer>
+                                                    <InfoTextContainer>
+                                                        <InfoText>용길이 수</InfoText>
+                                                        <InfoText>{post.upCountPost}</InfoText>
+                                                    </InfoTextContainer>
+                                                    <InfoTextContainer>
+                                                        <InfoText>한마디 수</InfoText>
+                                                        <InfoText>{post.postitCount}</InfoText>
+                                                    </InfoTextContainer>
+                                                    <InfoTextContainer>
+                                                        <InfoText>종료 일자</InfoText>
+                                                        <InfoText >{addDaysToDate(post.postTime)}</InfoText>
+                                                    </InfoTextContainer>
+                                                    <InfoTextContainer>
+                                                        <InfoText>작성일자</InfoText>
+                                                        <InfoText>{post.postTime}</InfoText>
+                                                    </InfoTextContainer>
+                                                </InfoContainer>
+                                            </TitleInfoContainer>
+                                            <UploadButton onClick={() => { window.open(url) }}>
+                                                국민신문고
+                                                <img src={uploadarrow} style={{ width: '14.4px', height: '4.9px' }} ></img>
+                                            </UploadButton>
+                                        </ContentContainer>
+                                    ))}
+                                    <SeeAllRecContainer>
+                                        <SeeAllRecord onClick={navigateEndall}>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;전체글 보러가기 --> 
+                                        </SeeAllRecord>
+                                    </SeeAllRecContainer>
+                                </AllContentContainer>
+                            ) : ( // 게시물이 없는 경우
+                                <NoPostImageContainer>
+                                    <img src={nopost} alt="No post available" />
+                                </NoPostImageContainer>
+                            )}
                         </TotalContentContainer>
                     </TotalIngContainer>
                 </IngContainer>
             </Container>
             <DeleteModal
-            isOpen={isWModalOpen}
-            closeModal={handleWModalOpen}
-            postId ={getpostid}
-        ></DeleteModal>
+                isOpen={isWModalOpen}
+                closeModal={handleWModalOpen}
+                postId ={getpostid}
+            ></DeleteModal>
         </>
     );
 }
@@ -170,6 +177,14 @@ const AllContentContainer = styled.div`
     width: 680px;
     flex-direction: column;
     white-space: nowrap; /* 줄 바꿈 방지 */
+`;
+
+const NoPostImageContainer = styled.div` // 빈 포스트 이미지 컨테이너 추가
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 200px;
 `;
 
 const ContentContainer = styled.div`
@@ -340,4 +355,3 @@ const SeeAllRecord = styled.div`
     cursor: pointer;
     white-space: nowrap; /* 줄 바꿈 방지 */
 `;
-
