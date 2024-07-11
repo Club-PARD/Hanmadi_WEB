@@ -8,6 +8,7 @@ import LoginModal from '../Login_Components/LoginModal';
 import { allPostsRecommendGetAPI, checkPostDeleteAPI, checkPostPostAPI, loginCheckAPI, userInfoGetAPI } from '../../API/AxiosAPI';
 import { useNavigate } from 'react-router-dom';
 
+//상단 부분
 function IdeaPage() { 
     const [showModal, setShowModal] = useState(false);
 
@@ -20,8 +21,6 @@ function IdeaPage() {
     const [userData, setUserData] = useRecoilState(userinfo);
 
     const [loginCheck, setLoginCheck] =useState(false);
-
-    const [allData, setAlldata] =useState([]);
 
     const checkloginFunc = async () => {
       try {
@@ -83,18 +82,18 @@ function IdeaPage() {
     useEffect(() => {
         getUserInfo().then(response => {
         console.log("유저 데이터", response);
-        setPostLike(sendBraveClicked);
+        // setPostLike(sendBraveClicked);
         }).catch(error => {
         console.error("Error fetching user info:", error);
         });
-    }, [sendBraveClicked, postLike]);
+    }, []);
 
     //모든 인기게시물 불러오기
     const allPopularFunc = async () => {
         try {
             const response = await allPostsRecommendGetAPI();
                 if(response.data.length>0){
-                    setAlldata(response.data.slice(0, 2));
+                    setAllPopularPosts(response.data.slice(0, 2));
                 }
                 console.log('불러와져라 ', response.data)   
             console.log(response);
@@ -128,6 +127,19 @@ function IdeaPage() {
         [postId]: !sendBraveClicked[postId]
       };
       setSendBraveClicked(newSendBraveClicked);
+
+      //추가한 코드
+      const updatedPostData = allPopularPosts.map(post => {
+        if (post.postId === postId) {
+            return {
+                ...post,
+                upCountPost: post.upCountPost + (newSendBraveClicked[postId] ? 1 : -1)
+            };
+        }
+        return post;
+        });
+
+        setAllPopularPosts(updatedPostData);
   
       try {
         let response;
@@ -137,31 +149,31 @@ function IdeaPage() {
           response = await checkPostDecrease(postId); // 좋아요 감소 API 호출
         }
       
-      if(response.postId ===postId){
-        // 유저 데이터 업데이트
-        setUserData({
-          ...userData,
-          postUpList: response.postId
-        });
+        if(response.postId ===postId){
+            // 유저 데이터 업데이트
+            setUserData({
+            ...userData,
+            postUpList: response.postId
+            });
 
-      }
-
-      // postId에 해당하는 포스트의 upCount 추출
-      const upcount = response.find(post => post.postId === postId)?.postUpCount;
-
-      // 포스트 데이터 업데이트
-      const updatedPostData = allData.map(post => {
-        if (post.postId === postId) {
-          return {
-            ...post,
-            upCountPost: upcount || 0
-          };
         }
-        return post;
-      });
-  
-      setAlldata(updatedPostData);
-      console.log("hi", sendBraveClicked);
+
+        // postId에 해당하는 포스트의 upCount 추출
+        const upcount = response.find(post => post.postId === postId)?.postUpCount;
+
+        // 포스트 데이터 업데이트
+        const updatedPostData = allPopularPosts.map(post => {
+            if (post.postId === postId) {
+            return {
+                ...post,
+                upCountPost: upcount
+            };
+            }
+            return post;
+        });
+    
+        setAllPopularPosts(updatedPostData);
+        console.log("hi", sendBraveClicked);
   
       } catch (error) {
         console.error("Error updating post:", error);
@@ -199,32 +211,6 @@ function IdeaPage() {
         
         return hanmadiv;
     };
-    
-
-    // // 좋아요 버튼 클릭 처리
-    // const handleLike = async(postId) => {
-    //     if (sendBraveClicked[postId]) { // 이미 좋아요를 클릭한 상태인 경우
-    //         const newLikeStatus = { ...sendBraveClicked };
-    //         await checkPostDecrease(postId);
-    //         delete newLikeStatus[postId]; // postId에 대한 클릭 상태 삭제
-    //         setSendBraveClicked(newLikeStatus); // 클릭 상태 업데이트
-
-    //         // 아톰에 저장된 사용자 데이터 업데이트
-    //         setUserData(prevUserData => ({
-    //             ...prevUserData,
-    //             postUpList: prevUserData.postUpList.filter(id => id !== postId), // postId 제거
-    //         }));
-    //     } else { // 좋아요를 클릭하지 않은 상태인 경우
-    //         await checkPostIncrease(postId);
-    //         setSendBraveClicked({ ...sendBraveClicked, [postId]: true }); // postId에 대한 클릭 상태 true로 설정
-
-    //         // 아톰에 저장된 사용자 데이터 업데이트
-    //         setUserData(prevUserData => ({
-    //             ...prevUserData,
-    //             postUpList: [...prevUserData.postUpList, postId], // postId 추가
-    //         }));
-    //     }
-    // };
     
     return (
         <Container>

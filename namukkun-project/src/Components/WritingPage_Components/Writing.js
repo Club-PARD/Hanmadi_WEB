@@ -137,10 +137,7 @@ const Writing = () => {
       const localUrl = e.target.result;
       const range = quill.getSelection();
 
-      quill.insertText(range.index, '\n'); // 줄바꿈 추가
-      quill.insertEmbed(range.index + 1, 'image', localUrl);
-      quill.setSelection(range.index + 2); // 이미지 삽입 후 커서 위치 조정
-      quill.insertText(range.index + 2, '\n'); // 줄바꿈 추가
+      quill.insertEmbed(range.index, 'image', localUrl);
 
       try {
         await uploadImageAPI(file);

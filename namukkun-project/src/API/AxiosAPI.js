@@ -349,7 +349,11 @@ export const deletePostit = async (postitId) => {
 export const movePostit = async ( postitData) => {
   console.log(`Move Postit: ${JSON.stringify(postitData)}`);
   try {
-      const response = await axios.patch(`${server}/post/postit/move`, postitData);
+      const response = await axios.patch(`${server}/post/postit/move`, postitData, {
+        headers: {
+          'Content-Type': 'application/json' // 요청 헤더에 Content-Type 추가
+        }
+      });
       return response.data;
   } catch (error) {
       console.error('Error moving postit:', error);

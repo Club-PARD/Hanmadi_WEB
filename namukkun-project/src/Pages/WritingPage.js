@@ -8,20 +8,21 @@ import { useNavigate } from "react-router-dom";
 
 function WritingPage(){
   const navigate =useNavigate();
-  // const [loginCheck, setLoginCheck] =useState(false);
+  const [loginCheck, setLoginCheck] =useState(false);
 
   const checkloginFunc = async () => {
     try {
       const response = await loginCheckAPI();
       if (response.status === 200) {
-        // setLoginCheck(true);
+        setLoginCheck(true);
       } else {
-        navigate('/main')
-        // setLoginCheck(false);
+        setLoginCheck(false);
+        navigate('/main');
 
       }
     } catch (error) {
       console.error("로그인 체크 중 오류 발생:", error);
+      navigate('/main');
     }
   };
 

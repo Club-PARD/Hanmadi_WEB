@@ -84,12 +84,6 @@ function Postit() {
         }
     };
 
-    // const CommentsCheckfunc = async() =>{
-    //     const response = await getUserAllInfoAPI();
-    //     const conids = response.comments.map(commen => commen.id);
-    //     setMycomments(conids);
-    // }
-
     //댓글 리스트 
     const commentgetFunc = async () =>{
         const response =await getUserCommentsList();

@@ -32,10 +32,10 @@ function Banner() {
   
   const navigateFunc = () =>{
     if(loginCheck){
-      setShowModal(true);
+      navigate('/writing');
     }
     else{
-      navigate('/writing');
+      setShowModal(true);
     }
   }
 
