@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Banner from '../Components/MainPage_Components/Banner';
-import pointer from '../Assets/Img/pointer.svg';
-import minilogo from '../Assets/Img/minilogo.svg';
 import IdeaPage from "../Components/MainPage_Components/IdeaPage";
 import GreatIdeaPage from "../Components/MainPage_Components/GreatIdeaPage";
-import onclickminilogo from '../Assets/Img/onclickminilogo.svg';
-import onclickpointer from '../Assets/Img/onclickpointer.svg';
 import { useRecoilState } from "recoil";
 import { loginTestState, userinfo } from "../Recoil/Atom";
 import { useNavigate } from 'react-router-dom';
@@ -21,16 +17,16 @@ function MainPage() {
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);
   const [userData, setUserData] = useRecoilState(userinfo);
 
-  const writingBtn = () =>{
-    if(isLogin){
+  const writingBtn = () => {
+    if (isLogin) {
       navigate('/writing');
     }
-    else{
+    else {
       setShowModal(true);
     }
   }
 
-  const getUserInfo = async () =>{
+  const getUserInfo = async () => {
     const response = await userInfoGetAPI();
     setUserData({
       ...userData,
@@ -43,18 +39,22 @@ function MainPage() {
     console.log(response.data);
   };
 
-  useEffect(()=>{
-    if(isLogin){
+  useEffect(() => {
+    if (isLogin) {
       getUserInfo();
     }
-  },[isLogin]);
+  }, [isLogin]);
+
+  const scrollToNextPage = () => {
+    window.scrollBy({ top: window.innerHeight, left: 0, behavior: 'smooth' });
+  };
 
   return (
     <PageContainer>
       <Banner />
       <IdeaPage />
       <GreatIdeaPage />
-      <FixedButton>
+      <FixedButton onClick={scrollToNextPage}>
         <Container>
           <img src={DownArrow} alt="downarrow" />
         </Container>
@@ -66,17 +66,23 @@ function MainPage() {
 export default MainPage;
 
 const PageContainer = styled.div`
-  overflow-x: hidden; /* 가로 스크롤 방지 */
+  overflow: hidden; /* 가로 스크롤 방지와 세로 스크롤 방지 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const FixedButton = styled.div`
   bottom: 1850px;
   position: relative;
-  left: 50%;
   transform: translateX(-50%);
   background-color: transparent;
   border: none;
   z-index: 1050;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer; /* 클릭 가능한 커서로 변경 */
 `;
 
 const Container = styled.div`
@@ -84,5 +90,5 @@ const Container = styled.div`
   background-color: transparent;
   justify-content: center;
   align-items: center;
-  margin-bottom: 10px;
+  margin-top: 450px;
 `;

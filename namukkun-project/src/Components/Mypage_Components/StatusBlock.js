@@ -63,7 +63,7 @@ const StatusItem = styled.button`
 `;
 
 const StatusTitle = styled.div`
-    color: var(--gray-007, #393939);
+    color: var(--gray-007, #575757);
     text-align: center;
     font-family: 'MinSans-Regular';
     font-size: 18px;

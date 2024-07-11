@@ -162,11 +162,11 @@ function DetailContent() {
                                     <StateContent>{intToRegion[postData.postLocal]}</StateContent> {/* 지역 표시 */}
                                 </StateInfoContainer>
                                 <StateInfoContainer>
-                                    <StateName>종료기간</StateName>
+                                    <StateName2>종료기간</StateName2>
                                     <StateContent>D-{postData.deadLine}</StateContent> {/* 종료기간 표시 */}
                                 </StateInfoContainer>
                                 <StateInfoContainer>
-                                    <StateName>한마디 수</StateName>
+                                    <StateName3>한마디 수</StateName3>
                                     <StateContent>{postData.comments.length}</StateContent> {/* 한마디 수 표시 */}
                                 </StateInfoContainer>
                                 <StateInfoContainer>
@@ -247,7 +247,6 @@ const TitleContainer = styled.div`
 
 const TitleText = styled.div`
     width: 403px;
-    height: 62px;
     color: #191919;
     text-align: center;
     font-family: 'MinSans-Regular';
@@ -257,7 +256,7 @@ const TitleText = styled.div`
 `
 
 const DateText = styled.div`
-    margin-top: 15px;
+    margin-top: 10px;
     color: var(--gray-006, #575757);
     text-align: center;
     font-family: 'MinSans-Regular';
@@ -268,7 +267,7 @@ const DateText = styled.div`
 `
 
 const StateContainer = styled.div`
-    margin-top: 8px;
+    margin-top: 40px;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -287,6 +286,23 @@ const StateBox = styled.div`
 `
 
 const StateName = styled.div`
+    width: 49px;
+    color: #A4BAE1;
+    font-family: 'MinSans-Regular';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+`
+const StateName2 = styled.div`
+    width: 58px;
+    color: #A4BAE1;
+    font-family: 'MinSans-Regular';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+`
+
+const StateName3 = styled.div`
     width: 62px;
     color: #A4BAE1;
     font-family: 'MinSans-Regular';

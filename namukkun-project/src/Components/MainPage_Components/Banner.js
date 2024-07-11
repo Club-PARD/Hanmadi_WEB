@@ -26,23 +26,28 @@ function Banner() {
 export default Banner;
 
 const Container = styled.div`
+  width: 100%;
   height: 758px;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
+  overflow: hidden; /* 배너 영역에서 스크롤 방지 */
 `;
 
 const SlickWrapper = styled.div`
-  width: 1440px;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
+  overflow: hidden; /* 배너 영역에서 스크롤 방지 */
 `;
 
 const SlickContainer = styled.div`
   width: 100%;
+  height: 100%;
   position: relative;
   z-index: 0; /* Ensure this is behind the BannerDiv */
 `;

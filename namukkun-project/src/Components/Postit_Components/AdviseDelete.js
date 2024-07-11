@@ -75,7 +75,7 @@ const AdviseButton = styled.button`
     color: var(--gray-005, #707070);
     text-align: center;
     font-family: 'MinSans-Regular';
-    font-size: 13px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 500;
     cursor: pointer;
@@ -96,7 +96,7 @@ const DeleteButton = styled.button`
     color: var(--Main-001, #005AFF);
     text-align: center;
     font-family: 'MinSans-Regular';
-    font-size: 13px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 500;
     cursor: pointer;
