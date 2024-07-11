@@ -230,7 +230,7 @@ const DuckContainer = styled.div`
     align-items: flex-end;
     justify-content: space-between;
     position: absolute;
-    top: calc(100% - 100px);  
+    top: calc(100%);  
     z-index: 1;
     background: transparent;
 `;
