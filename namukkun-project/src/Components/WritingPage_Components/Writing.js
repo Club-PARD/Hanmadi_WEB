@@ -6,7 +6,7 @@ import '../../Assets/Style/quill.snow.custom.css';
 import SideHint from '../../Assets/Img/SideHint.svg';
 import WritingModal from './WritingModal';
 import { GlobalStyle } from '../../Assets/Style/theme';
-import { deleteFileAPI, uploadImageAPI, uploadFileFetch, submitPostAPI, saveTempPostAPI } from '../../API/AxiosAPI.js';
+import { deleteFileAPI, uploadImageAPI, uploadFileFetch, submitPostAPI, saveTempPostAPI, getUserAllInfoAPI, loginCheckAPI } from '../../API/AxiosAPI.js';
 import { useNavigate } from 'react-router-dom';
 
 // Custom font
@@ -48,6 +48,35 @@ const Writing = () => {
   const [isWModalOpen, setIsWModalOpen] = useState(false);
   const [modalMethod, setModalMethod] = useState('');
   const navigate = useNavigate();
+
+  const checkloginFunc = async () => {
+    try {
+      const response = await loginCheckAPI();
+      if (response.status === 200) {
+        return;
+      } else {
+        navigate('/main');
+      }
+    } catch (error) {
+      console.error("로그인 체크 중 오류 발생:", error);
+    }
+  };
+
+  useEffect(()=>{
+    checkloginFunc();
+  },[]);
+
+  //게시하기/임시저장을 위한 유저 아이디
+  const [userid, setUserid] =useState(null);
+  //유저 아이디
+  const getUserID = async () =>{
+    const response = await getUserAllInfoAPI();
+    setUserid(response.userId);
+  }
+
+  useEffect(()=>{
+    getUserID();
+  },[])
 
   const handleWModalOpen = (modalMethod) => {
     setModalMethod(modalMethod);
@@ -265,10 +294,13 @@ const Writing = () => {
 
   const isSubmitDisabled = !selectedButton || !title || !background || !solution || !effect;
 
+  //게시하기
   const handleSubmit = async () => {
     if (isSubmitDisabled) {
       return;
     }
+
+    await getUserID();
 
     const replaceImageSrc = (html, imageNames) => {
       const div = document.createElement('div');
@@ -288,7 +320,7 @@ const Writing = () => {
       solution: replaceImageSrc(solution, solutionImageNames),
       benefit: replaceImageSrc(effect, effectImageNames),
       fileNames: fileRandomStrings,
-      userId: 1,
+      userId: userid,
       return: true,
     };
 
@@ -304,6 +336,7 @@ const Writing = () => {
     }
   };
 
+  //임시저장 
   const handleSave = async () => {
     const replaceImageSrc = (html, imageNames) => {
       const div = document.createElement('div');
@@ -316,6 +349,8 @@ const Writing = () => {
       return div.innerHTML;
     };
 
+    await getUserID();
+
     const postData = {
       title,
       postLocal: regionToInt[selectedButton],
@@ -323,7 +358,7 @@ const Writing = () => {
       solution: replaceImageSrc(solution, solutionImageNames),
       benefit: replaceImageSrc(effect, effectImageNames),
       fileNames: fileRandomStrings,
-      userId: 1,
+      userId: userid,
       return: false, // 임시저장의 경우 false로 설정
     };
 
