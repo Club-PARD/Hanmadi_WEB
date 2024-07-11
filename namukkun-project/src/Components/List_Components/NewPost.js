@@ -258,9 +258,8 @@ function PopularPost() {
                                     due={'D-'+post.deadLine}
                                     initialLikes={post.upCountPost}
                                     truncateText={truncateText}
-                                    isLogin ={isLogin}
                                     setShowModal ={setShowModal}
-                                    handleLike={() => handleLike(post)} 
+                                    handleLike={() => handleSendBraveClick(post)} 
                                     isLiked={sendBraveClicked[post.postId]} 
                                     postId = {post.postId}
                                 />

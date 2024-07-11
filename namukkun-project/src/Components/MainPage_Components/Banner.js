@@ -4,10 +4,12 @@ import Slick from '../../Components/Slick_Components/Slick';
 import WhiteArrow from '../../Assets/Img/WhiteArrow.svg';
 import { useNavigate } from "react-router-dom";
 import { loginCheckAPI } from "../../API/AxiosAPI";
+import LoginModal from "../Login_Components/LoginModal";
 
 function Banner() {
 
   const [loginCheck, setLoginCheck] =useState(false);
+  const [showModal, setShowModal] = useState(false);
   const navigate =useNavigate();
 
   const checkloginFunc = async () => {
@@ -27,8 +29,14 @@ function Banner() {
   useEffect(()=>{
     checkloginFunc();
   },[loginCheck]);
+  
   const navigateFunc = () =>{
-    navigate('/writing');
+    if(loginCheck){
+      setShowModal(true);
+    }
+    else{
+      navigate('/writing');
+    }
   }
 
   return (
@@ -46,6 +54,7 @@ function Banner() {
           </BannerBtn>
         </BannerDiv>
       </SlickWrapper>
+      <LoginModal show={showModal} onClose={() => setShowModal(false)} />
     </Container>
   );
 }

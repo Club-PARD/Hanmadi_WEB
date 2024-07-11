@@ -15,11 +15,8 @@ function GreatIdeaPage() {
 
     const allPostsFunc = async () =>{
         const response = await allPostsGetAPI();
-        if (response.data.length>99){
-            setAllPosts(response.data[0]);
-        }
-        else{
-            setAllPosts(response.data);    
+        if(response.data.length>0){
+            setAllPosts(response.data.slice(0, 2));
         }
         console.log('포스트 내놔', response.data);
     }

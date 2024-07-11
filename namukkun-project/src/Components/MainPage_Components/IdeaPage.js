@@ -93,14 +93,10 @@ function IdeaPage() {
     const allPopularFunc = async () => {
         try {
             const response = await allPostsRecommendGetAPI();
-            if (response.data.length>99){
-                setAlldata(response.data[0]);
-                console.log('불러와져라 99', response.data[0])
-            }
-            else{
-                setAlldata(response.data); 
+                if(response.data.length>0){
+                    setAlldata(response.data.slice(0, 2));
+                }
                 console.log('불러와져라 ', response.data)   
-            }
             console.log(response);
         } catch (error) {
             console.error('Error fetching all popular posts:', error);
