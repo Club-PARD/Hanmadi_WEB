@@ -6,6 +6,7 @@ import onclicksendbrave from '../../Assets/Img/onclicksendbrave.svg';
 import hoversendbrave from '../../Assets/Img/hoversendbrave.svg';
 import rightarrow from '../../Assets/Img/rightarrow.svg';
 import defaultwhite from '../../Assets/Img/defaultwhite.svg';
+import nopost from '../../Assets/Img/nopost.svg'; // nopost 이미지 import
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { getPopularRegion, loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
@@ -19,8 +20,6 @@ function PopularPost() {
     const [activeButton, setActiveButton] = useState('진행중');
 
     const [sendBraveClicked, setSendBraveClicked] = useRecoilState(postLikeBtn);
-    // sendbravebutton 클릭 상태
-    // const [sendBraveClicked, setSendBraveClicked] = useState({}); // 객체로 변경
 
     const [PopData, setPopData] = useRecoilState(getPopularRegion);
 
@@ -231,32 +230,38 @@ function PopularPost() {
                     <AllButton onClick={goToListall}>전체글 보러가기<img src={rightarrow} style={{ width: '6px', height: '12px' }} /></AllButton>
                 </StatusBar>
 
-                {popularFilterData.length > 0 && popularFilterData.slice(0, 4).map((item, index) => (
-                    <ContentImageContainer key={index}>
-                        <ImageContainer>
-                            <img src={extractImageLink(item)} alt="프로필 이미지" style={{ width: '209px', height: '134px' }} />
-                            <ContentTextContainer>
-                                <ContentTitleText onClick={()=>{navigateToPost(item.postId)}}>
-                                    {truncateText(item.title, 52)}
-                                </ContentTitleText>
-                                <DetailContainer>
-                                    <DetailText>작성자</DetailText>
-                                    <DetailText $color="#5A5A5A">{item.userName}</DetailText>
-                                </DetailContainer>
-                                <DetailContainer>
-                                    <DetailText>종료일</DetailText>
-                                    <DetailText $color="#5A5A5A">D-{item.deadLine}</DetailText>
-                                </DetailContainer>
-                            </ContentTextContainer>
-                        </ImageContainer>
-                        <SendBraveButton
-                            onClick={() => handleSendBraveClick(index, item)}
-                            isClicked={sendBraveClicked[item.postId]}
-                        >
-                            <img src={sendBraveClicked[item.postId] ? onclicksendbrave : sendbrave} alt="send brave" />
-                        </SendBraveButton>
-                    </ContentImageContainer>
-                ))}
+                {popularFilterData.length > 0 ? ( // 게시물이 있는 경우
+                    popularFilterData.slice(0, 4).map((item, index) => (
+                        <ContentImageContainer key={index}>
+                            <ImageContainer>
+                                <img src={extractImageLink(item)} alt="프로필 이미지" style={{ width: '209px', height: '134px' }} />
+                                <ContentTextContainer>
+                                    <ContentTitleText onClick={()=>{navigateToPost(item.postId)}}>
+                                        {truncateText(item.title, 52)}
+                                    </ContentTitleText>
+                                    <DetailContainer>
+                                        <DetailText>작성자</DetailText>
+                                        <DetailText $color="#5A5A5A">{item.userName}</DetailText>
+                                    </DetailContainer>
+                                    <DetailContainer>
+                                        <DetailText>종료일</DetailText>
+                                        <DetailText $color="#5A5A5A">D-{item.deadLine}</DetailText>
+                                    </DetailContainer>
+                                </ContentTextContainer>
+                            </ImageContainer>
+                            <SendBraveButton
+                                onClick={() => handleSendBraveClick(index, item)}
+                                isClicked={sendBraveClicked[item.postId]}
+                            >
+                                <img src={sendBraveClicked[item.postId] ? onclicksendbrave : sendbrave} alt="send brave" />
+                            </SendBraveButton>
+                        </ContentImageContainer>
+                    ))
+                ) : ( // 게시물이 없는 경우
+                    <NoPostImageContainer>
+                        <img src={nopost} alt="No post available" />
+                    </NoPostImageContainer>
+                )}
             </GreatContentContainer>
             <LoginModal show={showModal} onClose={() => setShowModal(false)} />
         </Container>
@@ -326,6 +331,15 @@ const ContentImageContainer = styled.div`
     &:hover {
         cursor: pointer;
     }
+`;
+
+const NoPostImageContainer = styled.div` // 빈 포스트 이미지 컨테이너 추가
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 730.2px;
+    border-bottom: 1px solid #DEDEDE;
 `;
 
 const DetailText = styled.span`
