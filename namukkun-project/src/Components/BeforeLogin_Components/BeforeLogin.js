@@ -34,16 +34,14 @@ function BeforeLogin() {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     checkloginFunc();
-  },[]);
+  }, []);
 
-
-  const handleLogin = async () =>{
-    if(!loginCheck){
+  const handleLogin = async () => {
+    if (!loginCheck) {
       setShowModal(true);
-    }
-    else{
+    } else {
       navigate('/main'); //메인페이지로 수정 필여
     }
   }
@@ -68,7 +66,7 @@ function BeforeLogin() {
     <SideContainer>
       <SideBar>
         <SideBarContainer>
-          <Logo><img src={BeforeLoginLogo} alt="SemiLogo" /></Logo>
+          <Logo><img src={BeforeLoginLogo} alt="SemiLogo" draggable="false" /></Logo>
           <LoginButton onClick={handleLogin}>카카오계정 로그인</LoginButton>
           <RegionList>
             <Title>우리지역 게시판 둘러보기</Title>
@@ -86,7 +84,7 @@ function BeforeLogin() {
       <Content>
         <Header>
           <ThumbMan>
-            <img src={ThumbsMan} alt="Good" />
+            <img src={ThumbsMan} alt="Good" draggable="false" />
           </ThumbMan>
           <Ment>
             <MainTitle>
@@ -96,8 +94,8 @@ function BeforeLogin() {
             <SubTitle>
               평소 우리지역을 위해 생각해본 아이디어가 있다면 <br />한마디에 의견을 제안해주세요.
             </SubTitle>
-            <SuggestionButton onClick={handleWritingfunc}>
-              의견 제안하기 <img src={WhiteArrow} alt="WhiteArrow" />
+            <SuggestionButton onClick={handleLogin}>
+              의견 제안하기 <img src={WhiteArrow} alt="WhiteArrow" draggable="false" />
             </SuggestionButton>
           </Ment>
         </Header>
@@ -111,7 +109,7 @@ function BeforeLogin() {
           <Discription>
             <FirstDisc>
               <Pic>
-                <img src={Door} alt="door" />
+                <img src={Door} alt="door" draggable="false" />
               </Pic>
               <How>
                 <UpTitle>
@@ -124,7 +122,7 @@ function BeforeLogin() {
             </FirstDisc>
             <FirstDisc>
               <Pic>
-                <img src={Navigation} alt="way" />
+                <img src={Navigation} alt="way" draggable="false" />
               </Pic>
               <How>
                 <UpTitle>
@@ -147,7 +145,7 @@ function BeforeLogin() {
             <BoldText> 3가지만 작성하면 끝!</BoldText> 
             <br />"이걸 제안해도 될까?" 싶은 의견들도 얼마든지 작성해주세요.
           </SubTitle>
-          <ThirdImage> <img src={TextImage} alt="Third" /></ThirdImage>
+          <ThirdImage> <img src={TextImage} alt="Third" draggable="false" /></ThirdImage>
         </ThirdHeader>
         <FourthHeader>
           <FirstDiv>
@@ -162,11 +160,11 @@ function BeforeLogin() {
               </SubTitle>
             </LeftDiv>
             <RightDiv>
-              <img src={PostIt} alt="PostIt" />
+              <img src={PostIt} alt="PostIt" draggable="false" />
             </RightDiv>
           </FirstDiv>
           <SecondDiv>
-            <img src={Comment} alt="Comment" />
+            <img src={Comment} alt="Comment" draggable="false" />
           </SecondDiv>
         </FourthHeader>
       </Content>
@@ -180,6 +178,7 @@ const SideContainer = styled.div`
   display: flex;
   height: 3097px;
   background-color: #F5F5F5;
+  user-select: none; /* 텍스트 선택 방지 */
 `;
 
 const SideBar = styled.div`
@@ -199,6 +198,7 @@ const SideBarContainer = styled.div`
   margin-bottom: 100px;
   position: sticky;
   top: 0;
+  user-select: none; /* 텍스트 선택 방지 */
 `;
 
 const Logo = styled.div`
@@ -244,6 +244,7 @@ const RegionList = styled.div`
   width: 308px;
   flex-direction: column;
   align-items: flex-start;
+  user-select: none; /* 텍스트 선택 방지 */
 `;
 
 const Title = styled.div`
@@ -279,7 +280,6 @@ const RegionItem = styled.button`
     background: #F8F8F8;
     color: #005AFF;
     border-radius: 16px;
-    
   }
 `;
 
@@ -293,6 +293,7 @@ const Content = styled.div`
   justify-content: center;
 
   border-radius: 100px 0 0 0;
+  user-select: none; /* 텍스트 선택 방지 */
 `;
 
 const Header = styled.div`
@@ -341,7 +342,6 @@ const SubTitle = styled.div`
   font-weight: 500;
   line-height: 150%;
   white-space: nowrap;
-
   margin-bottom: 30px;
 `;
 
@@ -360,7 +360,7 @@ const SuggestionButton = styled.button`
   font-weight: 500;
   line-height: 23.415px;
   cursor: pointer;
-  
+
   &:hover {
     background: #004FDE;
   }
@@ -416,8 +416,7 @@ const Pic = styled.div`
   }
 `;
 
-const How = styled.div`
-`;
+const How = styled.div``;
 
 const UpTitle = styled.div`
   color: #191919;
@@ -483,6 +482,5 @@ const SecondDiv = styled.div`
   width: 763.774px;
   height: 213.468px;
 `;
-
 
 export default BeforeLogin;

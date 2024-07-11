@@ -211,8 +211,9 @@ const InfoContent = styled.div`
 const ProfileAdviseButton = styled.button`
     margin-top: 14px;
     display: flex;
-    width: 125px;
+    width: 130px;
     height: 30px;
+    padding: 8px;
     justify-content: center;
     align-items: center;
     border-radius: 3px;

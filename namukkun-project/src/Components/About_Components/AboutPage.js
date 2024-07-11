@@ -24,9 +24,12 @@ function AboutPage() {
       <Intro>
         <BackgroundImage src={AboutPageBG} alt="Background" />
         <ContentWrapper>
-          <Logo src={logo} alt="logo" />
+          <Logo src={logo} alt="logo" draggable="false" />
           <Title>
             <TextAnimation fadeinTime={1}>
+              <LogoContianer>
+                <Logo src={logo} alt="logo" />
+              </LogoContianer>
               <ColoredText>한마디</ColoredText>가 <ColoredText>두마디</ColoredText>로 <br />
             </TextAnimation>
             <TextAnimation fadeinTime={1.5}>
@@ -131,6 +134,10 @@ const Title = styled.div`
   margin-bottom: 73px;
   white-space: nowrap; /* Prevent text wrapping */
 `;
+
+const LogoContianer = styled.div`
+  width: 100%;
+`
 
 const ColoredText = styled.span`
   color: #005AFF;

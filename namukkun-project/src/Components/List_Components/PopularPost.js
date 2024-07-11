@@ -446,18 +446,27 @@ const StatusButton = styled.button`
     position: relative;
     cursor: pointer;
     color: ${({ $isActive }) => ($isActive ? '#000000' : '#A6A6A6')};
+    transition: color 0.3s ease-in-out;
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: -2px; /* StatusBar의 border-bottom과 일치하도록 설정 */
+        left: 50%; /* 가운데 정렬을 위해 왼쪽을 50%로 설정 */
+        width: 0; /* 초기 너비를 0으로 설정 */
+        height: 3px;
+        border-radius: 3px;
+        background-color: #005AFF;
+        transition: width 0.3s ease-in-out, left 0.3s ease-in-out; /* 너비와 위치에 애니메이션 추가 */
+    }
+
     &:hover::after,
     ${({ $isActive }) =>
         $isActive &&
         `
         &::after {
-            content: '';
-            position: absolute;
-            bottom: -2px; /* StatusBar의 border-bottom과 일치하도록 설정 */
-            left: 0;
-            right: 0;
-            height: 2px;
-            background-color: #005AFF;
+            width: 100%; /* 너비를 100%로 확장 */
+            left: 0; /* 왼쪽 위치를 0으로 이동 */
         }
     `}
 `;

@@ -64,7 +64,7 @@ const FixedButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
   border: none;
-  border-radius: 16px;
+  border-radius: 25px;
   cursor: pointer;
   gap: 13px;
   z-index: 1000; /* 가장 앞으로 오도록 설정 */

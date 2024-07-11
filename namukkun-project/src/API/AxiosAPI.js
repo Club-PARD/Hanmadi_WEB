@@ -275,6 +275,7 @@ export const decreaseUpCount = async (postId) => {
 };
 
 
+
 //comment 채택
 // comment 채택
 export const toggleTakeComment = async (postid, commentid, take) => {
@@ -568,3 +569,20 @@ export const updatePostPatch = async(postId, userId, data) => {
 }
 
 
+export const getPostUpdate = async (userId, id) => {
+  try {
+    const response = await axios.get(`${server}/post/read/update`, {
+      params: {
+        userId: userId,
+        id: id,
+      },
+      headers: {
+        Accept: '*/*',
+      }
+    });
+    return response.data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};

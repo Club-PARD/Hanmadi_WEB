@@ -90,5 +90,5 @@ const Container = styled.div`
   background-color: transparent;
   justify-content: center;
   align-items: center;
-  margin-top: 450px;
+  margin-top: 300px;
 `;

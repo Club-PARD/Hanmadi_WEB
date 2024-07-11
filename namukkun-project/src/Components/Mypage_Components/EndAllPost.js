@@ -6,6 +6,7 @@ import uploadarrow from '../../Assets/Img/uploadarrow.svg';
 import arrowleft from '../../Assets/Img/Arrowleft.svg';
 import arrowright from '../../Assets/Img/Arrowright.svg';
 import BackToMyPage from '../../Assets/Img/BackToMyPage.svg';
+import nopost from '../../Assets/Img/nopost.svg'; // nopost 이미지 import
 import { useNavigate } from 'react-router-dom';
 import DeleteModal from './DeleteModal';
 import { deleteCheck } from '../../Recoil/Atom';
@@ -28,6 +29,9 @@ function EndAllPost({ posts }) {
   const itemsPerPage = 8; // 한 페이지당 보여지는 컨텐츠 갯수
   // 총 페이지 갯수
   const totalPages = Math.ceil(posts.length / itemsPerPage);
+
+  // 현재 페이지에 해당하는 포스트들
+  const currentPosts = posts.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
   // 페이지 변경 핸들러
   const handleChangePage = (newPage) => {
@@ -81,58 +85,65 @@ function EndAllPost({ posts }) {
               <GoBackMyPage onClick={navigateBack}> <img src={BackToMyPage}  alt="back" /> </GoBackMyPage>
             </TotalTitleContainer>
             <TotalContentContainer>
-              <AllContentContainer>
-                {posts.length >0 && posts.map(post => (
-                  <ContentContainer key={post.postId}>
-                    <TitleInfoContainer>
-                      <TitleFunctionContainer>
-                        <EndButton onClick={()=>handleWModalOpen(post.postId)}>종료</EndButton>
-                        <ContentTitle onClick={()=>navigateToPost(post.postId)}>{truncateText(post.title, 11)}</ContentTitle>
-                        <AdviseButton onClick={()=>navigateModify(post.postId)}>수정</AdviseButton>
-                        <DeleteButton onClick={()=>handleWModalOpen(post.postId)}>삭제</DeleteButton>
-                      </TitleFunctionContainer>
-                      <InfoContainer>
-                        <InfoTextContainer>
-                          <InfoText>용길이 수</InfoText>
-                          <InfoText>{post.upCountPost}</InfoText>
-                        </InfoTextContainer>
-                        <InfoTextContainer>
-                          <InfoText>한마디 수</InfoText>
-                          <InfoText>{post.postitCount}</InfoText>
-                        </InfoTextContainer>
-                        <InfoTextContainer>
-                          <InfoText>종료 일자</InfoText>
-                          <InfoText>{addDaysToDate(post.postTime)}</InfoText>
-                        </InfoTextContainer>
-                        <InfoTextContainer>
-                          <InfoText>작성일자</InfoText>
-                          <InfoText>{post.postTime}</InfoText>
-                        </InfoTextContainer>
-                      </InfoContainer>
-                    </TitleInfoContainer>
-                    <UploadButton onClick={()=>{window.open(url)}}>
-                      국민신문고
-                      <img src={uploadarrow} style={{ width: '14.4px', height: '4.9px' }} ></img>
-                    </UploadButton>
-                  </ContentContainer>
-                ))}
-              </AllContentContainer>
+              {currentPosts.length > 0 ? ( // 현재 페이지의 포스트가 있는 경우
+                <AllContentContainer>
+                  {currentPosts.map(post => (
+                    <ContentContainer key={post.postId}>
+                      <TitleInfoContainer>
+                        <TitleFunctionContainer>
+                          <EndButton onClick={()=>handleWModalOpen(post.postId)}>종료</EndButton>
+                          <ContentTitle onClick={()=>navigateToPost(post.postId)}>{truncateText(post.title, 11)}</ContentTitle>
+                          <AdviseButton onClick={()=>navigateModify(post.postId)}>수정</AdviseButton>
+                          <DeleteButton onClick={()=>handleWModalOpen(post.postId)}>삭제</DeleteButton>
+                        </TitleFunctionContainer>
+                        <InfoContainer>
+                          <InfoTextContainer>
+                            <InfoText>용길이 수</InfoText>
+                            <InfoText>{post.upCountPost}</InfoText>
+                          </InfoTextContainer>
+                          <InfoTextContainer>
+                            <InfoText>한마디 수</InfoText>
+                            <InfoText>{post.postitCount}</InfoText>
+                          </InfoTextContainer>
+                          <InfoTextContainer>
+                            <InfoText>종료 일자</InfoText>
+                            <InfoText>{addDaysToDate(post.postTime)}</InfoText>
+                          </InfoTextContainer>
+                          <InfoTextContainer>
+                            <InfoText>작성일자</InfoText>
+                            <InfoText>{post.postTime}</InfoText>
+                          </InfoTextContainer>
+                        </InfoContainer>
+                      </TitleInfoContainer>
+                      <UploadButton onClick={()=>{window.open(url)}}>
+                        국민신문고
+                        <img src={uploadarrow} style={{ width: '14.4px', height: '4.9px' }} ></img>
+                      </UploadButton>
+                    </ContentContainer>
+                  ))}
+                </AllContentContainer>
+              ) : ( // 현재 페이지의 포스트가 없는 경우
+                <NoPostImageContainer>
+                  <img src={nopost} alt="No post available" />
+                </NoPostImageContainer>
+              )}
             </TotalContentContainer>
 
-
-            <Pagenation>
-            <PagenationButton onClick={() => handleChangePage(page - 1)} disabled={page === 1}>
-              <img src={arrowleft} alt="Previous page" />
-            </PagenationButton>
-            {[...Array(totalPages)].map((_, i) => (
-              <PagenationButton key={i} onClick={() => handleChangePage(i + 1)} isSelected={page === i + 1}>
-                {i + 1}
-              </PagenationButton>
-            ))}
-            <PagenationButton onClick={() => handleChangePage(page + 1)} disabled={page === totalPages}>
-              <img src={arrowright} alt="Next page" />
-            </PagenationButton>
-          </Pagenation>
+            {currentPosts.length > 0 && ( // 현재 페이지의 포스트가 있는 경우에만 페이지네이션 표시
+              <Pagenation>
+                <PagenationButton onClick={() => handleChangePage(page - 1)} disabled={page === 1}>
+                  <img src={arrowleft} alt="Previous page" />
+                </PagenationButton>
+                {[...Array(totalPages)].map((_, i) => (
+                  <PagenationButton key={i} onClick={() => handleChangePage(i + 1)} isSelected={page === i + 1}>
+                    {i + 1}
+                  </PagenationButton>
+                ))}
+                <PagenationButton onClick={() => handleChangePage(page + 1)} disabled={page === totalPages}>
+                  <img src={arrowright} alt="Next page" />
+                </PagenationButton>
+              </Pagenation>
+            )}
           </TotalIngContainer>
         </IngContainer>
       </Container>
@@ -163,12 +174,12 @@ const IngContainer = styled.div`
 
 const TotalIngContainer = styled.div`
   width: 708px;
+  padding-top: 40px;
   display: flex;
   flex-direction: column;
 `;
 
 const TotalTitleContainer = styled.div`
-  padding-top: 108.83px;
   padding-bottom: 35px;
   display: flex;
   width: 100%;
@@ -205,6 +216,14 @@ const AllContentContainer = styled.div`
   width: 680px;
   flex-direction: column;
   white-space: nowrap; /* 줄 바꿈 방지 */
+`;
+
+const NoPostImageContainer = styled.div` // 빈 포스트 이미지 컨테이너 추가
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-top: 100px;
 `;
 
 const ContentContainer = styled.div`

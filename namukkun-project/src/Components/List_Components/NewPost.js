@@ -301,7 +301,7 @@ const ImageContent = ({ postImage, title, author, due, initialLikes, truncateTex
                 <DetailText $color="#5A5A5A">{due}</DetailText>
             </DetailContainer>
             <DetailContainer>
-                <DetailText>공감수</DetailText>
+                <DetailText>추천수</DetailText>
                 <DetailText $color="#5A5A5A">{initialLikes}</DetailText>
             </DetailContainer>
             <BraveButton onClick={handleLike} isLiked={isLiked}>
