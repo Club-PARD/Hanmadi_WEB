@@ -51,6 +51,7 @@ function Header() {
       console.log("로긴",postLike);
       } else {
         setLoginCheck(false);
+        // handleLogoutClick();
       }
     } catch (error) {
       console.error("로그인 체크 중 오류 발생:", error);
@@ -59,7 +60,7 @@ function Header() {
 
   useEffect(()=>{
     checkloginFunc();
-  },[]);
+  },[path]);
 
   const handleLogout = async () =>{
     try{

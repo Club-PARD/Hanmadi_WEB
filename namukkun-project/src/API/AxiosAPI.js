@@ -179,10 +179,12 @@ export const deleteComment = async (commentid) => {
 };
 
 // comment 생성
-export const createComment = async (postid, content) => {
+export const createComment = async (postid, userId ,content) => {
   try {
       console.log('Creating comment with:', { postid, content }); // 요청 데이터 로그
-      const response = await axios.post(`${server}/post/comment`, {  content: content }, {
+      const response = await axios.post(`${server}/post/comment`, {  
+        userId: userId,
+        content: content }, {
           params: {
               postid,
           }
@@ -261,10 +263,11 @@ export const decreaseUpCount = async (postId) => {
 
 //comment 채택
 // comment 채택
-export const toggleTakeComment = async (commentid, take) => {
+export const toggleTakeComment = async (postid, commentid, take) => {
   try {
       const response = await axios.patch(`${server}/post/comment/take`, null, {
           params: {
+              postid,
               commentid,
               take
           }
@@ -312,7 +315,7 @@ export const createPostit = async (dto) => {
 };
 
 // 포스티잇 삭제 함수 추가
-export const deletePostit = async ( postitId) => {
+export const deletePostit = async (postitId) => {
   try {
       console.log(` postitId: ${postitId}`);
       const response = await axios.delete(`${server}/post/postit/delete`, {

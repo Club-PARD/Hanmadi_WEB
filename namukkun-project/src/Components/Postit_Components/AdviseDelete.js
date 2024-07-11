@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { GlobalStyle } from '../../Assets/Style/theme';
 import DeleteModal from "./DeleteModal";
 import { useParams, useNavigate } from 'react-router-dom';
+import { getUserAllInfoAPI } from "../../API/AxiosAPI";
 
 function AdviseDelete() {
     const { postId } = useParams(); // URL에서 postId를 가져옴
@@ -37,6 +38,7 @@ function AdviseDelete() {
                 update={update} 
             />
         </Div>
+       
     );
 }
 
