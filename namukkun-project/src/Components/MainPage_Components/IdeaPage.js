@@ -13,50 +13,93 @@ function IdeaPage() {
 
     const [allPopularPosts, setAllPopularPosts] =useState([]);
 
-    // 버튼 클릭 상태
-    const [sendBraveClicked, setSendBraveClicked] = useRecoilState(postLikeBtn);
+    //누른 버튼 상태
+    const [postLike, setPostLike] = useRecoilState(postLikeBtn);
 
     // 기본적으로 보여줄 유저 데이터
     const [userData, setUserData] = useRecoilState(userinfo);
 
-    // 유저 데이터 불러오는 함수 
-    const getUserInfo = async () => {
-        try {
-            const response = await userInfoGetAPI();
-            setUserData({
-                nickName: response.data.nickName,
-                local: response.data.local,
-                profileImage: response.data.profileImage,
-                postUpList: response.data.postUpList,
-                commentUpList: response.data.commentUpList
-            });
-            
-            const initialSendBraveClicked = {...sendBraveClicked};
-            response.data && response.data.postUpList.forEach(postId => {
-                if (!initialSendBraveClicked.hasOwnProperty(postId)) {
-                    initialSendBraveClicked[postId] = true;
-                }
-            });
-            setSendBraveClicked(initialSendBraveClicked);
+    const [loginCheck, setLoginCheck] =useState(false);
 
-        } catch (error) {
-            console.error('Error fetching user info:', error);
+    const [allData, setAlldata] =useState([]);
+
+    const checkloginFunc = async () => {
+      try {
+        const response = await loginCheckAPI();
+        if (response.status === 200) {
+          setLoginCheck(true);
+        } else {
+          setLoginCheck(false);
         }
+      } catch (error) {
+        console.error("로그인 체크 중 오류 발생:", error);
+      }
     };
+  
+    useEffect(()=>{
+      checkloginFunc();
+    },[]);
 
     // 초기 sendBraveClicked 상태 설정
     useEffect(() => {
-        getUserInfo();
-        }, []);
+        getUserInfo().then(userInfo => {
+            console.log("유저 데이터", userInfo);
+    
+            const initialSendBraveClicked = {};
+            userInfo.postUpList&& userInfo.postUpList.forEach(postId => {
+            initialSendBraveClicked[postId] = true;
+            });
+            setSendBraveClicked(initialSendBraveClicked);
+            setPostLike(initialSendBraveClicked);
+        }).catch(error => {
+            console.error("Error fetching user info:", error);
+        });
+    }, []);
+
+    // 버튼 클릭 상태 관리
+    const [sendBraveClicked, setSendBraveClicked] = useState(postLike)
+    ;
+
+    // 유저 데이터 불러오는 함수 
+    const getUserInfo = async () => {
+        try {
+        const response = await userInfoGetAPI();
+        // 아톰에 유저 정보 저장
+        setUserData({
+            ...userData,
+            nickName: response.data.nickName,
+            local: response.data.local,
+            profileImage: response.data.profileImage,
+            postUpList: response.data.postUpList,
+            commentUpList: response.data.commentUpList
+        });
+        return response.data;
+        } catch (error) {
+        console.error("Error fetching user info:", error);
+        throw error;
+        }
+    };
+    
+    useEffect(() => {
+        getUserInfo().then(response => {
+        console.log("유저 데이터", response);
+        setPostLike(sendBraveClicked);
+        }).catch(error => {
+        console.error("Error fetching user info:", error);
+        });
+    }, [sendBraveClicked, postLike]);
 
     //모든 인기게시물 불러오기
     const allPopularFunc = async () => {
         try {
             const response = await allPostsRecommendGetAPI();
-            if (Array.isArray(response.data)) {
-                setAllPopularPosts(response.data);
-            } else {
-                console.error('API 응답이 배열 형식이 아닙니다:', response.data);
+            if (response.data.length>99){
+                setAlldata(response.data[0]);
+                console.log('불러와져라 99', response.data[0])
+            }
+            else{
+                setAlldata(response.data); 
+                console.log('불러와져라 ', response.data)   
             }
             console.log(response);
         } catch (error) {
@@ -67,6 +110,74 @@ function IdeaPage() {
     useEffect(()=>{
         allPopularFunc();
     },[sendBraveClicked]);
+
+    // 포스트 채택
+    const checkPostIncrease = async (postId) => {
+        const response = await checkPostPostAPI(postId);
+        return response.data; 
+    }
+
+    // 포스트 채택 삭제
+    const checkPostDecrease = async (postId) => {
+        const response = await checkPostDeleteAPI(postId);
+        return response.data;
+    }
+
+  // 버튼 클릭 이벤트 핸들러
+  const handleSendBraveClick = async (postId) => {
+
+    if(loginCheck){
+      const newSendBraveClicked = {
+        ...sendBraveClicked,
+        [postId]: !sendBraveClicked[postId]
+      };
+      setSendBraveClicked(newSendBraveClicked);
+  
+      try {
+        let response;
+        if (newSendBraveClicked[postId]) {
+          response = await checkPostIncrease(postId); // 좋아요 증가 API 호출
+        } else {
+          response = await checkPostDecrease(postId); // 좋아요 감소 API 호출
+        }
+      
+      if(response.postId ===postId){
+        // 유저 데이터 업데이트
+        setUserData({
+          ...userData,
+          postUpList: response.postId
+        });
+
+      }
+
+      // postId에 해당하는 포스트의 upCount 추출
+      const upcount = response.find(post => post.postId === postId)?.postUpCount;
+
+      // 포스트 데이터 업데이트
+      const updatedPostData = allData.map(post => {
+        if (post.postId === postId) {
+          return {
+            ...post,
+            upCountPost: upcount || 0
+          };
+        }
+        return post;
+      });
+  
+      setAlldata(updatedPostData);
+      console.log("hi", sendBraveClicked);
+  
+      } catch (error) {
+        console.error("Error updating post:", error);
+        // setShowModal(true);
+      }
+    }
+      else{
+        setShowModal(true);
+      }
+    
+  };
+
     
     //글자수 컷
     const truncateText = (text, maxLength) => {
@@ -92,44 +203,32 @@ function IdeaPage() {
         
         return hanmadiv;
     };
-
-    // 포스트 채택
-    const checkPostIncrease = async (postId) => {
-        const response = await checkPostPostAPI(postId);
-        return response.data; 
-    }
-
-    // 포스트 채택 삭제
-    const checkPostDecrease = async (postId) => {
-        const response = await checkPostDeleteAPI(postId);
-        return response.data;
-    }
     
 
-    // 좋아요 버튼 클릭 처리
-    const handleLike = async(postId) => {
-        if (sendBraveClicked[postId]) { // 이미 좋아요를 클릭한 상태인 경우
-            const newLikeStatus = { ...sendBraveClicked };
-            await checkPostDecrease(postId);
-            delete newLikeStatus[postId]; // postId에 대한 클릭 상태 삭제
-            setSendBraveClicked(newLikeStatus); // 클릭 상태 업데이트
+    // // 좋아요 버튼 클릭 처리
+    // const handleLike = async(postId) => {
+    //     if (sendBraveClicked[postId]) { // 이미 좋아요를 클릭한 상태인 경우
+    //         const newLikeStatus = { ...sendBraveClicked };
+    //         await checkPostDecrease(postId);
+    //         delete newLikeStatus[postId]; // postId에 대한 클릭 상태 삭제
+    //         setSendBraveClicked(newLikeStatus); // 클릭 상태 업데이트
 
-            // 아톰에 저장된 사용자 데이터 업데이트
-            setUserData(prevUserData => ({
-                ...prevUserData,
-                postUpList: prevUserData.postUpList.filter(id => id !== postId), // postId 제거
-            }));
-        } else { // 좋아요를 클릭하지 않은 상태인 경우
-            await checkPostIncrease(postId);
-            setSendBraveClicked({ ...sendBraveClicked, [postId]: true }); // postId에 대한 클릭 상태 true로 설정
+    //         // 아톰에 저장된 사용자 데이터 업데이트
+    //         setUserData(prevUserData => ({
+    //             ...prevUserData,
+    //             postUpList: prevUserData.postUpList.filter(id => id !== postId), // postId 제거
+    //         }));
+    //     } else { // 좋아요를 클릭하지 않은 상태인 경우
+    //         await checkPostIncrease(postId);
+    //         setSendBraveClicked({ ...sendBraveClicked, [postId]: true }); // postId에 대한 클릭 상태 true로 설정
 
-            // 아톰에 저장된 사용자 데이터 업데이트
-            setUserData(prevUserData => ({
-                ...prevUserData,
-                postUpList: [...prevUserData.postUpList, postId], // postId 추가
-            }));
-        }
-    };
+    //         // 아톰에 저장된 사용자 데이터 업데이트
+    //         setUserData(prevUserData => ({
+    //             ...prevUserData,
+    //             postUpList: [...prevUserData.postUpList, postId], // postId 추가
+    //         }));
+    //     }
+    // };
     
     return (
         <Container>
@@ -155,7 +254,7 @@ function IdeaPage() {
                     initialLikes={content.upCountPost}
                     setShowModal={setShowModal}
                     isLiked={sendBraveClicked[content.postId]}
-                    handleLike={() => handleLike(content.postId)}
+                    handleLike={() => handleSendBraveClick(content.postId)}
                     />
                 ))}
                 </TwoContentContainer>
@@ -166,36 +265,8 @@ function IdeaPage() {
 }
 
 const ImageContent = ({ postId, image, title, author, due, initialLikes, setShowModal, isLiked, handleLike }) => {
-
-    const [loginCheck, setLoginCheck] =useState(false);
-
-    const checkloginFunc = async () => {
-      try {
-        const response = await loginCheckAPI();
-        if (response.status === 200) {
-          setLoginCheck(true);
-        } else {
-          setLoginCheck(false);
-        }
-      } catch (error) {
-        console.error("로그인 체크 중 오류 발생:", error);
-      }
-    };
-  
-    useEffect(()=>{
-      checkloginFunc();
-    },[]);
   
     const navigate = useNavigate();
-
-    const handleClickLike = () => {
-        if(loginCheck){
-            handleLike(postId);
-        }
-        else{
-            setShowModal(true);
-        }
-    };
 
     //상세페이지로 이동
     const navigateToPost = (postId) => {
@@ -222,7 +293,7 @@ const ImageContent = ({ postId, image, title, author, due, initialLikes, setShow
                     <DetailText $color="#5A5A5A">{initialLikes}</DetailText>
                 </DetailContainer>
             </Details>
-            <BraveButton onClick={handleClickLike} isLiked={isLiked}>
+            <BraveButton onClick={handleLike} isLiked={isLiked}>
                 {isLiked ? '추천하기' : '추천하기'}
             </BraveButton>
         </ImageContentContainer>

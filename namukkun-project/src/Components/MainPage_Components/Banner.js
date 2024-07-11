@@ -1,9 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from 'styled-components';
 import Slick from '../../Components/Slick_Components/Slick';
 import WhiteArrow from '../../Assets/Img/WhiteArrow.svg';
+import { useNavigate } from "react-router-dom";
+import { loginCheckAPI } from "../../API/AxiosAPI";
 
 function Banner() {
+
+  const [loginCheck, setLoginCheck] =useState(false);
+  const navigate =useNavigate();
+
+  const checkloginFunc = async () => {
+    try {
+      const response = await loginCheckAPI();
+      if (response.status === 200) {
+        setLoginCheck(true);  
+      } else {
+        setLoginCheck(false);
+        navigate('/main')
+      }
+    } catch (error) {
+      console.error("로그인 체크 중 오류 발생:", error);
+    }
+  };
+
+  useEffect(()=>{
+    checkloginFunc();
+  },[loginCheck]);
+  const navigateFunc = () =>{
+    navigate('/writing');
+  }
+
   return (
     <Container>
       <SlickWrapper>
@@ -14,7 +41,7 @@ function Banner() {
           <Ment>
             더 나은 우리지역을 위한 <br /><BoldText>용기낸 한마디</BoldText>
           </Ment>
-          <BannerBtn>
+          <BannerBtn onClick={navigateFunc}>
             의견 제안하기 <img src={WhiteArrow} alt="WhiteArrow" />
           </BannerBtn>
         </BannerDiv>
