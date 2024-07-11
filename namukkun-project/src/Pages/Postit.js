@@ -78,9 +78,6 @@ function Postit() {
             console.log(ids);
             setPostIds(ids);
 
-            const conids = response.comments.map(commen => commen.id);
-            setMycomments(conids);
-
             //내 아이디 불러옴
             setUserId(response.userId);
         } catch (err) {
@@ -88,9 +85,14 @@ function Postit() {
         }
     };
 
+    const CommentsCheckfunc = async() =>{
+        const response = await getUserAllInfoAPI();
+        const conids = response.comments.map(commen => commen.id);
+        setMycomments(conids);
+    }
+
     useEffect(() => {
         getPostandCommentsIds();
-        console.log("내 댓글 리스트", mycomments);
     }, []);
 
     useEffect(() => {
@@ -101,6 +103,11 @@ function Postit() {
             console.log("my", exists);
         }
     }, [postIds, postId]);
+
+    useEffect(()=>{
+        CommentsCheckfunc();
+        console.log("내 댓글 리스트", mycomments);
+    },[comments]);
 
     useEffect(() => {
         const loadCommentsAndPostits = async () => {

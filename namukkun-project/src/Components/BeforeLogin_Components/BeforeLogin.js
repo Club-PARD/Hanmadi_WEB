@@ -12,7 +12,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import LoginModal from '../Login_Components/LoginModal';
 import { loginCheckAPI } from '../../API/AxiosAPI';
 import { useRecoilState } from 'recoil';
-import { regionNav } from '../../Recoil/Atom';
+import { postLikeBtn, regionNav } from '../../Recoil/Atom';
 // import  {loginCheckAPI} from "../../API/AxiosAPI";
 
 function BeforeLogin() {

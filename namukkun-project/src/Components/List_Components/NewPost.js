@@ -106,10 +106,10 @@ function PopularPost() {
             try {
                 let response;
                 if (newSendBraveClicked[postId]) {
-                    const response = await checkPostDecrease(postId); // 좋아요 감소 API 호출
+                    response = await checkPostDecrease(postId); // 좋아요 감소 API 호출
                     delete newSendBraveClicked[postId]; // postId에 대한 클릭 상태 삭제
                 } else {
-                    const response = await checkPostIncrease(postId); // 좋아요 증가 API 호출
+                    response = await checkPostIncrease(postId); // 좋아요 증가 API 호출
                     newSendBraveClicked[postId] = true; // postId에 대한 클릭 상태 true로 설정
                 }
 

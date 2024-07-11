@@ -30,7 +30,15 @@ function IdeaPage() {
                 postUpList: response.data.postUpList,
                 commentUpList: response.data.commentUpList
             });
-            return response.data; // Return user data for useEffect
+            
+            const initialSendBraveClicked = {...sendBraveClicked};
+            response.data && response.data.postUpList.forEach(postId => {
+                if (!initialSendBraveClicked.hasOwnProperty(postId)) {
+                    initialSendBraveClicked[postId] = true;
+                }
+            });
+            setSendBraveClicked(initialSendBraveClicked);
+
         } catch (error) {
             console.error('Error fetching user info:', error);
         }
@@ -38,19 +46,7 @@ function IdeaPage() {
 
     // 초기 sendBraveClicked 상태 설정
     useEffect(() => {
-        getUserInfo().then(userData => {
-            console.log("유저 데이터", userData);
-    
-            const initialSendBraveClicked = {};
-            if(userData){
-
-            userData.postUpList.forEach(postId => {
-            initialSendBraveClicked[postId] = true;
-            });
-            setSendBraveClicked(initialSendBraveClicked);
-            }
-        
-        });
+        getUserInfo();
         }, []);
 
     //모든 인기게시물 불러오기

@@ -494,6 +494,18 @@ export async function getPost(id) {
   }
 }
 
+// 상세 내용 가져오기
+export async function getupdatePost(id) {
+  try {
+      const response = await axios.get(`${server}/post/read?id=${id}`);
+      console.log('get post:', response.data);
+      return response.data;
+  } catch (err) {
+      console.error(err);
+      throw err;
+  }
+}
+
 // post 좋아요
 export async function increaseUpCount(postId) {
   try {

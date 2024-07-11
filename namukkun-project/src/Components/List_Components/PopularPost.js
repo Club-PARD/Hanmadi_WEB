@@ -20,7 +20,6 @@ function PopularPost() {
 
     const [sendBraveClicked, setSendBraveClicked] = useRecoilState(postLikeBtn);
     // sendbravebutton 클릭 상태
-    // const [sendBraveClicked, setSendBraveClicked] = useState({}); // 객체로 변경
 
     const [PopData, setPopData] = useRecoilState(getPopularRegion);
 
@@ -56,25 +55,12 @@ function PopularPost() {
         console.error("로그인 체크 중 오류 발생:", error);
       }
     };
+    
   
     useEffect(()=>{
       checkloginFunc();
     },[]);
-  
 
-    // 초기 sendBraveClicked 상태 설정
-    useEffect(() => {
-        getUserInfo().then(userInfo => {
-            console.log("유저 데이터", userInfo);
-    
-            const initialSendBraveClicked = {};
-            userInfo &&userInfo.postUpList.forEach(postId => {
-            initialSendBraveClicked[postId] = true;
-            });
-            setSendBraveClicked(initialSendBraveClicked);
-        });
-        }, [localPageId]);
-  
     // 유저 데이터 불러오는 함수 
     const getUserInfo = async () => {
         try {
@@ -93,6 +79,35 @@ function PopularPost() {
             return null;
         }
     };
+
+    useEffect(() => {
+        initializeSendBraveClicked();
+    }, [location.pathname]);
+  
+
+    // 초기 sendBraveClicked 상태 설정
+    const initializeSendBraveClicked = async () => {
+        try {
+            const userInfo = await getUserInfo();
+            
+            // 기존 sendBraveClicked 상태 복사
+            const initialSendBraveClicked = { ...sendBraveClicked };
+            console.log("초기값",initialSendBraveClicked);
+
+            // userInfo의 postUpList를 기반으로 sendBraveClicked 업데이트
+            userInfo && userInfo.postUpList.forEach(postId => {
+                if (!initialSendBraveClicked.hasOwnProperty(postId)) {
+                    initialSendBraveClicked[postId] = true;
+                }
+            });
+
+            // sendBraveClicked 상태 업데이트
+            setSendBraveClicked(initialSendBraveClicked);
+        } catch (error) {
+            console.error('Failed to initialize send brave state:', error);
+        }
+    };
+
 
     //선택한 자역에 따라 인기글을 보여줄 수 있도록 하는 함수
     const getPopularPostFunc = async(localPageId) =>{
@@ -164,6 +179,7 @@ function PopularPost() {
         if(loginCheck){
             const postId = item.postId;
             const newSendBraveClicked = { ...sendBraveClicked };
+            console.log("popular", newSendBraveClicked);
             try {
                 if (newSendBraveClicked[postId]) {
                     await checkPostDecrease(postId); // 좋아요 감소 API 호출
@@ -175,16 +191,16 @@ function PopularPost() {
 
                 setSendBraveClicked(newSendBraveClicked); // 상태 업데이트
 
-                setUserData(prevUserData => {
-                    const updatedPostUpList = newSendBraveClicked[postId]
-                        ? [...prevUserData.postUpList, postId] // postId 추가
-                        : prevUserData.postUpList.filter(id => id !== postId); // postId 제거
+                // setUserData(prevUserData => {
+                //     const updatedPostUpList = newSendBraveClicked[postId]
+                //         ? [...prevUserData.postUpList, postId] // postId 추가
+                //         : prevUserData.postUpList.filter(id => id !== postId); // postId 제거
     
-                    return {
-                        ...prevUserData,
-                        postUpList: updatedPostUpList,
-                    };
-                });
+                //     return {
+                //         ...prevUserData,
+                //         postUpList: updatedPostUpList,
+                //     };
+                // });
             } catch (error) {
                 console.error('API 호출 실패:', error);
                 setShowModal(true);
