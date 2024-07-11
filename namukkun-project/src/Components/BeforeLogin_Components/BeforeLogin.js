@@ -11,6 +11,7 @@ import WhiteArrow from '../../Assets/Img/WhiteArrow.svg';
 import { useNavigate } from 'react-router-dom';
 import LoginModal from '../Login_Components/LoginModal';
 import { loginCheckAPI } from '../../API/AxiosAPI';
+import { GlobalStyle } from '../../Assets/Style/theme';
 
 function BeforeLogin() {
   const [showModal, setShowModal] = useState(false);
@@ -49,6 +50,7 @@ function BeforeLogin() {
 
   return (
     <SideContainer>
+      <GlobalStyle/>
       <SideBar>
         <SideBarContainer>
           <Logo><img src={BeforeLoginLogo} alt="SemiLogo" draggable="false" /></Logo>
@@ -207,7 +209,7 @@ const LoginButton = styled.button`
 
   color: #FFF;
   text-align: center;
-  font-family: "Min Sans-Regular";
+  font-family: 'MinSans-Regular';
   font-size: 22px;
   font-style: normal;
   font-weight: 600;
@@ -233,7 +235,7 @@ const RegionList = styled.div`
 
 const Title = styled.div`
   color: #000;
-  font-family: "Min Sans-Regualr";
+  font-family: 'MinSans-Regular';
   font-size: 18px;
   font-style: normal;
   font-weight: 600;
@@ -250,7 +252,7 @@ const RegionItem = styled.button`
   gap: 10px;
 
   color: #707070;
-  font-family: "Min Sans-Regular";
+  font-family: 'MinSans-Regular';
   font-size: 18px;
   font-style: normal;
   font-weight: 500;
@@ -306,7 +308,7 @@ const Ment = styled.div`
 
 const MainTitle = styled.div`
   color: #393939;
-  font-family: "Min Sans-Regular";
+  font-family: 'MinSans-Regular';
   font-size: 52px;
   font-style: normal;
   font-weight: 500;
@@ -321,7 +323,7 @@ const BoldText = styled.span`
 
 const SubTitle = styled.div`
   color: #191919;
-  font-family: "Min Sans-Regular";
+  font-family: 'MinSans-Regular';
   font-size: 22px;
   font-style: normal;
   font-weight: 500;
@@ -339,7 +341,7 @@ const SuggestionButton = styled.button`
   border: none;
 
   color: #FDFDFD;
-  font-family: "Min Sans-Regular";
+  font-family: 'MinSans-Regular';
   font-size: 28.089px;
   font-style: normal;
   font-weight: 500;
@@ -362,7 +364,7 @@ const SecondHeader = styled.div`
 
 const RegionBoard = styled.div`
   color: #393939;
-  font-family: "Min Sans-Regular";
+  font-family: 'MinSans-Regular';
   font-size: 52px;
   font-style: normal;
   font-weight: 700;
@@ -371,7 +373,7 @@ const RegionBoard = styled.div`
 
 const SubMent = styled.div`
   color: #191919;
-  font-family: "Min Sans-Regular";
+  font-family: 'MinSans-Regular';
   font-size: 22px;
   font-style: normal;
   font-weight: 500;
@@ -405,7 +407,7 @@ const How = styled.div``;
 
 const UpTitle = styled.div`
   color: #191919;
-  font-family: "Min Sans-Regular";
+  font-family: 'MinSans-Regular';
   font-size: 26px;
   font-style: normal;
   font-weight: 600;
@@ -414,7 +416,7 @@ const UpTitle = styled.div`
 
 const DownTitle = styled.div`
   color: #393939;
-  font-family: "Min Sans-Regular";
+  font-family: 'MinSans-Regular';
   font-size: 16px;
   font-weight: 500;
   line-height: 150%;
