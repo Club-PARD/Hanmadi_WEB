@@ -92,8 +92,4 @@ const BannerBtn = styled.button`
   justify-content: center;
   gap: 10px;
   cursor: pointer;
-
-  &: hover {
-    background: #0045C3;
-  }
 `;
