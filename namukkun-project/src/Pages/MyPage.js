@@ -156,7 +156,7 @@ const FixedButton = styled.div.attrs(props => ({
 `;
 
 const ImgContainer = styled.div`
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 `
 
 const InfoContainer = styled.div`
@@ -195,7 +195,7 @@ const ProfileAdviseButton = styled.button`
     background: var(--gray-001, #E0E0E0);
     color: var(--gray-008, #191919);
     font-family: 'MinSans-Regular';
-    font-size: 14px;
+    font-size: 18px;
     font-style: normal;
     font-weight: 400;
     cursor: pointer;

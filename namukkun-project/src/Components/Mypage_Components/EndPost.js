@@ -333,7 +333,7 @@ const SeeAllRecContainer = styled.div`
 const SeeAllRecord = styled.div`
     color: var(--gray-007, #393939);
     font-family: 'MinSans-Regular';
-    font-size: 16px;
+    font-size: 18px;
     font-style: normal;
     font-weight: 500;
     line-height: 20px; /* 142.857% */
