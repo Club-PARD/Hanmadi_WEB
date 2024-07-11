@@ -126,11 +126,11 @@ function BeforeLogin() {
         <ThirdHeader>
           <MainTitle>
             의견제안은 
-            <BoldText>쉽고, 빠르게</BoldText>
+            <BoldText> 쉽고, 빠르게</BoldText>
           </MainTitle>
           <SubTitle>
             제안배경, 해결방법, 기대효과
-            <BoldText>3가지만 작성하면 끝!</BoldText> 
+            <BoldText> 3가지만 작성하면 끝!</BoldText> 
             <br />"이걸 제안해도 될까?" 싶은 의견들도 얼마든지 작성해주세요.
           </SubTitle>
           <ThirdImage> <img src={TextImage} alt="Third" /></ThirdImage>
@@ -139,7 +139,7 @@ function BeforeLogin() {
           <FirstDiv>
             <LeftDiv>
               <MainTitle>
-                <BoldText>재미있게</BoldText> 
+                <BoldText>재미있게 </BoldText> 
                 소통하자!
               </MainTitle>
               <SubTitle>
