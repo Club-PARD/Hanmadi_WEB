@@ -6,6 +6,7 @@ import { GlobalStyle } from "../../Assets/Style/theme";
 import { useNavigate } from "react-router-dom";
 import { loginCheckAPI } from "../../API/AxiosAPI";
 import LoginModal from "../Login_Components/LoginModal";
+import DownArrow from '../../Assets/Img/DownArrow.svg';
 
 function Banner() {
 
@@ -40,6 +41,10 @@ function Banner() {
     }
   }
 
+  const scrollToNextPage = () => {
+    window.scrollBy({ top: window.innerHeight, left: 0, behavior: 'smooth' });
+  };
+
   return (
     <Container>
       <GlobalStyle/>
@@ -48,12 +53,24 @@ function Banner() {
           <Slick />
         </SlickContainer>
         <BannerDiv>
-          <Ment>
-            더 나은 우리지역을 위한 <br /><BoldText>용기낸 한마디</BoldText>
-          </Ment>
-          <BannerBtn onClick={navigateFunc}>
-            의견 제안하기 <img src={WhiteArrow} alt="WhiteArrow" />
-          </BannerBtn>
+          <Blank1Container>
+            <MentBtnContainer>
+              <Ment>
+                더 나은 우리지역을 위한 <br /><BoldText>용기낸 한마디</BoldText>
+              </Ment>
+              <BannerBtn onClick={navigateFunc}>
+                의견 제안하기 <img src={WhiteArrow} alt="WhiteArrow" />
+              </BannerBtn>
+            </MentBtnContainer>
+          </Blank1Container>
+          <DownArrowContainer>
+            <ImgContainer onClick={scrollToNextPage}>
+              <img src={DownArrow} alt='downarrow'></img>
+            </ImgContainer>
+          </DownArrowContainer>
+          <BlankContainer>
+            &nbsp;
+          </BlankContainer>
         </BannerDiv>
       </SlickWrapper>
       <LoginModal show={showModal} onClose={() => setShowModal(false)} />
@@ -92,18 +109,46 @@ const SlickContainer = styled.div`
 
 const BannerDiv = styled.div`
   display: flex;
-  width: 434px;
-  flex-direction: column;
+  width: 100%;
+  flex-direction: row;
   align-items: flex-start;
-  gap: 20px;
   position: absolute;
-  top: 40%;
-  left: 25%;
-  transform: translateX(-50%);
   z-index: 1; /* Ensure this is above the Slick images */
-  padding: 20px;
-  border-radius: 10px;
+  justify-content: center;
+  height: 760px;
 `;
+
+const MentBtnContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 760px;
+  justify-content: center;
+`
+
+const DownArrowContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  margin-bottom: 26px;
+  height: 740px;
+  width: 10%;
+`
+
+const ImgContainer = styled.div`
+  width: 69px;
+  height: 35px;
+  cursor: pointer;
+`
+
+const BlankContainer = styled.div`
+  width: 45%;
+`
+
+const Blank1Container = styled.div`
+  width: 45%;
+  display: flex;
+  justify-content: center;
+`
 
 const Ment = styled.div`
   color: #FFF;
@@ -113,6 +158,7 @@ const Ment = styled.div`
   font-weight: 500;
   line-height: 64px;
   white-space: nowrap;
+  margin-bottom: 20px;
 `;
 
 const BoldText = styled.span`
@@ -136,4 +182,7 @@ const BannerBtn = styled.button`
   justify-content: center;
   gap: 10px;
   cursor: pointer;
+  &:hover{
+    background-color: rgba(0, 70, 200, 0.80);
+  }
 `;
