@@ -20,6 +20,7 @@ function PopularPost() {
     const getPathRegion = location.search;
     const [loginCheck, setLoginCheck] = useState(false);
     const [postLike, setPostLike] = useRecoilState(postLikeBtn);
+    const [sendBraveClicked, setSendBraveClicked] = useState(postLike);
 
     useEffect(() => {
         // 유저 정보 로드
@@ -88,51 +89,37 @@ function PopularPost() {
         text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 
 
-    const handleSendBraveClick = async (post) => {
-        const postId = post.postId;
-
+    const handleSendBraveClick = useCallback(async (index, item) => {
         if (loginCheck) {
+            const postId = item.postId;
             const newSendBraveClicked = {
-                ...postLike,
-                [postId]: !postLike[postId],
+                ...sendBraveClicked,
+                [postId]: !sendBraveClicked[postId]
             };
-            setPostLike(newSendBraveClicked);
-            console.log('하단바', newSendBraveClicked);
+            setSendBraveClicked(newSendBraveClicked);
 
-        try {
-            let response;
-            if (!postLike[postId]) {
-                response = await checkPostPostAPI(postId);
-            } else {
-                response = await checkPostDeleteAPI(postId);
+            try {
+                let response;
+                if (newSendBraveClicked[postId]) {
+                    response = await checkPostIncrease(postId); // 좋아요 증가 API 호출
+                } else {
+                    response = await checkPostDecrease(postId); // 좋아요 감소 API 호출
+                }
+
+                if (response.postId === postId) {
+                    setUserData({
+                        ...userData,
+                        postUpList: response.postId
+                    });
+                }
+
+            } catch (error) {
+                console.error('API 호출 실패:', error);
             }
-
-            if (response.postId === postId) {
-                setUserData({
-                    ...userData,
-                    postUpList: response.response.postUpList,
-                });
-            }
-
-            const updatedPostData = recentData.map((p) =>
-                p.postId === postId ? { ...p, upCountPost: response.response.upCountPost } : p
-            );
-
-            setRecentData(updatedPostData);
-
-            // Update postLike state after the API response
-            const newSendBraveClicked = {
-                ...postLike,
-                [postId]: !postLike[postId],
-            };
-            setPostLike(newSendBraveClicked);
-        } catch (error) {
-            console.error('Error updating post:', error);
-        }
         } else {
             setShowModal(true);
         }
-    };
+    }, [loginCheck, sendBraveClicked, userData]);
 
     const extractImageLink = (postData) => {
         const fields = ['proBackground', 'solution', 'benefit'];
