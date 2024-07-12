@@ -1,13 +1,14 @@
-import styled, { css } from 'styled-components';
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
+import styled, { css, createGlobalStyle } from 'styled-components';
 import ReactQuill, { Quill } from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import '../../Assets/Style/quill.snow.custom.css';
 import SideHint from '../../Assets/Img/SideHint.svg';
-import { GlobalStyle } from '../../Assets/Style/theme.js';
-import { deleteFileAPI, uploadImageAPI, uploadFileFetch, getPost, updatePostPatch, saveTempPostAPI, getUserAllInfoAPI, getupdatePost, getPostUpdate } from '../../API/AxiosAPI.js'; // updatePostPatch 추가
+// import WritingModal from './WritingModal';
+import { GlobalStyle } from '../../Assets/Style/theme';
+import { deleteFileAPI, uploadImageAPI, uploadFileFetch, submitPostAPI, saveTempPostAPI, getUserAllInfoAPI, loginCheckAPI, getPostUpdate, updatePostPatch } from '../../API/AxiosAPI.js';
+import { useNavigate, useParams } from 'react-router-dom';
 import ModifyModal from './ModifyModal.js';
-import { useNavigate, useParams } from 'react-router-dom'; // useParams 추가
 
 // Custom font
 const fonts = ['Min Sans-Regular'];
@@ -28,6 +29,21 @@ const convertTextToImages = (text) => {
     ).join('');
 };
 
+
+const GlobalQuillStyles = createGlobalStyle`
+  .ql-editor.ql-blank::before {
+    color: #C7C7C7;
+    font-family: "Min Sans-Regular";
+    font-size: 22px;
+    font-style: normal;
+    font-weight: 400;
+
+    left: 32px;
+    content: attr(data-placeholder);
+    pointer-events: none; // Ensures the placeholder is not interactive
+  }
+`;
+
 const Modify = () => {
   const { postId } = useParams(); // useParams를 이용해 postId 가져오기
   const quillRefBackground = useRef(null);
@@ -44,24 +60,41 @@ const Modify = () => {
   const [backgroundImageNames, setBackgroundImageNames] = useState([]);
   const [solutionImageNames, setSolutionImageNames] = useState([]);
   const [effectImageNames, setEffectImageNames] = useState([]);
+  const [imageUrlMap, setImageUrlMap] = useState({}); // 이미지 URL과 파일 이름을 매핑하는 상태
 
   const [isWModalOpen, setIsWModalOpen] = useState(false);
   const [modalMethod, setModalMethod] = useState('');
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false); // 수정 모달 상태 추가
-
   const navigate = useNavigate();
 
-  //게시하기/임시저장을 위한 유저 아이디
-  const [userid, setUserid] =useState(null);
-  //유저 아이디
-  const getUserID = async () =>{
+  const checkloginFunc = async () => {
+    try {
+      const response = await loginCheckAPI();
+      if (response.status === 200) {
+        return;
+      } else {
+        navigate('/main');
+      }
+    } catch (error) {
+      console.error("로그인 체크 중 오류 발생:", error);
+    }
+  };
+
+  useEffect(() => {
+    checkloginFunc();
+  }, []);
+
+  // 게시하기/임시저장을 위한 유저 아이디
+  const [userid, setUserid] = useState(null);
+  // 유저 아이디
+  const getUserID = async () => {
     const response = await getUserAllInfoAPI();
     setUserid(response.userId);
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     getUserID();
-  },[])
+  }, [])
 
   const handleWModalOpen = (modalMethod) => {
     setModalMethod(modalMethod);
@@ -76,6 +109,28 @@ const Modify = () => {
   const handleInputChange = (setter) => (value) => {
     setter(value);
   };
+
+  useEffect(() => {
+    const fetchPostData = async () => {
+      try {
+        const post = await getPostUpdate(postId); // postId로 게시물 내용 가져오기
+        setTitle(post.title);
+        setBackground(convertTextToImages(post.proBackground)); // 이미지와 문단 띄기 처리
+        setSolution(convertTextToImages(post.solution)); // 이미지와 문단 띄기 처리
+        setEffect(convertTextToImages(post.benefit)); // 이미지와 문단 띄기 처리
+        setSelectedButton(Object.keys(regionToInt).find(key => regionToInt[key] === post.postLocal));
+        
+        // 첨부 파일 설정
+        setFileNames(post.s3Attachments.map(file => file.name));
+        setFileRandomStrings(post.s3Attachments.map(file => file.randomString));
+
+      } catch (error) {
+        console.error('게시물 데이터를 가져오는 중 오류 발생:', error);
+      }
+    };
+
+    fetchPostData();
+  }, [postId]);
 
   const handleFileChange = async (e) => {
     const files = Array.from(e.target.files);
@@ -97,7 +152,7 @@ const Modify = () => {
     try {
       const fileNameToRemove = fileRandomStrings[index];
       console.log('Removing file with name:', fileNameToRemove);
-      
+
       await deleteFileAPI(fileNameToRemove);
 
       const updatedFileNames = [...fileNames];
@@ -122,12 +177,16 @@ const Modify = () => {
       const localUrl = e.target.result;
       const range = quill.getSelection();
 
-      quill.insertEmbed(range.index, 'image', localUrl);
+      quill.insertText(range.index, '\n'); // 줄바꿈 추가
+      quill.insertEmbed(range.index + 1, 'image', localUrl); // 이미지 삽입
+      quill.insertText(range.index + 2, '\n'); // 이미지 뒤에 줄바꿈 추가
+      quill.setSelection(range.index + 3); // 커서를 이미지 뒤로 이동
 
       try {
         await uploadImageAPI(file);
 
         setImageNames((prev) => [...prev, file.name]);
+        setImageUrlMap(prev => ({ ...prev, [localUrl]: file.name })); // 로컬 URL과 파일 이름을 매핑
         console.log('Uploaded image file name:', file.name);
       } catch (error) {
         console.error('Image upload failed:', error);
@@ -146,7 +205,7 @@ const Modify = () => {
         currentContents.ops.forEach(op => {
           if (op.insert && op.insert.image) {
             const src = op.insert.image;
-            const imageName = newImageNames.find(name => src.includes(name));
+            const imageName = imageUrlMap[src]; // 이미지 URL을 파일 이름으로 매핑
             if (imageName) {
               newImageNames.push(imageName);
             }
@@ -179,28 +238,6 @@ const Modify = () => {
     adjustEditorHeight(quillRefEffect);
   }, [effect]);
 
-  useEffect(() => {
-    const fetchPostData = async () => {
-      try {
-        const post = await getPostUpdate(postId); // postId로 게시물 내용 가져오기
-        setTitle(post.title);
-        setBackground(convertTextToImages(post.proBackground)); // 이미지와 문단 띄기 처리
-        setSolution(convertTextToImages(post.solution)); // 이미지와 문단 띄기 처리
-        setEffect(convertTextToImages(post.benefit)); // 이미지와 문단 띄기 처리
-        setSelectedButton(Object.keys(regionToInt).find(key => regionToInt[key] === post.postLocal));
-        
-        // 첨부 파일 설정
-        setFileNames(post.s3Attachments.map(file => file.name));
-        setFileRandomStrings(post.s3Attachments.map(file => file.randomString));
-
-      } catch (error) {
-        console.error('게시물 데이터를 가져오는 중 오류 발생:', error);
-      }
-    };
-
-    fetchPostData();
-  }, [postId]);
-
   const backgroundModules = useMemo(() => ({
     toolbar: {
       container: [
@@ -209,7 +246,7 @@ const Modify = () => {
         ['image']
       ],
       handlers: {
-        image: function() {
+        image: function () {
           const input = document.createElement('input');
           input.setAttribute('type', 'file');
           input.setAttribute('accept', 'image/*');
@@ -236,7 +273,7 @@ const Modify = () => {
         ['image']
       ],
       handlers: {
-        image: function() {
+        image: function () {
           const input = document.createElement('input');
           input.setAttribute('type', 'file');
           input.setAttribute('accept', 'image/*');
@@ -263,7 +300,7 @@ const Modify = () => {
         ['image']
       ],
       handlers: {
-        image: function() {
+        image: function () {
           const input = document.createElement('input');
           input.setAttribute('type', 'file');
           input.setAttribute('accept', 'image/*');
@@ -301,11 +338,13 @@ const Modify = () => {
 
   const isSubmitDisabled = !selectedButton || !title || !background || !solution || !effect;
 
-  //수정하기
-  const handleSubmit = async (postId) => {
+  //게시하기
+  const handleSubmit = async () => {
     if (isSubmitDisabled) {
       return;
     }
+
+    await getUserID();
 
     const replaceImageSrc = (html, imageNames) => {
       const div = document.createElement('div');
@@ -326,20 +365,22 @@ const Modify = () => {
       benefit: replaceImageSrc(effect, effectImageNames),
       fileNames: fileRandomStrings,
       userId: userid,
+      // return: true,
     };
 
     console.log('전송할 데이터:', JSON.stringify(postData));
 
     try {
-      const response = await updatePostPatch(postId, userid, postData); // updatePostPatch를 사용하여 게시물 수정 
-      console.log('서버 응답:', response);
+      const response = await updatePostPatch(postId, postData);
+      console.log('서버 응답:', response.data);
+
       navigate(`/postit/${postId}`);
     } catch (error) {
       console.error('서버로 값을 보내는 중 오류 발생:', error);
     }
   };
 
-  //임시저장
+  // 임시저장
   const handleSave = async () => {
     const replaceImageSrc = (html, imageNames) => {
       const div = document.createElement('div');
@@ -349,9 +390,10 @@ const Modify = () => {
         const fileName = imageNames[index];
         img.setAttribute('src', fileName);
       });
-      
       return div.innerHTML;
     };
+
+    await getUserID();
 
     const postData = {
       title,
@@ -369,7 +411,6 @@ const Modify = () => {
     try {
       const response = await saveTempPostAPI(postData);
       console.log('서버 응답:', response.data);
-      // handleUpdateModalOpen(); 
       navigate('/mypage');
     } catch (error) {
       console.error('임시 저장 중 오류 발생:', error);
@@ -378,11 +419,12 @@ const Modify = () => {
 
   return (
     <Container>
+      <GlobalQuillStyles />
       <GlobalStyle />
       <Intro>
         <TopButtonContainer>
           <BackButton onClick={() => handleWModalOpen('out')}>나가기</BackButton>
-          <SaveButton onClick={()=>handleWModalOpen('temp')}>임시저장</SaveButton>
+          <SaveButton onClick={() => handleWModalOpen('temp')}>임시저장</SaveButton>
         </TopButtonContainer>
         <RegionContainer>
           <SelectRegion>제안지역 선택하기</SelectRegion>
@@ -420,6 +462,7 @@ const Modify = () => {
               onChange={handleTextChange(setBackground, setBackgroundImageNames, quillRefBackground)}
               modules={backgroundModules}
               formats={formats}
+              placeholder="이런 생각이 들어서 제안하러 왔어요"
             />
           </QuillContainer>
         </Section>
@@ -435,6 +478,7 @@ const Modify = () => {
               onChange={handleTextChange(setSolution, setSolutionImageNames, quillRefSolution)}
               modules={solutionModules}
               formats={formats}
+              placeholder="이렇게 해보면 좋을거 같아요"
             />
           </QuillContainer>
         </Section>
@@ -448,6 +492,7 @@ const Modify = () => {
               onChange={handleTextChange(setEffect, setEffectImageNames, quillRefEffect)}
               modules={effectModules}
               formats={formats}
+              placeholder="그러면 우리 지역이 이렇게 되지 않을까요?"
             />
           </QuillContainer>
         </Section>
@@ -469,8 +514,8 @@ const Modify = () => {
           </FileWrapper>
         </Section>
         <ButtonSection>
-          <PostButton onClick={()=>handleSubmit(postId)} disabled={isSubmitDisabled}>
-            수정하기
+          <PostButton onClick={handleSubmit} disabled={isSubmitDisabled}>
+            게시하기
           </PostButton>
         </ButtonSection>
         <HiddenSection>
@@ -488,19 +533,11 @@ const Modify = () => {
         isOpen={isWModalOpen}
         closeModal={() => handleWModalOpen(modalMethod)}
         method={modalMethod}
-        handleSave= {handleSave}
+        handleSave={handleSave}
       ></ModifyModal>
-      {/* <ModifyModal
-        isOpen={isUpdateModalOpen}
-        closeModal={handleUpdateModalClose}
-        method="update"
-        handleSave ={handleSave}
-      ></ModifyModal> */}
     </Container>
   );
 };
-
-export default Modify;
 
 const Container = styled.div`
   display: flex;
@@ -692,7 +729,7 @@ const sharedStyles = css`
   color: #393939;
   font-size: 22px;
   transition: border-color 0.3s, box-shadow 0.3s;
-  
+
   &:hover {
     border-color: #B0B0B0;
   }
@@ -834,3 +871,4 @@ const RemoveButton = styled.button`
   font-size: 14px;
 `;
 
+export default Modify;
