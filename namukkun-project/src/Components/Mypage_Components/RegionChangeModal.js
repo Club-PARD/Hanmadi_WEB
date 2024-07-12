@@ -106,6 +106,8 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
 
   //유저 데이터 수정하는 함수 
   const patchUserInfo = async () =>{
+    console.log("이미지 데이터", userData.profileImage );
+
     const data ={
       id : userIds,
       nickName: info.nickName,

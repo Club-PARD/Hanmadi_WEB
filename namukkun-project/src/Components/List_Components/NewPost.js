@@ -4,40 +4,25 @@ import { GlobalStyle } from '../../Assets/Style/theme';
 import rightpagearrow from '../../Assets/Img/rightpagearrow.svg';
 import leftpagearrow from '../../Assets/Img/leftpagearrow.svg';
 import defaultblue from '../../Assets/Img/defaultblue.svg';
-import nopost from '../../Assets/Img/nopost.svg'; // nopost 이미지 import
-import { useRecoilState } from 'recoil';
-import { getRecentRegion, loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
+import nopost from '../../Assets/Img/nopost.svg';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { getRecentRegion, postLikeBtn, userinfo } from '../../Recoil/Atom';
 import LoginModal from '../Login_Components/LoginModal';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { checkPostDeleteAPI, checkPostPostAPI, loginCheckAPI, recentRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
 
 function PopularPost() {
     const [isClicked, setIsClicked] = useState(false);
-    // 진행중이 기본값
-    const [activeButton, setActiveButton] = useState('진행중'); 
-    // sendbravebutton 클릭 상태
-    // const [sendBraveClicked, setSendBraveClicked] = useRecoilState(postLikeBtn);
-    // const [sendBraveClicked, setSendBraveClicked] = useState({});
-    const [activeDot, setActiveDot] = useState(0); // pagination 상태
-
-    const [recentData, setRecentData] = useRecoilState(getRecentRegion); 
-   
+    const [activeDot, setActiveDot] = useState(0);
+    const [recentData, setRecentData] = useRecoilState(getRecentRegion);
     const [showModal, setShowModal] = useState(false);
-
-    // 기본적으로 보여줄 유저 데이터
     const [userData, setUserData] = useRecoilState(userinfo);
-
     const location = useLocation();
     const getPathRegion = location.search;
-
-    const [loginCheck, setLoginCheck] =useState(false);
-
-      //누른 버튼 상태
+    const [loginCheck, setLoginCheck] = useState(false);
     const [postLike, setPostLike] = useRecoilState(postLikeBtn);
 
-
-    // 유저 데이터 불러오는 함수 
-    const getUserInfo = async () => {
+    const fetchUserInfo = async () => {
         try {
             const response = await userInfoGetAPI();
             setUserData({
@@ -46,51 +31,29 @@ function PopularPost() {
                 local: response.data.local,
                 profileImage: response.data.profileImage,
                 postUpList: response.data.postUpList,
-                commentUpList: response.data.commentUpList
+                commentUpList: response.data.commentUpList,
             });
-            return response.data;
         } catch (error) {
             console.error('Failed to fetch user info:', error);
-            return null;
         }
     };
 
-    // 초기 sendBraveClicked 상태 설정
     useEffect(() => {
-        getUserInfo().then(userInfo => {
-            console.log("유저 데이터", userInfo);
-    
-            const initialSendBraveClicked = {};
-            userInfo.postUpList&& userInfo.postUpList.forEach(postId => {
-            initialSendBraveClicked[postId] = true;
-            });
-            setSendBraveClicked(initialSendBraveClicked);
-            setPostLike(initialSendBraveClicked);
-        }).catch(error => {
-            console.error("Error fetching user info:", error);
-        });
-    }, [postLike]);
+        fetchUserInfo();
+    }, []);
 
-
-    // 버튼 클릭 상태 관리
-    const [sendBraveClicked, setSendBraveClicked] = useState(postLike)
-
-    const checkloginFunc = async () => {
-      try {
-        const response = await loginCheckAPI();
-        if (response.status === 200) {
-          setLoginCheck(true);
-        } else {
-          setLoginCheck(false);
+    const checkLoginStatus = async () => {
+        try {
+            const response = await loginCheckAPI();
+            setLoginCheck(response.status === 200);
+        } catch (error) {
+            console.error("Error during login check:", error);
         }
-      } catch (error) {
-        console.error("로그인 체크 중 오류 발생:", error);
-      }
     };
-  
-    useEffect(()=>{
-      checkloginFunc();
-    },[]);
+
+    useEffect(() => {
+        checkLoginStatus();
+    }, []);
 
     const handleDotClick = (index) => {
         setActiveDot(index);
@@ -104,122 +67,88 @@ function PopularPost() {
         setActiveDot((prevActiveDot) => (prevActiveDot - 1 + 3) % 3);
     };
 
-    const truncateText = (text, maxLength) => {
-        if (text.length > maxLength) {
-            return text.slice(0, maxLength) + '...';
-        }
-        return text;
-    };
+    const truncateText = (text, maxLength) => text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 
-    useEffect(()=>{
-        const recent = async() =>{
-            console.log("Newpost", getPathRegion)
-            const response = await recentRegionPostGetAPI(getPathRegion);
-            setRecentData(response.data);
+    useEffect(() => {
+        const fetchRecentData = async () => {
+            try {
+                const response = await recentRegionPostGetAPI(getPathRegion);
+                setRecentData(response.data);
+            } catch (error) {
+                console.error("Error fetching recent data:", error);
+            }
         };
-        recent();
-        
+        fetchRecentData();
+    }, [getPathRegion]);
 
-    },[getPathRegion, sendBraveClicked]);
-
-    // 현재 페이지에 해당하는 게시글들만 선택
     const postsToDisplay = recentData.slice(activeDot * 2, activeDot * 2 + 2);
 
-
-    // 포스트 채택
     const checkPostIncrease = async (postId) => {
         const response = await checkPostPostAPI(postId);
-        return response.data; 
-    }
+        return response.data;
+    };
 
-    // 포스트 채택 삭제
     const checkPostDecrease = async (postId) => {
         const response = await checkPostDeleteAPI(postId);
         return response.data;
-    }
+    };
 
-  // 버튼 클릭 이벤트 핸들러
-  const handleSendBraveClick = async (post) => {
+    const handleSendBraveClick = async (post) => {
+        const postId = post.postId;
 
-    const postId = post.postId;
+        if (loginCheck) {
+            const newSendBraveClicked = {
+                ...postLike,
+                [postId]: !postLike[postId]
+            };
+            setPostLike(newSendBraveClicked);
 
-    if(loginCheck){
-      const newSendBraveClicked = {
-        ...sendBraveClicked,
-        [postId]: !sendBraveClicked[postId]
-      };
-      setSendBraveClicked(newSendBraveClicked);
-  
-      try {
-        let response;
-        if (newSendBraveClicked[postId]) {
-          response = await checkPostIncrease(postId); // 좋아요 증가 API 호출
+            try {
+                let response;
+                if (newSendBraveClicked[postId]) {
+                    response = await checkPostIncrease(postId);
+                } else {
+                    response = await checkPostDecrease(postId);
+                }
+
+                if (response.postId === postId) {
+                    setUserData({
+                        ...userData,
+                        postUpList: response.postId,
+                    });
+                }
+
+                let upCount;
+                if (response.find((post) => post.postId === postId)) {
+                    upCount = response.find((post) => post.postId === postId).postUpCount;
+                } else {
+                    const currentPost = recentData.find((post) => post.postId === postId);
+                    upCount = currentPost.upCountPost - 1;
+                }
+
+                const updatedPostData = recentData.map((post) =>
+                    post.postId === postId ? { ...post, upCountPost: upCount } : post
+                );
+
+                setRecentData(updatedPostData);
+            } catch (error) {
+                console.error("Error updating post:", error);
+            }
         } else {
-          response = await checkPostDecrease(postId); // 좋아요 감소 API 호출
+            setShowModal(true);
         }
-      
-      if(response.postId ===postId){
-        // 유저 데이터 업데이트
-        setUserData({
-          ...userData,
-          postUpList: response.postId
-        });
+    };
 
-      }
-
-      // postId에 해당하는 포스트의 upCount 추출
-      const upcount = response.find(post => post.postId === postId)?.postUpCount;
-
-      // 포스트 데이터 업데이트
-      const updatedPostData = recentData.map(post => {
-        if (post.postId === postId) {
-          return {
-            ...post,
-            upCountPost: upcount || 0
-          };
-        }
-        return post;
-      });
-  
-      setRecentData(updatedPostData);
-      console.log("hi", sendBraveClicked);
-  
-      } catch (error) {
-        console.error("Error updating post:", error);
-        // setShowModal(true);
-      }
-    }
-      else{
-        setShowModal(true);
-      }
-    
-  };
-
-    useEffect(() => {
-        getUserInfo().then(response => {
-        console.log("유저 데이터", response);
-        setPostLike(sendBraveClicked);
-        }).catch(error => {
-        console.error("Error fetching user info:", error);
-        });
-  }, [sendBraveClicked, postLike]);
-
-
-    // 이미지 링크 추출 함수
     const extractImageLink = (postData) => {
-    const fields = ['proBackground', 'solution', 'benefit'];
-
-    for (let field of fields) {
-        const value = postData[field];
-        if (value) { // value가 undefined나 null이 아닌 경우에만 match 메서드 호출
-            const match = value.match(/\[이미지:\s*(https?:\/\/[^\s\]]+)\]/);
-            if (match) {
-            return match[1];
+        const fields = ['proBackground', 'solution', 'benefit'];
+        for (let field of fields) {
+            const value = postData[field];
+            if (value) {
+                const match = value.match(/\[이미지:\s*(https?:\/\/[^\s\]]+)\]/);
+                if (match) return match[1];
             }
         }
-        }
-
-    return defaultblue;
+        return defaultblue;
     };
         
     return (
@@ -260,7 +189,7 @@ function PopularPost() {
                                     truncateText={truncateText}
                                     setShowModal ={setShowModal}
                                     handleLike={() => handleSendBraveClick(post)} 
-                                    isLiked={sendBraveClicked[post.postId]} 
+                                    isLiked={postLike[post.postId]} 
                                     postId = {post.postId}
                                 />
                             ))

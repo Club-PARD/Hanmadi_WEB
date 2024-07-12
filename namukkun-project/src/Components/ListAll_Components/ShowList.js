@@ -199,7 +199,7 @@ function ShowList() {
     }).catch(error => {
       console.error("Error fetching user info:", error);
     });
-  }, [sendBraveClicked, postLike]);
+  }, [sendBraveClicked]);
 
   // 지역별 최신순
   const getPostsListallrecent = async (gerPathRegion) => {
