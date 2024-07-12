@@ -8,6 +8,7 @@ import hoversendbrave from '../../Assets/Img/hoversendbrave.svg';
 import { loginTestState } from "../../Recoil/Atom";
 import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
+import { GlobalStyle } from "../../Assets/Style/theme";
 
 function Contents({ content, isClicked, onClick }) {
   const navigate = useNavigate();
@@ -49,6 +50,7 @@ function Contents({ content, isClicked, onClick }) {
 
   return (
     <Div>
+      <GlobalStyle/>
       <PostImg src={extractImageLink(content)} alt="게시글 이미지" /> {/* 이미지 placeholder */}
       <ContentsDiv >
         <TitleDiv onClick={()=>navigateToPost(content.postId)}>{truncateText(content.title, 23)}</TitleDiv> 
@@ -104,7 +106,7 @@ const TitleDiv =styled.button`
   flex-shrink: 0;
 
   color: #191919;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 26px;
   font-style: normal;
   font-weight: 600;
@@ -132,18 +134,20 @@ const KeyValueDiv =styled.div`
 
 const KeyTextDiv =styled.div`
   color: #9D9D9D;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 20px;
   font-style: normal;
   font-weight: 500;
+  line-height: 110%;
 `;
 
 const ValueTextDiv =styled.div`
   color: #5A5A5A;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 20px;
   font-style: normal;
   font-weight: 400;
+  line-height: 110%;
 `;
 
 // send brave 버튼 스타일링을 위한 스타일드 컴포넌트

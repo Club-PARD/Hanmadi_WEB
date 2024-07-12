@@ -307,7 +307,7 @@ const IntroContainer = styled.div`
 const MainTitle = styled.span`
     align-self: stretch;
     color: ${(props) => props.$color || '#191919'};
-    font-family: "Min Sans";
+    font-family: 'MinSans-Regular';
     font-size: 30px;
     font-style: normal;
     font-weight: 700;
@@ -318,7 +318,7 @@ const MainTitle = styled.span`
 
 const SubTitle = styled.div`
     color: #191919;
-    font-family: "Min Sans";
+    font-family: 'MinSans-Regular';
     font-size: 18px;
     font-style: normal;
     font-weight: 500;
@@ -350,7 +350,7 @@ const NoPostImageContainer = styled.div` // 빈 포스트 이미지 컨테이너
 
 const DetailText = styled.span`
     color: ${(props) => props.$color || '#9D9D9D'};
-    font-family: "Min Sans";
+    font-family: 'MinSans-Regular';
     font-size: 16px;
     font-style: normal;
     font-weight: 500;
@@ -368,7 +368,7 @@ const DetailContainer = styled.div`
 
 const ContentTitleText = styled.div`
     color: #191919;
-    font-family: "Min Sans";
+    font-family: 'MinSans-Regular';
     font-size: 20.8px;
     font-style: normal;
     font-weight: 600;
@@ -415,7 +415,7 @@ const StatusButton = styled.button`
     font-weight: 600;
     padding-bottom: 20.5px;
     border: none;
-    font-family: 'Min Sans';
+    font-family: 'MinSans-Regular';
     background: transparent;
     position: relative;
     cursor: pointer;
@@ -451,11 +451,11 @@ const StatBtuContainer = styled.div`
 
 const AllButton = styled.button`
     display: flex;
-    width: 145px;
+    width: 150px;
     height: 36.5px;
     border: none;
     background: transparent;
-    font-family: "Min Sans";
+    font-family: 'MinSans-Regular';
     font-size: 18px;
     font-style: normal;
     font-weight: 500;
@@ -472,6 +472,10 @@ const SendBraveButton = styled.button`
     border: none;
     background: transparent;
     cursor: pointer;
+    
+    img {
+        transition: content 0.5s ease;
+    }
 
     &:hover img {
         ${({ isClicked }) => !isClicked && `content: url(${hoversendbrave});`}

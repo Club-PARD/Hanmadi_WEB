@@ -299,7 +299,7 @@ const IntroContainer = styled.div`
 const MainTitle = styled.span`
     align-self: stretch;
     color: ${(props) => props.$color || '#191919'};
-    font-family: "Min Sans";
+    font-family: 'MinSans-Regular';
     font-size: 30px;
     font-style: normal;
     font-weight: 700;
@@ -309,7 +309,7 @@ const MainTitle = styled.span`
 
 const SubTitle = styled.div`
     color: #191919;
-    font-family: "Min Sans";
+    font-family: 'MinSans-Regular';
     font-size: 18px;
     font-style: normal;
     font-weight: 500;
@@ -346,7 +346,7 @@ const ContentTitleText = styled.div`
     text-overflow: ellipsis;
     height: 49px;
     color: #191919;
-    font-family: "Min Sans";
+    font-family: 'MinSans-Regular';
     font-size: 26px;
     font-style: normal;
     font-weight: 600;
@@ -360,7 +360,7 @@ const ContentTitleText = styled.div`
 
 const DetailText = styled.span`
     color: ${(props) => props.$color || '#9D9D9D'};
-    font-family: "Min Sans";
+    font-family: 'MinSans-Regular';
     font-size: 20px;
     font-style: normal;
     font-weight: 500;
@@ -397,7 +397,7 @@ const BraveButton = styled.button`
     color: ${(props) => (props.isLiked ? '#246BEB' : 'white')};
     border: none;
     align-self: stretch;
-    font-family: "Min Sans-Regular";
+    font-family: 'MinSans-Regular';
     font-weight: 600;
     cursor: pointer;
 

@@ -31,12 +31,12 @@ function EndPost({ posts }) {
       setIsWModalOpen(!isWModalOpen);
       setGetPostid(postId);
       };
-  
+
     //상세페이지로 이동
     const navigateToPost = (postId) => {
         navigate(`/postit/${postId}`);
     };
-  
+
     //수정 버튼
     const navigateModify = (postId) =>{
           navigate(`/modify/${postId}`);

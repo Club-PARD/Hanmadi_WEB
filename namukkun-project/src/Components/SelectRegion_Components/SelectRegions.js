@@ -101,7 +101,7 @@ const IntroContainer = styled.div`
 const MainTitle = styled.div`
   align-self: stretch;
   color: #191919;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 28px;
   font-style: normal;
   font-weight: 600;
@@ -111,7 +111,7 @@ const MainTitle = styled.div`
 const SubTitle = styled.div`
   align-self: stretch;
   color: #191919;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
@@ -150,7 +150,7 @@ const BackButton = styled.button`
 
   color: #005AFF;
   text-align: center;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -169,7 +169,7 @@ const SelectButton = styled.button`
 
   color: #FFF;
   text-align: center;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -192,7 +192,7 @@ const LocalButton = styled.button`
   border-radius: 4px;
   border: 1px solid #D6D6D6;
   background: ${(props) => (props.selected ? 'rgba(0, 90, 255, 0.06)' : 'rgba(255, 255, 255, 0.60)')};
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 16px;
   color: #333;
   cursor: pointer;

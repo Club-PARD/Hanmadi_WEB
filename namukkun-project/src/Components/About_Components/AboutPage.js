@@ -9,13 +9,7 @@ import Arrow from "../../Assets/Img/Arrow.svg";
 import HowAbout from "../../Assets/Img/HowAbout.svg";
 import SupportYonggil from "../../Assets/Img/SupportYou.svg";
 import TextAnimation from './TextAnimation';
-
-const GlobalStyle = createGlobalStyle`
-  body {
-    overflow-x: hidden;
-    margin: 0; /* 기본 margin 제거 */
-  }
-`;
+import { GlobalStyle } from '../../Assets/Style/theme';
 
 function AboutPage() {
   return (
@@ -125,7 +119,7 @@ const Logo = styled.img`
 `;
 
 const Title = styled.div`
-  font-family: "Min Sans-Regular";
+  font-family: 'MinSans-Regular';
   font-size: 60px;
   font-style: normal;
   font-weight: 500;
@@ -143,7 +137,7 @@ const ColoredText = styled.span`
 `;
 
 const Body = styled.div`
-  font-family: "Min Sans-Regular";
+  font-family: 'MinSans-Regular';
   font-size: 22px;
   font-style: normal;
   font-weight: 500;
@@ -180,7 +174,7 @@ const Icon = styled.img`
 const IconTitle = styled.div`
   color: #000;
   text-align: center;
-  font-family: "Min Sans-Regular";
+  font-family: 'MinSans-Regular';
   font-size: 24px;
   font-weight: 600;
   font-style: normal;
@@ -190,7 +184,7 @@ const IconTitle = styled.div`
 const IconText = styled.div`
   color: #000;
   text-align: center;
-  font-family: "Min Sans-Regular";
+  font-family: 'MinSans-Regular';
   font-size: 20px;
   font-style: normal;
   font-weight: 400;
@@ -224,7 +218,7 @@ const MentWrapper = styled.div`
 `;
 
 const MentTitle = styled.div`
-  font-family: "Min Sans-Regular";
+  font-family: 'MinSans-Regular';
   font-size: 60px;
   font-weight: 500;
   color: #393939;
@@ -233,7 +227,7 @@ const MentTitle = styled.div`
 `;
 
 const MentBody = styled.div`
-  font-family: "Min Sans-Regular";
+  font-family: 'MinSans-Regular';
   font-size: 22px;
   font-weight: 500;
   line-height: 180%;

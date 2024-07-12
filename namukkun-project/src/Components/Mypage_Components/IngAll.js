@@ -7,6 +7,7 @@ import { getUserAllInfoAPI, loginCheckAPI } from "../../API/AxiosAPI";
 import { deleteCheck, loginTestState, userinfo } from "../../Recoil/Atom";
 import { useRecoilState } from "recoil";
 import { intToRegion } from "../SelectRegion_Components/IntToRegion";
+import { GlobalStyle } from "../../Assets/Style/theme";
 
 function IngAll() {
   const [isSticky, setIsSticky] = useState(false);
@@ -83,6 +84,7 @@ function IngAll() {
 
   return (
     <PageContainer>
+      <GlobalStyle/>
       <IngPost posts={posts.ingPosts} />
       <FixedButton $isSticky={isSticky}>
         <ImgContainer>
@@ -152,7 +154,7 @@ const InfoContainer = styled.div`
 const InfoName = styled.div`
     padding-right: 7px;
     color: var(--gray-007, #393939);
-    font-family: "Min Sans";
+    font-family: 'MinSans-Regular';
     font-size: 16px;
     font-style: normal;
     font-weight: 600;
