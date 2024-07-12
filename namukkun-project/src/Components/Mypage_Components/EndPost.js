@@ -73,17 +73,17 @@ function EndPost({ posts }) {
                                                 <TitleFunctionContainer>
                                                     <EndButton>종료</EndButton>
                                                     <ContentTitle onClick={()=>navigateToPost(post.postId)}>{truncateText(post.title, 11)}</ContentTitle>
-                                                    <AdviseButton onClick={()=>navigateModify(post.postId)}>수정</AdviseButton>
+                                                    {/* <AdviseButton onClick={()=>navigateModify(post.postId)}>수정</AdviseButton> */}
                                                     <DeleteButton onClick={()=>handleWModalOpen(post.postId)}>삭제</DeleteButton>
                                                 </TitleFunctionContainer>
                                                 <InfoContainer>
                                                     <InfoTextContainer>
-                                                        <InfoText>용길이 수</InfoText>
+                                                        <InfoText>추천수</InfoText>
                                                         <InfoText>{post.upCountPost}</InfoText>
                                                     </InfoTextContainer>
                                                     <InfoTextContainer>
                                                         <InfoText>한마디 수</InfoText>
-                                                        <InfoText>{post.postitCount}</InfoText>
+                                                        <InfoText>{post.comments.length}</InfoText>
                                                     </InfoTextContainer>
                                                     <InfoTextContainer>
                                                         <InfoText>종료 일자</InfoText>

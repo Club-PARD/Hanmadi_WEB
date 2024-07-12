@@ -98,12 +98,12 @@ function EndAllPost({ posts }) {
                         </TitleFunctionContainer>
                         <InfoContainer>
                           <InfoTextContainer>
-                            <InfoText>용길이 수</InfoText>
+                            <InfoText>추천 수</InfoText>
                             <InfoText>{post.upCountPost}</InfoText>
                           </InfoTextContainer>
                           <InfoTextContainer>
                             <InfoText>한마디 수</InfoText>
-                            <InfoText>{post.postitCount}</InfoText>
+                            <InfoText>{post.comments.length}</InfoText>
                           </InfoTextContainer>
                           <InfoTextContainer>
                             <InfoText>종료 일자</InfoText>
