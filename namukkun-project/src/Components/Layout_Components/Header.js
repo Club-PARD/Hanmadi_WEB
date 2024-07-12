@@ -5,7 +5,7 @@ import LoginModal from '../Login_Components/LoginModal';
 import ProfileImg from '../../Assets/Img/ProfileImg.svg';
 import { Outlet } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
+import { loginTestState, postLikeBtn, regionNav, userinfo } from '../../Recoil/Atom';
 import { useRecoilState } from 'recoil';
 import { intToRegion } from '../SelectRegion_Components/IntToRegion';
 import { loginCheckAPI, logoutAPI, recentRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
@@ -26,6 +26,8 @@ function Header() {
 
   //버튼 상태지정 
   const [postLike, setPostLike] = useRecoilState(postLikeBtn);
+
+  const [regionselect, setRegionSelect] = useRecoilState(regionNav);
 
   //로그인 체크
   const checkloginFunc = async () => {
@@ -49,6 +51,7 @@ function Header() {
       console.log("로긴",postLike);
       } else {
         setLoginCheck(false);
+        // handleLogoutClick();
       }
     } catch (error) {
       console.error("로그인 체크 중 오류 발생:", error);
@@ -57,7 +60,7 @@ function Header() {
 
   useEffect(()=>{
     checkloginFunc();
-  },[]);
+  },[path]);
 
   const handleLogout = async () =>{
     try{
@@ -94,8 +97,9 @@ function Header() {
     setActiveMenu(menu);
     //제안 게시판
     if(menu==='board'){
-    navigate('/listall');
-    // recentRegionPostGetAPI('?localPageId=' + userData.local);
+      setRegionSelect(0);
+      navigate('/listall?localPageId=0');
+      // recentRegionPostGetAPI('?localPageId=' + userData.local);
     }
     //사이트 소개
     else if (menu ==='about'){

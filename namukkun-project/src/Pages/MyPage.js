@@ -8,17 +8,20 @@ import TempPost from '../Components/Mypage_Components/TempPost';
 import advisepen from '../Assets/Img/advisepen.svg';
 import WritingModal from "../Components/WritingPage_Components/WritingModal";
 import RegionChangeModal from "../Components/Mypage_Components/RegionChangeModal";
-import { getUserAllInfoAPI } from "../API/AxiosAPI";
+import { getUserAllInfoAPI, loginCheckAPI } from "../API/AxiosAPI";
 import { deleteCheck, loginTestState, userinfo } from "../Recoil/Atom";
 import { useRecoilState } from "recoil";
 import { intToRegion } from "../Components/SelectRegion_Components/IntToRegion";
+import { useNavigate } from "react-router-dom";
 
 function MyPage() {
   const [isSticky, setIsSticky] = useState(false);
   // 유저 기본 정보 아톰에 저장
   const [userData, setUserData] = useRecoilState(userinfo);
-  const [isLogin, setIsLogin] = useRecoilState(loginTestState);
+  // const [isLogin, setIsLogin] = useRecoilState(loginTestState);
   const [deUpdate, setDeUpdate] = useRecoilState(deleteCheck);
+  const [loginCheck, setLoginCheck] =useState(false);
+  
   // New state to manage posts
   const [posts, setPosts] = useState({
     ingPosts: [],
@@ -31,6 +34,27 @@ function MyPage() {
 
   // 모달창 끌지 켤지 다루는 usestate
   const [isWModalOpen, setIsWModalOpen] = useState(false);
+
+
+  //로그인 체크 
+  const navigate =useNavigate();
+
+  const checkloginFunc = async () => {
+    try {
+      const response = await loginCheckAPI();
+      if (response.status === 200) {
+        setLoginCheck(true);
+      } else {
+        setLoginCheck(false);
+      }
+    } catch (error) {
+      console.error("로그인 체크 중 오류 발생:", error);
+    }
+  };
+
+  useEffect(()=>{
+    checkloginFunc();
+  },[]);
 
   // 모달창 관리하는 함수
   const handleWModalOpen = () => {
@@ -90,15 +114,15 @@ function MyPage() {
       console.log(response);
     } catch (error) {
       console.error('Error fetching user info:', error);
+      navigate('/main');
     }
   };
 
   useEffect(() => {
     // 로그인이 됐을 때 유저 정보를 불러옴.
-    if (isLogin) {
       getUserInfo();
-    }
-  }, [isLogin, deUpdate]);
+
+  }, [deUpdate]);
 
   return (
     <div>

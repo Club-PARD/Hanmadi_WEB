@@ -8,14 +8,18 @@ import TextImage from '../../Assets/Img/TextImage.svg';
 import PostIt from '../../Assets/Img/PostIt.svg';
 import Comment from '../../Assets/Img/Comment.svg';
 import WhiteArrow from '../../Assets/Img/WhiteArrow.svg';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import LoginModal from '../Login_Components/LoginModal';
 import { loginCheckAPI } from '../../API/AxiosAPI';
+import { useRecoilState } from 'recoil';
+import { postLikeBtn, regionNav } from '../../Recoil/Atom';
+// import  {loginCheckAPI} from "../../API/AxiosAPI";
 
 function BeforeLogin() {
   const [showModal, setShowModal] = useState(false);
-  const navigate = useNavigate();
-  const [loginCheck, setLoginCheck] = useState(false);
+  const navigate =useNavigate();
+  const [loginCheck, setLoginCheck] =useState(false);
+  const [regionselect, setRegionSelect] = useRecoilState(regionNav);
 
   const checkloginFunc = async () => {
     try {
@@ -42,9 +46,20 @@ function BeforeLogin() {
     }
   }
 
-  const navigateRegionList = (region) => {
-    console.log("Navigating to region:", region);
-    navigate(`listall?localPageId=${region}`);
+  const navigateRegionList = (region) =>{
+    console.log("하이", regionselect);
+    setRegionSelect(region);
+    navigate(`/listall?localPageId=${region}`);
+  }
+
+  //의견 제안하기 버튼
+  const handleWritingfunc = () =>{
+    if(!loginCheck){
+      setShowModal(!showModal);
+    }
+    else{
+      navigate('/writing');
+    }
   }
 
   return (
@@ -153,6 +168,7 @@ function BeforeLogin() {
           </SecondDiv>
         </FourthHeader>
       </Content>
+      <LoginModal show={showModal} onClose={() => setShowModal(false)} />
       <LoginModal show={showModal} onClose={() => setShowModal(false)} />
     </SideContainer>
   );
@@ -310,7 +326,6 @@ const MainTitle = styled.div`
   font-size: 52px;
   font-style: normal;
   font-weight: 500;
-  line-height:
   line-height: var(--Display-Large-Line-Height, 64px);
   white-space: nowrap;
 `;

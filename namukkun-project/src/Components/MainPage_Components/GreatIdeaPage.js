@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { allPostsGetAPI } from '../../API/AxiosAPI';
 import { useNavigate } from 'react-router-dom';
 
+//하단 부분
 function GreatIdeaPage() {
 
     const [allPosts, setAllPosts] =useState([]);
@@ -14,12 +15,15 @@ function GreatIdeaPage() {
 
     const allPostsFunc = async () =>{
         const response = await allPostsGetAPI();
-        setAllPosts(response.data);
-        console.log(response);
+        if(response.data.length>0){
+            setAllPosts(response.data.slice(0, 2));
+        }
+        console.log('포스트 내놔', response.data);
     }
 
     useEffect(()=>{
         allPostsFunc();
+        console.log('메인페이지 하단' , allPosts);
     },[])
 
     // 글자 컷 함수

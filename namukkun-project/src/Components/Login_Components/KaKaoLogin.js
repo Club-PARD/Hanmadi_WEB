@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, NavLink, useParams , useNavigate} from "react-router-dom";
+import { Link, NavLink, useParams , useNavigate, useLocation} from "react-router-dom";
 import { getSendCodeAPI } from "../../API/AxiosAPI";
 import { useRecoilState } from "recoil";
 import { myCode } from "../../Recoil/Atom";
@@ -12,6 +12,7 @@ function KaKaoLogin(){
 
   const params = new URL(document.location.toString()).searchParams;
   const code = params.get('code');
+  const location = useLocation();
 
   const sendCode = async (code) => {
     try {
@@ -20,7 +21,7 @@ function KaKaoLogin(){
       if (response.status === 201) {
         navigate('/selectregion');  // 201 상태 코드일 때 이동할 경로
       } else {
-        navigate('/');  // (로그인) 성공했을 때 이동할 경로
+        navigate('/main');  // (로그인) 성공했을 때 이동할 경로
       }
       
     } catch (err) {

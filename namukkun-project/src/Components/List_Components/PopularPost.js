@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import sendbrave from '../../Assets/Img/sendbrave.svg';
@@ -9,51 +9,42 @@ import defaultwhite from '../../Assets/Img/defaultwhite.svg';
 import nopost from '../../Assets/Img/nopost.svg'; // nopost 이미지 import
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { getPopularRegion, loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
+import { getPopularRegion, loginTestState, postLikeBtn, regionNav, userinfo } from '../../Recoil/Atom';
 import LoginModal from '../Login_Components/LoginModal';
-import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
+import { checkPostDeleteAPI, checkPostPostAPI, loginCheckAPI, popularRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
 
 function PopularPost() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const params = new URLSearchParams(location.search);
+    const localPageId = params.get('localPageId');
+
     const [isClicked, setIsClicked] = useState(false);
-    //진행중/ 종료 필터 상태 관리 // 진행중이 기본값
     const [activeButton, setActiveButton] = useState('진행중');
-
-    const [sendBraveClicked, setSendBraveClicked] = useRecoilState(postLikeBtn);
-
-    const [PopData, setPopData] = useRecoilState(getPopularRegion);
-
-    //로그인 테스트 상태 -추후 서버랑 연결해야함.
     const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
     const [showModal, setShowModal] = useState(false);
-
-    //인기글 전체 포스트 
-    const [popularData, setPopularData] = useState(PopData);
-    //인기글 필터링 포스트
+    const [popularData, setPopularData] = useRecoilState(getPopularRegion);
     const [popularFilterData, setPopularFilterData] = useState([]);
-
-    // 기본적으로 보여줄 유저 데이터
     const [userData, setUserData] = useRecoilState(userinfo);
+    const [regionselect, setRegionSelect] = useRecoilState(regionNav);
+    const [loginCheck, setLoginCheck] = useState(false);
+    const [postLike, setPostLike] = useRecoilState(postLikeBtn);
+    const [sendBraveClicked, setSendBraveClicked] = useState(postLike);
 
-    const location = useLocation();
-    const getPathRegion = location.search;
-    console.log(getPathRegion)
+    const checkloginFunc = useCallback(async () => {
+        try {
+            const response = await loginCheckAPI();
+            if (response.status === 200) {
+                setLoginCheck(true);
+            } else {
+                setLoginCheck(false);
+            }
+        } catch (error) {
+            console.error("로그인 체크 중 오류 발생:", error);
+        }
+    }, []);
 
-    // 초기 sendBraveClicked 상태 설정
-    useEffect(() => {
-        getUserInfo().then(userInfo => {
-            console.log("유저 데이터", userInfo);
-    
-            const initialSendBraveClicked = {};
-            userInfo &&userInfo.postUpList.forEach(postId => {
-            initialSendBraveClicked[postId] = true;
-            });
-            setSendBraveClicked(initialSendBraveClicked);
-        });
-        }, [getPathRegion]);
-  
-    // 유저 데이터 불러오는 함수 
-    const getUserInfo = async () => {
+    const getUserInfo = useCallback(async () => {
         try {
             const response = await userInfoGetAPI();
             setUserData({
@@ -69,25 +60,108 @@ function PopularPost() {
             console.error('Failed to fetch user info:', error);
             return null;
         }
-    };
+    }, [userData]);
 
-    //선택한 자역에 따라 인기글을 보여줄 수 있도록 하는 함수
-    const getPopularPostFunc = async(getPathRegion) =>{
+    const getPopularPostFunc = useCallback(async (localPageId) => {
         try {
-            const response = await popularRegionPostGetAPI(getPathRegion);
-            console.log(response);
-            setPopularData(response.data);
+            if (localPageId) {
+                const response = await popularRegionPostGetAPI('?localPageId=' + localPageId);
+                // console.log(response);
+                setPopularData(response.data);
+            }
         } catch (error) {
             console.error('Failed to fetch popular posts:', error);
         }
-    }
+    }, [setPopularData]);
+
+        // 포스트 채택
+        const checkPostIncrease = async (postId) => {
+            try {
+                const response = await checkPostPostAPI(postId);
+                return response.data;
+            } catch (error) {
+                console.error('Failed to increase post like:', error);
+                throw error; // 재시도를 위해 오류를 다시 던집니다.
+            }
+    
+        }
+    
+        // 포스트 채택 삭제
+        const checkPostDecrease = async (postId) => {
+            try {
+                const response = await checkPostDeleteAPI(postId);
+                return response.data;
+            } catch (error) {
+                console.error('Failed to decrease post like:', error);
+                throw error; // 재시도를 위해 오류를 다시 던집니다.
+            }
+    
+        }
+    
+
+    const handleSendBraveClick = useCallback(async (index, item) => {
+        if (loginCheck) {
+            const postId = item.postId;
+            const newSendBraveClicked = {
+                ...sendBraveClicked,
+                [postId]: !sendBraveClicked[postId]
+            };
+            setSendBraveClicked(newSendBraveClicked);
+
+            try {
+                let response;
+                if (newSendBraveClicked[postId]) {
+                    response = await checkPostIncrease(postId); // 좋아요 증가 API 호출
+                } else {
+                    response = await checkPostDecrease(postId); // 좋아요 감소 API 호출
+                }
+
+                if (response.postId === postId) {
+                    setUserData({
+                        ...userData,
+                        postUpList: response.postId
+                    });
+                }
+
+            } catch (error) {
+                console.error('API 호출 실패:', error);
+            }
+        } else {
+            setShowModal(true);
+        }
+    }, [loginCheck, sendBraveClicked, userData]);
+
+    const handleButtonClick = useCallback((button) => {
+        setActiveButton(button);
+    }, []);
+
+    const goToListall = useCallback(() => {
+        navigate(`/listall?localPageId=${regionselect}`);
+    }, [navigate, regionselect]);
 
     useEffect(() => {
-        getPopularPostFunc(getPathRegion);
-    }, [getPathRegion]);
+        checkloginFunc();
+    }, [checkloginFunc]);
 
     useEffect(() => {
-        // popularData 또는 activeButton이 변경될 때마다 필터링 로직 실행
+        getUserInfo().then(userInfo => {
+            // console.log("유저 데이터", userInfo);
+
+            const initialSendBraveClicked = {};
+            userInfo.postUpList && userInfo.postUpList.forEach(postId => {
+                initialSendBraveClicked[postId] = true;
+            });
+            setSendBraveClicked(initialSendBraveClicked);
+        }).catch(error => {
+            console.error("Error fetching user info:", error);
+        });
+    }, []);
+
+    useEffect(() => {
+        getPopularPostFunc(localPageId);
+    }, [localPageId, getPopularPostFunc]);
+
+    useEffect(() => {
         if (activeButton === '진행중') {
             let filteredData = popularData.filter(item => item.done === false);
             setPopularFilterData(filteredData);
@@ -97,112 +171,44 @@ function PopularPost() {
         }
     }, [activeButton, popularData]);
 
-    //진행중, 종료 필터링 버튼
-    const handleButtonClick = (button) => {
-        setActiveButton(button);
+    useEffect(() => {
+        getUserInfo().then(response => {
+            setPostLike(sendBraveClicked);
+        }).catch(error => {
+            console.error("Error fetching user info:", error);
+        });
+    }, [sendBraveClicked, getUserInfo]);
 
-        if(activeButton==='진행중'){
-            let filteredData = popularData.filter(item => item.done === false);
-            setPopularFilterData(filteredData);
-        }
-        else{
-            let filteredData = popularData.filter(item => item.done === true);
-            setPopularFilterData(filteredData);
-        }
-    };
-
-    // 포스트 채택
-    const checkPostIncrease = async (postId) => {
-        try {
-            const response = await checkPostPostAPI(postId);
-            return response.data;
-        } catch (error) {
-            console.error('Failed to increase post like:', error);
-            throw error; // 재시도를 위해 오류를 다시 던집니다.
-        }
-
-    }
-
-    // 포스트 채택 삭제
-    const checkPostDecrease = async (postId) => {
-        try {
-            const response = await checkPostDeleteAPI(postId);
-            return response.data;
-        } catch (error) {
-            console.error('Failed to decrease post like:', error);
-            throw error; // 재시도를 위해 오류를 다시 던집니다.
-        }
-
-    }
-
-    const handleSendBraveClick = async(index, item) => {
-        // if(isLogin){
-            const postId = item.postId;
-            const newSendBraveClicked = { ...sendBraveClicked };
-            try {
-                if (newSendBraveClicked[postId]) {
-                    await checkPostDecrease(postId); // 좋아요 감소 API 호출
-                    delete newSendBraveClicked[postId]; // postId에 대한 클릭 상태 삭제
-                } else {
-                    await checkPostIncrease(postId); // 좋아요 증가 API 호출
-                    newSendBraveClicked[postId] = true; // postId에 대한 클릭 상태 true로 설정
-                }
-
-                setSendBraveClicked(newSendBraveClicked); // 상태 업데이트
-
-                setUserData(prevUserData => {
-                    const updatedPostUpList = newSendBraveClicked[postId]
-                        ? [...prevUserData.postUpList, postId] // postId 추가
-                        : prevUserData.postUpList.filter(id => id !== postId); // postId 제거
-    
-                    return {
-                        ...prevUserData,
-                        postUpList: updatedPostUpList,
-                    };
-                });
-            } catch (error) {
-                console.error('API 호출 실패:', error);
-                setShowModal(true);
-            }
-        // } else {
-        //     setShowModal(true);
-        // }
-    };
-
-    const truncateText = (text, maxLength) => {
-        if (text.length > maxLength) {
-            return text.slice(0, maxLength) + '...';
-        }
-        return text;
-    };
-
-    const goToListall = () =>{
-        navigate('/listall');
-    };
-
-      // 이미지 링크 추출 함수
-        const extractImageLink = (postData) => {
+    const extractImageLink = useCallback((postData) => {
         const fields = ['proBackground', 'solution', 'benefit'];
 
         for (let field of fields) {
             const value = postData[field];
-            if (value) { // value가 undefined나 null이 아닌 경우에만 match 메서드 호출
-              const match = value.match(/\[이미지:\s*(https?:\/\/[^\s\]]+)\]/);
-              if (match) {
-                return match[1];
-              }
+            if (value) {
+                const match = value.match(/\[이미지:\s*(https?:\/\/[^\s\]]+)\]/);
+                if (match) {
+                    return match[1];
+                }
             }
-          }
-
+        }
         return defaultwhite;
-        };
+    }, []);
 
-    //상세페이지로 이동
-    const navigateToPost = (postId) => {
+    const navigateToPost = useCallback((postId) => {
         navigate(`/postit/${postId}`);
-    };
-    
+    }, [navigate]);
 
+    const truncateText = useCallback((text, maxLength) => {
+        if (text.length > maxLength) {
+            return text.slice(0, maxLength) + '...';
+        }
+        return text;
+    }, []);
+
+    const filteredPopularFilterData = useMemo(() => {
+        return popularFilterData.slice(0, 4);
+    }, [popularFilterData]);
+    
     return (
         <Container>
             <GlobalStyle />
@@ -230,8 +236,8 @@ function PopularPost() {
                     <AllButton onClick={goToListall}>전체글 보러가기<img src={rightarrow} style={{ width: '6px', height: '12px' }} /></AllButton>
                 </StatusBar>
 
-                {popularFilterData.length > 0 ? ( // 게시물이 있는 경우
-                    popularFilterData.slice(0, 4).map((item, index) => (
+                {filteredPopularFilterData.length > 0 ? ( // 게시물이 있는 경우
+                    filteredPopularFilterData.map((item, index) => (
                         <ContentImageContainer key={index}>
                             <ImageContainer>
                                 <img src={extractImageLink(item)} alt="프로필 이미지" style={{ width: '209px', height: '134px' }} />
