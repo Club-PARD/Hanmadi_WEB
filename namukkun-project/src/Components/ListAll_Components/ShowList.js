@@ -130,9 +130,19 @@ function ShowList() {
         });
 
       }
+      
+      // 좋아요 수 계산
+      let upcount;
+      if (response.find(post => post.postId == postId)) {
+        upcount = response.find(post => post.postId == postId).postUpCount;
+      } else {
+        // 기존 좋아요 수를 가져와서 1 감소
+        const currentPost = getpostData.find(post => post.postId == postId);
+        upcount = currentPost.upCountPost - 1;
+      }
 
       // // postId에 해당하는 포스트의 upCount 추출
-      const upcount = response.find(post => post.postId == postId)?.postUpCount;
+      // const upcount = response.find(post => post.postId == postId)?.postUpCount;
 
       console.log("upcount", upcount);
       console.log("post")
@@ -141,8 +151,7 @@ function ShowList() {
         if (post.postId === postId) {
           return {
             ...post,
-            // upCountPost: upcount || 0
-            upCountPost: upcount || 0
+            upCountPost: upcount
           };
         }
         return post;
