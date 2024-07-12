@@ -549,16 +549,16 @@ export const deletePostAPI = async(postId) => {
   }
 }
 
-//수정할 게시물을 id를 통해서 읽기
-export const updatePostGet = async(postId) => {
-  try {
+// //수정할 게시물을 id를 통해서 읽기
+// export const updatePostGet = async(postId) => {
+//   try {
 
-    const response = await axios.get(`${server}/post/read/update?id=${postId}`);
-    return response.data;
-  } catch (err) {
-    console.error( err);
-  }
-}
+//     const response = await axios.get(`${server}/post/read/update?id=${postId}`);
+//     return response.data;
+//   } catch (err) {
+//     console.error( err);
+//   }
+// }
 
 
 //수정할 게시물을 수정하기
@@ -573,15 +573,11 @@ export const updatePostPatch = async(postId, userId, data) => {
 }
 
 //수정 사항 읽기
-export const getPostUpdate = async (userId, id) => {
+export const getPostUpdate = async (id) => {
   try {
     const response = await axios.get(`${server}/post/read/update`, {
       params: {
-        userId: userId,
         id: id,
-      },
-      headers: {
-        Accept: '*/*',
       }
     });
     return response.data;

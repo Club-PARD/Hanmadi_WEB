@@ -5,7 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 import '../../Assets/Style/quill.snow.custom.css';
 import SideHint from '../../Assets/Img/SideHint.svg';
 import { GlobalStyle } from '../../Assets/Style/theme.js';
-import { deleteFileAPI, uploadImageAPI, uploadFileFetch, getPost, updatePostPatch, saveTempPostAPI, getUserAllInfoAPI, getupdatePost } from '../../API/AxiosAPI.js'; // updatePostPatch 추가
+import { deleteFileAPI, uploadImageAPI, uploadFileFetch, getPost, updatePostPatch, saveTempPostAPI, getUserAllInfoAPI, getupdatePost, getPostUpdate } from '../../API/AxiosAPI.js'; // updatePostPatch 추가
 import ModifyModal from './ModifyModal.js';
 import { useNavigate, useParams } from 'react-router-dom'; // useParams 추가
 
@@ -182,7 +182,7 @@ const Modify = () => {
   useEffect(() => {
     const fetchPostData = async () => {
       try {
-        const post = await getupdatePost(postId); // postId로 게시물 내용 가져오기
+        const post = await getPostUpdate(postId); // postId로 게시물 내용 가져오기
         setTitle(post.title);
         setBackground(convertTextToImages(post.proBackground)); // 이미지와 문단 띄기 처리
         setSolution(convertTextToImages(post.solution)); // 이미지와 문단 띄기 처리

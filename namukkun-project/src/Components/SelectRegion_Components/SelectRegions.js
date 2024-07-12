@@ -92,7 +92,7 @@ const ContentContainer = styled.div`
 
 const IntroContainer = styled.div`
   display: flex;
-  width: 245px;
+  width: 250px;
   flex-direction: column;
   align-items: flex-start;
   gap: 1px;
@@ -113,6 +113,7 @@ const SubTitle = styled.div`
   color: #191919;
   font-family: 'MinSans-Regular';
   font-size: 16px;
+  width: 100%;
   font-style: normal;
   font-weight: 500;
   line-height: 30px; /* 187.5% */

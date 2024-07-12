@@ -113,7 +113,9 @@ const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment,
             <AllPostitContainer>
                 <PostitWriteButtonContainer>
                     <PostitContent>
-                        <PostitInfo>{postit.nickname} / {intToRegion[postit.local]}</PostitInfo>
+                        <PostitInfo>
+                            {postit.nickname || '알 수 없음'} / {intToRegion[postit.local] || '선택 없음'} {/* 닉네임 또는 지역 정보가 없는 경우 '알 수 없음'과 '선택 없음'을 표시 */}
+                        </PostitInfo>
                         <PostWriting>{truncateText(postit.content, 90)}</PostWriting>
                     </PostitContent>
                     <ButtonContainer>
