@@ -8,12 +8,9 @@ import { useRecoilState } from "recoil";
 import { getPopularRegion, getRecentRegion, loginTestState, pagenation, postLikeBtn, userinfo } from "../../Recoil/Atom";
 import LoginModal from "../Login_Components/LoginModal";
 import { useLocation } from "react-router-dom";
-<<<<<<< HEAD
-import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
-import { GlobalStyle } from "../../Assets/Style/theme";
-=======
+// import { GlobalStyle } from "../../Assets/Style/theme";
 import { checkPostDeleteAPI, checkPostPostAPI, loginCheckAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
->>>>>>> develop
+import { GlobalStyle } from "../../Assets/Style/theme";
 
 function ShowList() {
   // 필터 버튼 값 설정 [추천/최신]

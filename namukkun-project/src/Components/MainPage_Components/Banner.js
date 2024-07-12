@@ -2,13 +2,10 @@ import React, { useEffect, useState } from "react";
 import styled from 'styled-components';
 import Slick from '../../Components/Slick_Components/Slick';
 import WhiteArrow from '../../Assets/Img/WhiteArrow.svg';
-<<<<<<< HEAD
 import { GlobalStyle } from "../../Assets/Style/theme";
-=======
 import { useNavigate } from "react-router-dom";
 import { loginCheckAPI } from "../../API/AxiosAPI";
 import LoginModal from "../Login_Components/LoginModal";
->>>>>>> develop
 
 function Banner() {
 
