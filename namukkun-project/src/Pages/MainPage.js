@@ -65,7 +65,7 @@ const PageContainer = styled.div`
 `;
 
 const FixedButton = styled.div`
-  bottom: 2180px;
+  bottom: 1700px;
   position: relative;
   background-color: transparent;
   border: none;
