@@ -46,11 +46,11 @@ function MainPage() {
       <Banner />
       <IdeaPage />
       <GreatIdeaPage />
-      <FixedButton onClick={scrollToNextPage}>
+      {/* <FixedButton onClick={scrollToNextPage}>
         <Container>
           <img src={DownArrow} alt="downarrow" />
         </Container>
-      </FixedButton>
+      </FixedButton> */}
     </PageContainer>
   );
 }
@@ -65,7 +65,7 @@ const PageContainer = styled.div`
 `;
 
 const FixedButton = styled.div`
-  bottom: 1700px;
+  bottom: 1800px;
   position: relative;
   background-color: transparent;
   border: none;
