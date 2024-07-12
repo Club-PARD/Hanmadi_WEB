@@ -385,7 +385,7 @@ const Writing = () => {
       <Intro>
         <TopButtonContainer>
           <BackButton onClick={() => handleWModalOpen('out')}>나가기</BackButton>
-          <SaveButton onClick={() => handleWModalOpen('temp')}>임시저장</SaveButton>
+          {/* <SaveButton onClick={() => handleWModalOpen('temp')}>임시저장</SaveButton> */}
         </TopButtonContainer>
         <RegionContainer>
           <SelectRegion>제안지역 선택하기</SelectRegion>

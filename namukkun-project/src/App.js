@@ -33,8 +33,8 @@ function App() {
         <Route path='/listall' element={<ListAllPage/>}/>
         <Route path='/mypage/ingall' element={<IngAll/>}/>
         <Route path='/mypage/endall' element={<EndAll/>}/>
-        <Route path='/modify/:postId' element={<ModifyPage/>}/>
-        <Route path='/temmodify/:postId' element ={<TemModify/>}/>
+        {/* <Route path='/modify/:postId' element={<ModifyPage/>}/> */}
+        {/* <Route path='/temmodify/:postId' element ={<TemModify/>}/> */}
       </Route>
       <Route path='/login/oauth2/code/kakao' element={<KaKaoLogin/>}/>
       <Route path='/selectregion' element={<SelectRegionPage/>}/>

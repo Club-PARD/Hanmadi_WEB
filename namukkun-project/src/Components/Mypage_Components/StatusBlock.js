@@ -17,10 +17,10 @@ function StatusBlockComponent({ ingCount, endCount, tempCount }) {
                             <StatusNumber number={endCount}>{endCount}</StatusNumber>
                             <StatusTitle>종료</StatusTitle>
                         </StatusItem>
-                        <StatusItem>
+                        {/* <StatusItem>
                             <StatusNumber number={tempCount}>{tempCount}</StatusNumber>
                             <StatusTitle>임시저장</StatusTitle>
-                        </StatusItem>
+                        </StatusItem> */}
                     </BlockContainer>
                 </AllStatusContainer>
                 

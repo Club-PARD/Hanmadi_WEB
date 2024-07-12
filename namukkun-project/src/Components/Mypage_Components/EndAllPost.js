@@ -93,7 +93,7 @@ function EndAllPost({ posts }) {
                         <TitleFunctionContainer>
                           <EndButton onClick={()=>handleWModalOpen(post.postId)}>종료</EndButton>
                           <ContentTitle onClick={()=>navigateToPost(post.postId)}>{truncateText(post.title, 11)}</ContentTitle>
-                          <AdviseButton onClick={()=>navigateModify(post.postId)}>수정</AdviseButton>
+                          {/* <AdviseButton onClick={()=>navigateModify(post.postId)}>수정</AdviseButton> */}
                           <DeleteButton onClick={()=>handleWModalOpen(post.postId)}>삭제</DeleteButton>
                         </TitleFunctionContainer>
                         <InfoContainer>
