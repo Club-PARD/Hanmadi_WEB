@@ -11,13 +11,10 @@ import WhiteArrow from '../../Assets/Img/WhiteArrow.svg';
 import { useLocation, useNavigate } from 'react-router-dom';
 import LoginModal from '../Login_Components/LoginModal';
 import { loginCheckAPI } from '../../API/AxiosAPI';
-<<<<<<< HEAD
 import { GlobalStyle } from '../../Assets/Style/theme';
-=======
 import { useRecoilState } from 'recoil';
 import { postLikeBtn, regionNav } from '../../Recoil/Atom';
 // import  {loginCheckAPI} from "../../API/AxiosAPI";
->>>>>>> develop
 
 function BeforeLogin() {
   const [showModal, setShowModal] = useState(false);
