@@ -594,7 +594,7 @@ export const getPostUpdate = async (userId, id) => {
 //임시저장 게시하기
 export const tempPostUpdate = async (data) => {
   try {
-    const response = await axios.get(`${server}/post/save/temppost`
+    const response = await axios.post(`${server}/post/save/temppost`
     , data);
     return response.data;
   } catch (err) {

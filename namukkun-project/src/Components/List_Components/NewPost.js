@@ -103,7 +103,6 @@ function PopularPost() {
             let response;
             if (!postLike[postId]) {
                 response = await checkPostPostAPI(postId);
-                console
             } else {
                 response = await checkPostDeleteAPI(postId);
             }

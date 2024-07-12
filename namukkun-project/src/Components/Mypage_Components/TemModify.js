@@ -353,7 +353,7 @@ const convertTextToImages = (text) => {
       console.log('전송할 데이터:', JSON.stringify(postData));
   
       try {
-        const response = await tempPostUpdate(postId, userid, postData); // updatePostPatch를 사용하여 게시물 수정 
+        const response = await tempPostUpdate( postData); // updatePostPatch를 사용하여 게시물 수정 
         console.log('서버 응답:', response);
         navigate(`/postit/${postId}`);
       } catch (error) {

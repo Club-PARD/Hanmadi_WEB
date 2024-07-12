@@ -32,6 +32,9 @@ const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment,
     const [myPostCheck, setMyPostCheck] =useState(false); 
     const [postIds, setPostIds] = useState([]);
 
+    //유저 아이디
+    // const [userId, serUserId] =useState(null);
+
     const getPostandCommentsIds = async () => {
         try {
             const response = await getUserAllInfoAPI();
@@ -156,7 +159,16 @@ const DraggablePostit = ({ postit, onMove, onDelete, onStart, onScrollToComment,
             {postitContent}
         </Draggable>
     ) : (
-        postitContent
+        <Draggable
+        bounds="parent"
+            position={position}
+            onStart={(e) => {
+            e.stopPropagation(); // 이벤트 버블링 방지
+            bringToFront(postit.postItId);
+            onStart();
+        }}>
+            {postitContent}
+        </Draggable>
     );
 };
 
