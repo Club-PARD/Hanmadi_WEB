@@ -85,7 +85,7 @@ function EndAll() {
         </ImgContainer>
         <InfoContainer>
             <InfoName>이름</InfoName>
-            <InffoContent>{userData.nickName}</InffoContent>
+            <InfoContent>{userData.nickName}</InfoContent>
         </InfoContainer>
         <InfoContainer>
             <InfoName>지역</InfoName>

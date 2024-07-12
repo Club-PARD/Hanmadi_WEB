@@ -138,6 +138,7 @@ const KeyTextDiv =styled.div`
   font-size: 20px;
   font-style: normal;
   font-weight: 500;
+  line-height: 110%;
 `;
 
 const ValueTextDiv =styled.div`
@@ -146,6 +147,7 @@ const ValueTextDiv =styled.div`
   font-size: 20px;
   font-style: normal;
   font-weight: 400;
+  line-height: 110%;
 `;
 
 // send brave 버튼 스타일링을 위한 스타일드 컴포넌트

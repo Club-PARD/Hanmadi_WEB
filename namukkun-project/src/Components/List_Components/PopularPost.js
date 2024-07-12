@@ -445,7 +445,7 @@ const StatBtuContainer = styled.div`
 
 const AllButton = styled.button`
     display: flex;
-    width: 145px;
+    width: 150px;
     height: 36.5px;
     border: none;
     background: transparent;
