@@ -563,6 +563,7 @@ export const deletePostAPI = async(postId) => {
 
 //수정할 게시물을 수정하기
 export const updatePostPatch = async(postId, data) => {
+  console.log('updatepostpatch', postId, data);
   try {
 
     const response = await axios.patch(`${server}/post/update?postId=${postId}`, data);

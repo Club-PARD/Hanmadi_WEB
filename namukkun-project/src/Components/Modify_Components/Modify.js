@@ -67,6 +67,26 @@ const Modify = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false); // 수정 모달 상태 추가
   const navigate = useNavigate();
 
+  // 파일 이름을 자르고 형식을 붙여주는 함수
+  const truncateFileName = (fileName, maxLength) => {
+    const fileExtension = fileName.slice(fileName.lastIndexOf('.'));
+    console.log("1", fileExtension);
+    const nameWithoutExtension = fileName.slice(0, fileName.lastIndexOf('.'));
+    console.log("2", nameWithoutExtension);
+    const nameParts = nameWithoutExtension.split('_');
+    console.log("3", nameParts);
+    let truncatedName = nameParts.length > 1 ? nameParts[1] : nameParts[0]; // 첫 번째 언더바 다음의 이름만 사용
+    
+    // 디코딩
+    truncatedName = decodeURIComponent(truncatedName);
+    console.log("4", truncatedName);
+
+    if (truncatedName.length > maxLength) {
+        return truncatedName.slice(0, maxLength) + '…' + fileExtension;
+    }
+    return truncatedName + fileExtension;
+  };
+
   const checkloginFunc = async () => {
     try {
       const response = await loginCheckAPI();
@@ -208,6 +228,7 @@ const Modify = () => {
             const imageName = imageUrlMap[src]; // 이미지 URL을 파일 이름으로 매핑
             if (imageName) {
               newImageNames.push(imageName);
+              console.log("배열", newImageNames);
             }
           }
         });
@@ -360,10 +381,10 @@ const Modify = () => {
     const postData = {
       title,
       postLocal: regionToInt[selectedButton],
-      proBackground: replaceImageSrc(background, backgroundImageNames),
-      solution: replaceImageSrc(solution, solutionImageNames),
-      benefit: replaceImageSrc(effect, effectImageNames),
-      fileNames: fileRandomStrings,
+      proBackground: replaceImageSrc(background, truncateFileName(backgroundImageNames)),
+      solution: replaceImageSrc(solution, (solutionImageNames)),
+      benefit: replaceImageSrc(effect, (effectImageNames)),
+      fileNames: convertTextToImages(fileRandomStrings),
       userId: userid,
       // return: true,
     };
@@ -401,7 +422,7 @@ const Modify = () => {
       proBackground: replaceImageSrc(background, backgroundImageNames),
       solution: replaceImageSrc(solution, solutionImageNames),
       benefit: replaceImageSrc(effect, effectImageNames),
-      fileNames: fileRandomStrings,
+      fileNames: convertTextToImages(fileRandomStrings),
       userId: userid,
       return: false, // 임시저장의 경우 false로 설정
     };
