@@ -41,6 +41,10 @@ function Banner() {
     }
   }
 
+  const scrollToNextPage = () => {
+    window.scrollBy({ top: window.innerHeight, left: 0, behavior: 'smooth' });
+  };
+
   return (
     <Container>
       <GlobalStyle/>
@@ -60,7 +64,9 @@ function Banner() {
             </MentBtnContainer>
           </Blank1Container>
           <DownArrowContainer>
-            <img src={DownArrow} alt='downarrow'></img>
+            <ImgContainer onClick={scrollToNextPage}>
+              <img src={DownArrow} alt='downarrow'></img>
+            </ImgContainer>
           </DownArrowContainer>
           <BlankContainer>
             &nbsp;
@@ -126,6 +132,12 @@ const DownArrowContainer = styled.div`
   margin-bottom: 26px;
   height: 740px;
   width: 10%;
+`
+
+const ImgContainer = styled.div`
+  width: 69px;
+  height: 35px;
+  cursor: pointer;
 `
 
 const BlankContainer = styled.div`
