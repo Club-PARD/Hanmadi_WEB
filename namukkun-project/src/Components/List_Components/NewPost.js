@@ -4,34 +4,71 @@ import { GlobalStyle } from '../../Assets/Style/theme';
 import rightpagearrow from '../../Assets/Img/rightpagearrow.svg';
 import leftpagearrow from '../../Assets/Img/leftpagearrow.svg';
 import defaultblue from '../../Assets/Img/defaultblue.svg';
-import nopost from '../../Assets/Img/nopost.svg'; // nopost 이미지 import
-import { useRecoilState } from 'recoil';
-import { getRecentRegion, loginTestState, postLikeBtn, userinfo } from '../../Recoil/Atom';
+import nopost from '../../Assets/Img/nopost.svg';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { getRecentRegion, postLikeBtn, userinfo } from '../../Recoil/Atom';
 import LoginModal from '../Login_Components/LoginModal';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { checkPostDeleteAPI, checkPostPostAPI, recentRegionPostGetAPI } from '../../API/AxiosAPI';
+import { checkPostDeleteAPI, checkPostPostAPI, loginCheckAPI, recentRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
 
 function PopularPost() {
-    const [isClicked, setIsClicked] = useState(false);
-    // 진행중이 기본값
-    const [activeButton, setActiveButton] = useState('진행중'); 
-    // sendbravebutton 클릭 상태
-    const [sendBraveClicked, setSendBraveClicked] = useRecoilState(postLikeBtn);
-    // const [sendBraveClicked, setSendBraveClicked] = useState({});
-    const [activeDot, setActiveDot] = useState(0); // pagination 상태
-
-    //로그인 테스트 상태 -추후 서버랑 연결해야함.
-    const [isLogin, setIsLogin] = useRecoilState(loginTestState); 
-    
-    const [recentData, setRecentData] = useRecoilState(getRecentRegion); 
-   
+    const [activeDot, setActiveDot] = useState(0);
+    const [recentData, setRecentData] = useRecoilState(getRecentRegion);
     const [showModal, setShowModal] = useState(false);
-
-    // 기본적으로 보여줄 유저 데이터
     const [userData, setUserData] = useRecoilState(userinfo);
-
     const location = useLocation();
     const getPathRegion = location.search;
+    const [loginCheck, setLoginCheck] = useState(false);
+    const [postLike, setPostLike] = useRecoilState(postLikeBtn);
+
+    useEffect(() => {
+        // 유저 정보 로드
+        const fetchUserInfo = async () => {
+            try {
+                const response = await userInfoGetAPI();
+                setUserData({
+                    ...userData,
+                    nickName: response.data.nickName,
+                    local: response.data.local,
+                    profileImage: response.data.profileImage,
+                    postUpList: response.data.postUpList,
+                    commentUpList: response.data.commentUpList,
+                });
+            } catch (error) {
+                console.error('Failed to fetch user info:', error);
+            }
+        };
+
+        fetchUserInfo();
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {
+        // 로그인 상태 체크
+        const checkLoginStatus = async () => {
+            try {
+                const response = await loginCheckAPI();
+                setLoginCheck(response.status === 200);
+            } catch (error) {
+                console.error('Error during login check:', error);
+            }
+        };
+
+        checkLoginStatus();
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {
+        // 최근 데이터 가져오기
+        const fetchRecentData = async () => {
+            try {
+                const response = await recentRegionPostGetAPI(getPathRegion);
+                setRecentData(response.data);
+            } catch (error) {
+                console.error('Error fetching recent data:', error);
+            }
+        };
+
+        fetchRecentData();
+    }, [getPathRegion]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleDotClick = (index) => {
         setActiveDot(index);
@@ -45,102 +82,61 @@ function PopularPost() {
         setActiveDot((prevActiveDot) => (prevActiveDot - 1 + 3) % 3);
     };
 
-    const truncateText = (text, maxLength) => {
-        if (text.length > maxLength) {
-            return text.slice(0, maxLength) + '...';
-        }
-        return text;
-    };
+    const truncateText = (text, maxLength) =>
+        text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 
-    useEffect(()=>{
-        const recent = async() =>{
-            const response = await recentRegionPostGetAPI(getPathRegion);
-            setRecentData(response.data);
-        };
-        recent();
-        
+    const handleSendBraveClick = async (post) => {
+        const postId = post.postId;
 
-    },[getPathRegion, sendBraveClicked]);
-
-    // 현재 페이지에 해당하는 게시글들만 선택
-    const postsToDisplay = recentData.slice(activeDot * 2, activeDot * 2 + 2);
-
-
-    // 포스트 채택
-    const checkPostIncrease = async (postId) => {
-        const response = await checkPostPostAPI(postId);
-        return response.data; 
-    }
-
-    // 포스트 채택 삭제
-    const checkPostDecrease = async (postId) => {
-        const response = await checkPostDeleteAPI(postId);
-        return response.data;
-    }
-
-    const handleLike = async(post) => {
-        if (isLogin) {
-            const postId = post.postId;
-            console.log(postId);
-            const newSendBraveClicked = { ...sendBraveClicked };
+        if (loginCheck) {
+            const newSendBraveClicked = {
+                ...postLike,
+                [postId]: !postLike[postId],
+            };
+            setPostLike(newSendBraveClicked);
 
             try {
                 let response;
                 if (newSendBraveClicked[postId]) {
-                    const response = await checkPostDecrease(postId); // 좋아요 감소 API 호출
-                    delete newSendBraveClicked[postId]; // postId에 대한 클릭 상태 삭제
+                    response = await checkPostPostAPI(postId);
                 } else {
-                    const response = await checkPostIncrease(postId); // 좋아요 증가 API 호출
-                    newSendBraveClicked[postId] = true; // postId에 대한 클릭 상태 true로 설정
+                    response = await checkPostDeleteAPI(postId);
                 }
 
-                setSendBraveClicked(newSendBraveClicked); // 상태 업데이트
+                if (response.postId === postId) {
+                    setUserData({
+                        ...userData,
+                        postUpList: response.postUpList,
+                    });
+                }
 
-                console.log("배열확인",userData);
-                setUserData(prevUserData => ({
-                    ...prevUserData,
-                    postUpList: Object.keys(newSendBraveClicked).map(key => parseInt(key)), // 클릭된 postId들을 배열로 저장
-                }));
+                const updatedPostData = recentData.map((p) =>
+                    p.postId === postId ? { ...p, upCountPost: response.upCountPost } : p
+                );
 
-                const updatedPostData = recentData.map(post => {
-                    if (post.postId === postId) {
-                        return {
-                            ...post,
-                            upCountPost: response.postUpCount
-                        };
-                    }
-                    return post;
-                });
-    
                 setRecentData(updatedPostData);
-
             } catch (error) {
-                console.error('API 호출 실패:', error);
-                
+                console.error('Error updating post:', error);
             }
-
         } else {
             setShowModal(true);
         }
     };
 
-
-    // 이미지 링크 추출 함수
     const extractImageLink = (postData) => {
-    const fields = ['proBackground', 'solution', 'benefit'];
-
-    for (let field of fields) {
-        const value = postData[field];
-        if (value) { // value가 undefined나 null이 아닌 경우에만 match 메서드 호출
-            const match = value.match(/\[이미지:\s*(https?:\/\/[^\s\]]+)\]/);
-            if (match) {
-            return match[1];
+        const fields = ['proBackground', 'solution', 'benefit'];
+        for (let field of fields) {
+            const value = postData[field];
+            if (value) {
+                const match = value.match(/\[이미지:\s*(https?:\/\/[^\s\]]+)\]/);
+                if (match) return match[1];
             }
         }
-        }
-
-    return defaultblue;
+        return defaultblue;
     };
+
+    const postsToDisplay = recentData.slice(activeDot * 2, activeDot * 2 + 2);
+
         
     return (
         <Container>
@@ -178,10 +174,9 @@ function PopularPost() {
                                     due={'D-'+post.deadLine}
                                     initialLikes={post.upCountPost}
                                     truncateText={truncateText}
-                                    isLogin ={isLogin}
                                     setShowModal ={setShowModal}
-                                    handleLike={() => handleLike(post)} 
-                                    isLiked={sendBraveClicked[post.postId]} 
+                                    handleLike={() => handleSendBraveClick(post)} 
+                                    isLiked={postLike[post.postId]} 
                                     postId = {post.postId}
                                 />
                             ))

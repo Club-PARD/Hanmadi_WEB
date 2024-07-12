@@ -16,6 +16,7 @@ import IngAll from './Components/Mypage_Components/IngAll';
 import EndAll from './Components/Mypage_Components/EndAll';
 import ModifyPage from './Pages/ModifyPage';
 import BeforeLogin from './Components/BeforeLogin_Components/BeforeLogin';
+import TemModify from './Components/Mypage_Components/TemModify';
 
 //Pages 폴더로부터 컴포넌트를 가져와서 라우터 연결  
 function App() {
@@ -33,6 +34,7 @@ function App() {
         <Route path='/mypage/ingall' element={<IngAll/>}/>
         <Route path='/mypage/endall' element={<EndAll/>}/>
         <Route path='/modify/:postId' element={<ModifyPage/>}/>
+        <Route path='/temmodify/:postId' element ={<TemModify/>}/>
       </Route>
       <Route path='/login/oauth2/code/kakao' element={<KaKaoLogin/>}/>
       <Route path='/selectregion' element={<SelectRegionPage/>}/>

@@ -8,8 +8,12 @@ import { useRecoilState } from "recoil";
 import { getPopularRegion, getRecentRegion, loginTestState, pagenation, postLikeBtn, userinfo } from "../../Recoil/Atom";
 import LoginModal from "../Login_Components/LoginModal";
 import { useLocation } from "react-router-dom";
+<<<<<<< HEAD
 import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
 import { GlobalStyle } from "../../Assets/Style/theme";
+=======
+import { checkPostDeleteAPI, checkPostPostAPI, loginCheckAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
+>>>>>>> develop
 
 function ShowList() {
   // 필터 버튼 값 설정 [추천/최신]
@@ -24,7 +28,7 @@ function ShowList() {
   const [postLike, setPostLike] = useRecoilState(postLikeBtn);
 
   // 로그인 테스트 상태 - 추후 서버랑 연결해야 함.
-  const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
+  // const [isLogin, setIsLogin] = useRecoilState(loginTestState);  
   const [showModal, setShowModal] = useState(false);
 
   // 포스트 데이터 저장
@@ -33,6 +37,25 @@ function ShowList() {
   //포스트 데이터
   const [PopularData, setPopularData] = useRecoilState(getPopularRegion);
   const [recentData, setRecentData] = useRecoilState(getRecentRegion); 
+
+  const [loginCheck, setLoginCheck] =useState(false);
+
+  const checkloginFunc = async () => {
+    try {
+      const response = await loginCheckAPI();
+      if (response.status === 200) {
+        setLoginCheck(true);
+      } else {
+        setLoginCheck(false);
+      }
+    } catch (error) {
+      console.error("로그인 체크 중 오류 발생:", error);
+    }
+  };
+
+  useEffect(()=>{
+    checkloginFunc();
+  },[]);
 
     // 초기 sendBraveClicked 상태 설정
     useEffect(() => {
@@ -82,11 +105,13 @@ function ShowList() {
   const [sendBraveClicked, setSendBraveClicked] = useState(postLike)
   ;
 
-  // 유저가 클릭한 포스트와 비교 후 setSendBraveClicked 일부 true로 변경
 
+
+  // 유저가 클릭한 포스트와 비교 후 setSendBraveClicked 일부 true로 변경
   // 버튼 클릭 이벤트 핸들러
   const handleSendBraveClick = async (postId, content) => {
-    if (isLogin) {
+
+    if(loginCheck){
       const newSendBraveClicked = {
         ...sendBraveClicked,
         [postId]: !sendBraveClicked[postId]
@@ -97,8 +122,10 @@ function ShowList() {
         let response;
         if (newSendBraveClicked[postId]) {
           response = await checkPostIncrease(content.postId); // 좋아요 증가 API 호출
+          console.log("up", response);
         } else {
           response = await checkPostDecrease(content.postId); // 좋아요 감소 API 호출
+          console.log("Down", response);
         }
       
       if(response.postId ===postId){
@@ -109,16 +136,28 @@ function ShowList() {
         });
 
       }
+      
+      // 좋아요 수 계산
+      let upcount;
+      if (response.find(post => post.postId == postId)) {
+        upcount = response.find(post => post.postId == postId).postUpCount;
+      } else {
+        // 기존 좋아요 수를 가져와서 1 감소
+        const currentPost = getpostData.find(post => post.postId == postId);
+        upcount = currentPost.upCountPost - 1;
+      }
 
-      // postId에 해당하는 포스트의 upCount 추출
-      const upcount = response.find(post => post.postId === postId)?.postUpCount;
+      // // postId에 해당하는 포스트의 upCount 추출
+      // const upcount = response.find(post => post.postId == postId)?.postUpCount;
 
+      console.log("upcount", upcount);
+      console.log("post")
       // 포스트 데이터 업데이트
       const updatedPostData = getpostData.map(post => {
         if (post.postId === postId) {
           return {
             ...post,
-            upCountPost: upcount || 0
+            upCountPost: upcount
           };
         }
         return post;
@@ -129,11 +168,13 @@ function ShowList() {
   
       } catch (error) {
         console.error("Error updating post:", error);
+        // setShowModal(true);
       }
-    } else {
-      setShowModal(true);
     }
-
+      else{
+        setShowModal(true);
+      }
+    
   };
 
   // 버튼 상태 변화 시 서버에서 유저 데이터를 가져옴
@@ -164,7 +205,7 @@ function ShowList() {
     }).catch(error => {
       console.error("Error fetching user info:", error);
     });
-  }, [sendBraveClicked, postLike]);
+  }, [sendBraveClicked]);
 
   // 지역별 최신순
   const getPostsListallrecent = async (gerPathRegion) => {

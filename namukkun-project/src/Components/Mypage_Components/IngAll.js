@@ -3,7 +3,7 @@ import styled from "styled-components";
 import IngPost from '../Mypage_Components/IngAllPost';
 import advisepen from '../../Assets/Img/advisepen.svg';
 import RegionChangeModal from "../Mypage_Components/RegionChangeModal";
-import { getUserAllInfoAPI } from "../../API/AxiosAPI";
+import { getUserAllInfoAPI, loginCheckAPI } from "../../API/AxiosAPI";
 import { deleteCheck, loginTestState, userinfo } from "../../Recoil/Atom";
 import { useRecoilState } from "recoil";
 import { intToRegion } from "../SelectRegion_Components/IntToRegion";
@@ -21,6 +21,24 @@ function IngAll() {
     tempPosts: [],
   });
   const [isWModalOpen, setIsWModalOpen] = useState(false);
+  const [loginCheck, setLoginCheck] =useState(false);
+
+  const checkloginFunc = async () => {
+    try {
+      const response = await loginCheckAPI();
+      if (response.status === 200) {
+        setLoginCheck(true);
+      } else {
+        setLoginCheck(false);
+      }
+    } catch (error) {
+      console.error("로그인 체크 중 오류 발생:", error);
+    }
+  };
+
+  useEffect(()=>{
+    checkloginFunc();
+  },[]);
 
   const handleWModalOpen = () => {
     setIsWModalOpen(!isWModalOpen);
@@ -59,10 +77,10 @@ function IngAll() {
   };
 
   useEffect(() => {
-    if (isLogin) {
+    if (loginCheck) {
       getUserInfo();
     }
-  }, [isLogin, deUpdate]);
+  }, [loginCheck, deUpdate]);
 
   return (
     <PageContainer>

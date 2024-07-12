@@ -90,3 +90,9 @@ export const deleteCheck = atom({
   key: 'deleteCheck',
   default: false,
 });
+
+//지역 선택
+export const regionNav = atom({
+  key: 'regionNav',
+  default: 0
+});

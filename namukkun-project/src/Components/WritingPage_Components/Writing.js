@@ -44,6 +44,7 @@ const Writing = () => {
   const [backgroundImageNames, setBackgroundImageNames] = useState([]);
   const [solutionImageNames, setSolutionImageNames] = useState([]);
   const [effectImageNames, setEffectImageNames] = useState([]);
+  const [imageUrlMap, setImageUrlMap] = useState({}); // 이미지 URL과 파일 이름을 매핑하는 상태
 
   const [isWModalOpen, setIsWModalOpen] = useState(false);
   const [modalMethod, setModalMethod] = useState('');
@@ -62,21 +63,21 @@ const Writing = () => {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     checkloginFunc();
-  },[]);
+  }, []);
 
-  //게시하기/임시저장을 위한 유저 아이디
-  const [userid, setUserid] =useState(null);
-  //유저 아이디
-  const getUserID = async () =>{
+  // 게시하기/임시저장을 위한 유저 아이디
+  const [userid, setUserid] = useState(null);
+  // 유저 아이디
+  const getUserID = async () => {
     const response = await getUserAllInfoAPI();
     setUserid(response.userId);
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     getUserID();
-  },[])
+  }, [])
 
   const handleWModalOpen = (modalMethod) => {
     setModalMethod(modalMethod);
@@ -138,14 +139,15 @@ const Writing = () => {
       const range = quill.getSelection();
 
       quill.insertText(range.index, '\n'); // 줄바꿈 추가
-      quill.insertEmbed(range.index + 1, 'image', localUrl);
-      quill.setSelection(range.index + 2); // 이미지 삽입 후 커서 위치 조정
-      quill.insertText(range.index + 2, '\n'); // 줄바꿈 추가
+      quill.insertEmbed(range.index + 1, 'image', localUrl); // 이미지 삽입
+      quill.insertText(range.index + 2, '\n'); // 이미지 뒤에 줄바꿈 추가
+      quill.setSelection(range.index + 3); // 커서를 이미지 뒤로 이동
 
       try {
         await uploadImageAPI(file);
 
         setImageNames((prev) => [...prev, file.name]);
+        setImageUrlMap(prev => ({ ...prev, [localUrl]: file.name })); // 로컬 URL과 파일 이름을 매핑
         console.log('Uploaded image file name:', file.name);
       } catch (error) {
         console.error('Image upload failed:', error);
@@ -164,7 +166,7 @@ const Writing = () => {
         currentContents.ops.forEach(op => {
           if (op.insert && op.insert.image) {
             const src = op.insert.image;
-            const imageName = newImageNames.find(name => src.includes(name));
+            const imageName = imageUrlMap[src]; // 이미지 URL을 파일 이름으로 매핑
             if (imageName) {
               newImageNames.push(imageName);
             }
@@ -205,7 +207,7 @@ const Writing = () => {
         ['image']
       ],
       handlers: {
-        image: function() {
+        image: function () {
           const input = document.createElement('input');
           input.setAttribute('type', 'file');
           input.setAttribute('accept', 'image/*');
@@ -232,7 +234,7 @@ const Writing = () => {
         ['image']
       ],
       handlers: {
-        image: function() {
+        image: function () {
           const input = document.createElement('input');
           input.setAttribute('type', 'file');
           input.setAttribute('accept', 'image/*');
@@ -259,7 +261,7 @@ const Writing = () => {
         ['image']
       ],
       handlers: {
-        image: function() {
+        image: function () {
           const input = document.createElement('input');
           input.setAttribute('type', 'file');
           input.setAttribute('accept', 'image/*');
@@ -332,14 +334,14 @@ const Writing = () => {
     try {
       const response = await submitPostAPI(postData);
       console.log('서버 응답:', response.data);
-      
+
       navigate(`/postit/${response.data}`);
     } catch (error) {
       console.error('서버로 값을 보내는 중 오류 발생:', error);
     }
   };
 
-  //임시저장 
+  // 임시저장
   const handleSave = async () => {
     const replaceImageSrc = (html, imageNames) => {
       const div = document.createElement('div');
@@ -383,7 +385,7 @@ const Writing = () => {
       <Intro>
         <TopButtonContainer>
           <BackButton onClick={() => handleWModalOpen('out')}>나가기</BackButton>
-          <SaveButton onClick={()=>handleWModalOpen('temp')}>임시저장</SaveButton>
+          <SaveButton onClick={() => handleWModalOpen('temp')}>임시저장</SaveButton>
         </TopButtonContainer>
         <RegionContainer>
           <SelectRegion>제안지역 선택하기</SelectRegion>
@@ -492,7 +494,7 @@ const Writing = () => {
         isOpen={isWModalOpen}
         closeModal={() => handleWModalOpen(modalMethod)}
         method={modalMethod}
-        handleSave= {handleSave}
+        handleSave={handleSave}
       ></WritingModal>
     </Container>
   );
@@ -688,7 +690,7 @@ const sharedStyles = css`
   color: #393939;
   font-size: 22px;
   transition: border-color 0.3s, box-shadow 0.3s;
-  
+
   &:hover {
     border-color: #B0B0B0;
   }

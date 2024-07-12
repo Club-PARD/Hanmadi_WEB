@@ -6,7 +6,7 @@ import EndPost from '../Mypage_Components/EndAllPost';
 import advisepen from '../../Assets/Img/advisepen.svg';
 import WritingModal from "../WritingPage_Components/WritingModal";
 import RegionChangeModal from "../Mypage_Components/RegionChangeModal";
-import { getUserAllInfoAPI } from "../../API/AxiosAPI";
+import { getUserAllInfoAPI, loginCheckAPI } from "../../API/AxiosAPI";
 import { deleteCheck, loginTestState, userinfo } from "../../Recoil/Atom";
 import { useRecoilState } from "recoil";
 import { intToRegion } from "../SelectRegion_Components/IntToRegion";
@@ -28,6 +28,24 @@ function EndAll() {
     tempPosts: [],
   });
   const [isWModalOpen, setIsWModalOpen] = useState(false);
+  const [loginCheck, setLoginCheck] =useState(false);
+
+  const checkloginFunc = async () => {
+    try {
+      const response = await loginCheckAPI();
+      if (response.status === 200) {
+        setLoginCheck(true);
+      } else {
+        setLoginCheck(false);
+      }
+    } catch (error) {
+      console.error("로그인 체크 중 오류 발생:", error);
+    }
+  };
+
+  useEffect(()=>{
+    checkloginFunc();
+  },[]);
 
   const handleWModalOpen = () => {
     setIsWModalOpen(!isWModalOpen);
@@ -66,10 +84,10 @@ function EndAll() {
   };
 
   useEffect(() => {
-    if (isLogin) {
+    if (loginCheck) {
       getUserInfo();
     }
-  }, [isLogin, deUpdate]);
+  }, [loginCheck, deUpdate]);
 
   const itemsPerPage = 8; // 한 페이지당 보여지는 컨텐츠 갯수
   // 총 페이지 갯수

@@ -143,7 +143,21 @@ export const deleteFileAPI = async (fileName) => {
   }
 };
 
+
 //댓글 부분
+
+// 유저 댓글 리스트 받기
+export const getUserCommentsList = async () => {
+  try {
+      const response = await axios.get(`${server}/post/comment/list/mycomment`);
+      console.log(response.data);
+      return response.data;
+  } catch (error) {
+      console.error(error);
+      throw error;
+  }
+};
+
 
 // comment 읽어오기
 export const fetchComments = async (postId) => {
@@ -179,10 +193,12 @@ export const deleteComment = async (commentid) => {
 };
 
 // comment 생성
-export const createComment = async (postid, content) => {
+export const createComment = async (postid, userId ,content) => {
   try {
       console.log('Creating comment with:', { postid, content }); // 요청 데이터 로그
-      const response = await axios.post(`${server}/post/comment`, {  content: content }, {
+      const response = await axios.post(`${server}/post/comment`, {  
+        userId: userId,
+        content: content }, {
           params: {
               postid,
           }
@@ -262,10 +278,11 @@ export const decreaseUpCount = async (postId) => {
 
 //comment 채택
 // comment 채택
-export const toggleTakeComment = async (commentid, take) => {
+export const toggleTakeComment = async (postid, commentid, take) => {
   try {
       const response = await axios.patch(`${server}/post/comment/take`, null, {
           params: {
+              postid,
               commentid,
               take
           }
@@ -313,7 +330,7 @@ export const createPostit = async (dto) => {
 };
 
 // 포스티잇 삭제 함수 추가
-export const deletePostit = async ( postitId) => {
+export const deletePostit = async (postitId) => {
   try {
       console.log(` postitId: ${postitId}`);
       const response = await axios.delete(`${server}/post/postit/delete`, {
@@ -332,7 +349,11 @@ export const deletePostit = async ( postitId) => {
 export const movePostit = async ( postitData) => {
   console.log(`Move Postit: ${JSON.stringify(postitData)}`);
   try {
-      const response = await axios.patch(`${server}/post/postit/move`, postitData);
+      const response = await axios.patch(`${server}/post/postit/move`, postitData, {
+        headers: {
+          'Content-Type': 'application/json' // 요청 헤더에 Content-Type 추가
+        }
+      });
       return response.data;
   } catch (error) {
       console.error('Error moving postit:', error);
@@ -492,6 +513,18 @@ export async function getPost(id) {
   }
 }
 
+// 상세 내용 가져오기
+export async function getupdatePost(id) {
+  try {
+      const response = await axios.get(`${server}/post/read?id=${id}`);
+      console.log('get post:', response.data);
+      return response.data;
+  } catch (err) {
+      console.error(err);
+      throw err;
+  }
+}
+
 // post 좋아요
 export async function increaseUpCount(postId) {
   try {
@@ -529,11 +562,10 @@ export const updatePostGet = async(postId) => {
 
 
 //수정할 게시물을 수정하기
-export const updatePostPatch = async(postId) => {
-  console.log('patch post', postId)
+export const updatePostPatch = async(postId, userId, data) => {
   try {
 
-    const response = await axios.patch(`${server}/post/update?postId=${postId}`);
+    const response = await axios.patch(`${server}/post/update?postId=${postId}&userId=${userId}`, data);
     return response.data;
   } catch (err) {
     console.error( err);

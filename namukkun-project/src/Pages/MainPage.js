@@ -17,14 +17,6 @@ function MainPage() {
   const [isLogin, setIsLogin] = useRecoilState(loginTestState);
   const [userData, setUserData] = useRecoilState(userinfo);
 
-  const writingBtn = () => {
-    if (isLogin) {
-      navigate('/writing');
-    }
-    else {
-      setShowModal(true);
-    }
-  }
 
   const getUserInfo = async () => {
     const response = await userInfoGetAPI();

@@ -14,7 +14,9 @@ import { useParams } from "react-router-dom";
 import {
     fetchComments, deleteComment, createComment, toggleLikeComment,
     toggleTakeComment, fetchPostits, createPostit, deletePostit, movePostit,
-    movePostitSection, getUserInfo
+    movePostitSection, getUserInfo,
+    getUserAllInfoAPI,
+    getUserCommentsList
 } from '../API/AxiosAPI';
 import DetailContent from "../Components/Postit_Components/DetailContent";
 import sendcomment from '../Assets/Img/sendcomment.svg';
@@ -57,7 +59,55 @@ function Postit() {
     const [commentToDelete, setCommentToDelete] = useState(null);
     const [commentToTake, setCommentToTake] = useState(null);
     const [highestZIndex, setHighestZIndex] = useState(1000);
-    const userId = 1;
+    //유저 댓글 리스트
+    const [commentsList, stCommentsList] =useState([]);
+
+    //내 아이디
+    const [userId, setUserId] =useState(null);
+
+    //내 포스트만 수정 삭제
+    const [myPostCheck, setMyPostCheck] =useState(false); 
+    const [postIds, setPostIds] = useState([]);
+
+    const getPostandCommentsIds = async () => {
+        try {
+            const response = await getUserAllInfoAPI();
+            //내가 작성한 포스트 아이디를 불러옴
+            const ids = response.posts.map(post => post.postId);
+            console.log(ids);
+            setPostIds(ids);
+
+            //내 아이디 불러옴
+            setUserId(response.userId);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    //댓글 리스트 
+    const commentgetFunc = async () =>{
+        const response =await getUserCommentsList();
+        stCommentsList(response);
+    }
+
+    useEffect(() => {
+        getPostandCommentsIds();
+    }, []);
+
+    useEffect(() => {
+        if (postIds.length > 0) {
+            //내 포스트인지 확인
+            const exists = postIds.includes(parseInt(postId));
+            setMyPostCheck(exists);
+            console.log("my", exists);
+        }
+    }, [postIds, postId]);
+
+    useEffect(()=>{
+        // CommentsCheckfunc();
+        commentgetFunc();
+        // console.log("내 댓글 리스트", mycomments);
+    },[comments]);
 
     useEffect(() => {
         const loadCommentsAndPostits = async () => {
@@ -145,7 +195,7 @@ function Postit() {
         const commentId = comments[index].id;
         const newLikedStatus = !comments[index].liked;
         try {
-            await toggleLikeComment(commentId, userId, newLikedStatus);
+            await toggleLikeComment(commentId, newLikedStatus);
             const updatedComments = comments.map(comment => 
                 comment.id === commentId ? { ...comment, liked: newLikedStatus, upCounter: comment.upCounter + (newLikedStatus ? 1 : -1) } : comment
             );
@@ -183,7 +233,7 @@ function Postit() {
         if (comment.isTaken) {
             const postitToRemove = [...leftPostits, ...rightPostits].find(postit => postit.commentId === comment.id);
             if (postitToRemove) {
-                await deletePostit(userId, postitToRemove.postItId);
+                await deletePostit(postitToRemove.postItId);
                 setLeftPostits(leftPostits.filter(postit => postit.postItId !== postitToRemove.postItId));
                 setRightPostits(rightPostits.filter(postit => postit.postItId !== postitToRemove.postItId));
             }
@@ -203,7 +253,7 @@ function Postit() {
             console.log('New postit data:', newPostit);
 
             try {
-                const createdPostit = await createPostit(newPostit, userId);
+                const createdPostit = await createPostit(newPostit);
 
                 if (createdPostit.postItId === null || createdPostit.postItId === undefined) {
                     setIsLimitModalOpen(true);
@@ -242,7 +292,7 @@ function Postit() {
         }
 
         try {
-            await toggleTakeComment(comment.id, userId, !comment.isTaken);
+            await toggleTakeComment( postId, comment.id, !comment.isTaken);
             const updatedComments = comments.map(c => 
                 c.id === comment.id ? { ...c, isTaken: !c.isTaken } : c
             );
@@ -260,7 +310,7 @@ function Postit() {
         if (postitToMove) {
             const newSection = fromLeftToRight ? 'right' : 'left';
             try {
-                await movePostitSection(userId, postitToMove.postItId, newSection);
+                await movePostitSection(postitToMove.postItId, newSection);
                 if (fromLeftToRight) {
                     setLeftPostits(leftPostits.filter(postit => postit.postItId !== id));
                     setRightPostits([...rightPostits, { ...postitToMove, section: newSection }]);
@@ -293,7 +343,7 @@ function Postit() {
         if (postitToDelete) {
             try {
                 console.log('Deleting postit:', postitToDelete);
-                await deletePostit(userId, postitToDelete.postItId);
+                await deletePostit(postitToDelete.postItId);
 
                 setLeftPostits(leftPostits.filter(postit => postit.postItId !== postitToDelete.postItId));
                 setRightPostits(rightPostits.filter(postit => postit.postItId !== postitToDelete.postItId));
@@ -301,7 +351,7 @@ function Postit() {
                 setComments(comments.map(comment => 
                     comment.id === postitToDelete.commentId ? { ...comment, isTaken: false } : comment
                 ));
-                await toggleTakeComment(postitToDelete.commentId, userId, false);
+                await toggleTakeComment(postId, postitToDelete.commentId, false);
                 closeDeleteModal();
             } catch (error) {
                 console.error('Error deleting postit:', error);
@@ -318,7 +368,7 @@ function Postit() {
             setHighestZIndex(newZIndex);
 
             try {
-                await movePostit(postitToFront.userId, {
+                await movePostit( {
                     postItId: postitToFront.postItId,
                     postId: postId, // postId를 1로 고정
                     commentId: postitToFront.commentId,
@@ -348,7 +398,7 @@ function Postit() {
     const confirmDeleteComment = async () => {
         if (commentToDelete) {
             try {
-                await deleteComment(commentToDelete.userid, commentToDelete.commentid);
+                await deleteComment(commentToDelete.commentid);
                 const updatedComments = comments.filter(comment => comment.id !== commentToDelete.commentid);
                 setComments(updatedComments);
                 setLeftPostits(leftPostits.filter(postit => postit.commentId !== commentToDelete.commentid));
@@ -423,23 +473,29 @@ function Postit() {
                                         <CommentDisplayBox>
                                             <Comment>{comment.content}</Comment>
                                         </CommentDisplayBox>
+                                        {myPostCheck&& 
                                         <TakeButton 
                                             isTaken={comment.isTaken} 
                                             onClick={() => handleTakeButtonClick(comment)}
                                         >
                                             <TakenButtonText isTaken={comment.isTaken}>{comment.isTaken ? "포스트잇 UP" : "포스트잇 UP"}</TakenButtonText>
                                         </TakeButton>
+                                        }
                                     </CommentDisplayButtonContainer>
+                                    {commentsList.includes(comment.id) &&
                                     <CommentDeleteButton onClick={() => handleCommentDelete(comment.userId, comment.id)}>
                                         삭제
                                     </CommentDeleteButton>
+                                    }
                                 </CommentContainer>
                             ))}
                         </CommentsDisplayContainer>
                     </NotMyComment>
                 </ContentContainer>
                 <PostitSectionContainer ref={rightPostitsRef}>
-                    <AdviseDelete/>
+
+                    {myPostCheck && <AdviseDelete/>}
+
                     <PostitSectionRight>
                         {rightPostits.map((postit) => (
                             <DraggablePostit

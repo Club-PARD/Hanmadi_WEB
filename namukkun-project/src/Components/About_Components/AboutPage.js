@@ -18,7 +18,6 @@ function AboutPage() {
       <Intro>
         <BackgroundImage src={AboutPageBG} alt="Background" />
         <ContentWrapper>
-          <Logo src={logo} alt="logo" draggable="false" />
           <Title>
             <TextAnimation fadeinTime={1}>
               <LogoContianer>
