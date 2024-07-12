@@ -12,6 +12,7 @@ import { useRecoilState } from "recoil";
 import { intToRegion } from "../SelectRegion_Components/IntToRegion";
 import arrowleft from '../../Assets/Img/Arrowleft.svg';
 import arrowright from '../../Assets/Img/Arrowright.svg';
+import { GlobalStyle } from "../../Assets/Style/theme";
 
 // 종료된 한마디 전체를 보여주는 페이지
 function EndAll() {
@@ -76,6 +77,7 @@ function EndAll() {
 
   return (
     <PageContainer>
+      <GlobalStyle />
       <EndPost posts={posts.endPosts} />
       <FixedButton $isSticky={isSticky}>
         <ImgContainer>
@@ -83,7 +85,7 @@ function EndAll() {
         </ImgContainer>
         <InfoContainer>
             <InfoName>이름</InfoName>
-            <InfoContent>{userData.nickName}</InfoContent>
+            <InffoContent>{userData.nickName}</InffoContent>
         </InfoContainer>
         <InfoContainer>
             <InfoName>지역</InfoName>
@@ -142,7 +144,7 @@ const InfoContainer = styled.div`
 const InfoName = styled.div`
     padding-right: 7px;
     color: var(--gray-007, #393939);
-    font-family: "Min Sans";
+    font-family: 'MinSans-Regular';
     font-size: 16px;
     font-style: normal;
     font-weight: 600;
