@@ -572,7 +572,7 @@ export const updatePostPatch = async(postId, userId, data) => {
   }
 }
 
-
+//수정 사항 읽기
 export const getPostUpdate = async (userId, id) => {
   try {
     const response = await axios.get(`${server}/post/read/update`, {
@@ -584,6 +584,18 @@ export const getPostUpdate = async (userId, id) => {
         Accept: '*/*',
       }
     });
+    return response.data;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+//임시저장 게시하기
+export const tempPostUpdate = async (data) => {
+  try {
+    const response = await axios.get(`${server}/post/save/temppost`
+    , data);
     return response.data;
   } catch (err) {
     console.error(err);

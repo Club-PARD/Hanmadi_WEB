@@ -5,7 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 import '../../Assets/Style/quill.snow.custom.css';
 import SideHint from '../../Assets/Img/SideHint.svg';
 import { GlobalStyle } from '../../Assets/Style/theme.js';
-import { deleteFileAPI, uploadImageAPI, uploadFileFetch, getPost, updatePostPatch, saveTempPostAPI, getUserAllInfoAPI, getupdatePost, loginCheckAPI } from '../../API/AxiosAPI.js'; // updatePostPatch 추가
+import { deleteFileAPI, uploadImageAPI, uploadFileFetch, getPost, updatePostPatch, saveTempPostAPI, getUserAllInfoAPI, getupdatePost, loginCheckAPI, tempPostUpdate } from '../../API/AxiosAPI.js'; // updatePostPatch 추가
 // import ModifyModal from './ModifyModal.js';
 import { useNavigate, useParams } from 'react-router-dom'; // useParams 추가
 import ModifyModal from '../Modify_Components/ModifyModal.js';
@@ -353,7 +353,7 @@ const convertTextToImages = (text) => {
       console.log('전송할 데이터:', JSON.stringify(postData));
   
       try {
-        const response = await updatePostPatch(postId, userid, postData); // updatePostPatch를 사용하여 게시물 수정 
+        const response = await tempPostUpdate(postId, userid, postData); // updatePostPatch를 사용하여 게시물 수정 
         console.log('서버 응답:', response);
         navigate(`/postit/${postId}`);
       } catch (error) {
