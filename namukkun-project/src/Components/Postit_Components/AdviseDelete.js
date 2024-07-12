@@ -27,7 +27,7 @@ function AdviseDelete() {
         <Div>
             <GlobalStyle />
             <AdvDelBtuContainer>
-                <AdviseButton onClick={handleModifyClick}>수정</AdviseButton>
+                {/* <AdviseButton onClick={handleModifyClick}>수정</AdviseButton> */}
                 <DeleteButton onClick={handleWModalOpen}>삭제</DeleteButton>
             </AdvDelBtuContainer>
             <DeleteModal 

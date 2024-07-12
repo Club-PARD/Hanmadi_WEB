@@ -42,10 +42,10 @@ return (
 <Container>
     <IngContainer>
         <TotalIngContainer>
-            <TotalTitleContainer>
+            {/* <TotalTitleContainer>
                 <img src={mypageduck} style={{ width: '28.551px', height: '25.232px' }} alt="duck" />
                 임시저장
-            </TotalTitleContainer>
+            </TotalTitleContainer> */}
             <TotalContentContainer>
                 <AllContentContainer>
                     <InfoBarContainer>
@@ -59,7 +59,7 @@ return (
                             <TitleText onClick={()=>navigateToPost(post.postId)} >{truncateText(post.title, 13)}</TitleText>
                             <DateText>{post.postTime}</DateText>
                             <ButtonContainer>
-                                <AdviseButton onClick={()=>{navigateModify(post.postId)}}>수정</AdviseButton>
+                                {/* <AdviseButton onClick={()=>{navigateModify(post.postId)}}>수정</AdviseButton> */}
                                 <DeleteButton onClick={()=>handleWModalOpen(post.postId)}>삭제</DeleteButton>
                             </ButtonContainer>
                         </ContentContainer>
