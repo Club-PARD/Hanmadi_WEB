@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { GlobalStyle } from '../../Assets/Style/theme';
 import rightpagearrow from '../../Assets/Img/rightpagearrow.svg';
@@ -88,10 +88,34 @@ function PopularPost() {
     const truncateText = (text, maxLength) =>
         text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 
+    // 포스트 채택
+    const checkPostIncrease = async (postId) => {
+        try {
+            const response = await checkPostPostAPI(postId);
+            return response.data;
+        } catch (error) {
+            console.error('Failed to increase post like:', error);
+            throw error; // 재시도를 위해 오류를 다시 던집니다.
+        }
 
+    }
+
+    // 포스트 채택 삭제
+    const checkPostDecrease = async (postId) => {
+        try {
+            const response = await checkPostDeleteAPI(postId);
+            return response.data;
+        } catch (error) {
+            console.error('Failed to decrease post like:', error);
+            throw error; // 재시도를 위해 오류를 다시 던집니다.
+        }
+
+        }
+    
     const handleSendBraveClick = useCallback(async (index, item) => {
         if (loginCheck) {
-            const postId = item.postId;
+            console.log("login",item);
+            const postId = item;
             const newSendBraveClicked = {
                 ...sendBraveClicked,
                 [postId]: !sendBraveClicked[postId]
@@ -173,7 +197,7 @@ function PopularPost() {
                                     initialLikes={post.upCountPost}
                                     truncateText={truncateText}
                                     setShowModal ={setShowModal}
-                                    handleLike={() => handleSendBraveClick(post)} 
+                                    handleLike={() => handleSendBraveClick(post.postId)} 
                                     isLiked={postLike[post.postId]} 
                                     postId = {post.postId}
                                 />

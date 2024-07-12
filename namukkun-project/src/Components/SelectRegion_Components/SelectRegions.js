@@ -27,7 +27,7 @@ function SelectRegions() {
       const response = postRegisterRegion(parseInt(regionToInt[selectedButton]));
       console.log(response);
       ++state;
-      navigate('/');
+      navigate('/main');
     }
   }
 
