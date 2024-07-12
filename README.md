@@ -122,6 +122,7 @@
 + npm install react-quill
 + npm install react-slick --save
 + npm install slick-carousel --save
++ npm install react-draggable
 
 ---
 

@@ -26,6 +26,8 @@ export const MainContainer = styled.div`
     flex-direction: row;
     justify-content: center;
     min-height: 100vh;
+    overflow-x: hidden; 
+    overflow-y: auto
 `;
 
 // Post-it 섹션 컨테이너 스타일
