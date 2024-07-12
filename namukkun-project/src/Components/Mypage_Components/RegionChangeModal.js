@@ -110,10 +110,11 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
       id : userIds,
       nickName: info.nickName,
       local: regionToInt[selectedButton],
+      profileImage : info.profileImage
     }
     const response =await userPofilePatchAPI(data);
     //유저 프로필 업데이트
-    const response2 = await userPofileImagePatchAPI(info.profileImage);
+    // const response2 = await userPofileImagePatchAPI(info.profileImage);
 
     setUserData({
       ...userData,
@@ -122,13 +123,13 @@ const RegionChangeModal = ({ isOpen, closeModal }) => {
         profileImage : info.profileImage
     })
     console.log(response);
+    closeModal();
   };
 
   const profileEditChagne =(e)=>{
     e.preventDefault();
     
     patchUserInfo();
-    closeModal();
     console.log(info);
   }
 

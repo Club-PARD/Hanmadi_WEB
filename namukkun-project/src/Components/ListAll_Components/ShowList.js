@@ -99,8 +99,9 @@ function ShowList() {
   const [sendBraveClicked, setSendBraveClicked] = useState(postLike)
   ;
 
-  // 유저가 클릭한 포스트와 비교 후 setSendBraveClicked 일부 true로 변경
 
+
+  // 유저가 클릭한 포스트와 비교 후 setSendBraveClicked 일부 true로 변경
   // 버튼 클릭 이벤트 핸들러
   const handleSendBraveClick = async (postId, content) => {
 
@@ -115,8 +116,10 @@ function ShowList() {
         let response;
         if (newSendBraveClicked[postId]) {
           response = await checkPostIncrease(content.postId); // 좋아요 증가 API 호출
+          console.log("up", response);
         } else {
           response = await checkPostDecrease(content.postId); // 좋아요 감소 API 호출
+          console.log("Down", response);
         }
       
       if(response.postId ===postId){
