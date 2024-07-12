@@ -3,11 +3,17 @@ import styled from "styled-components";
 import Contents from "./Contents";
 import arrowleft from '../../Assets/Img/Arrowleft.svg';
 import arrowright from '../../Assets/Img/Arrowright.svg';
+import nopost from '../../Assets/Img/nopost.svg'; // nopost 이미지 import
 import { useRecoilState } from "recoil";
 import { getPopularRegion, getRecentRegion, loginTestState, pagenation, postLikeBtn, userinfo } from "../../Recoil/Atom";
 import LoginModal from "../Login_Components/LoginModal";
 import { useLocation } from "react-router-dom";
+<<<<<<< HEAD
+import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
+import { GlobalStyle } from "../../Assets/Style/theme";
+=======
 import { checkPostDeleteAPI, checkPostPostAPI, loginCheckAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
+>>>>>>> develop
 
 function ShowList() {
   // 필터 버튼 값 설정 [추천/최신]
@@ -67,7 +73,7 @@ function ShowList() {
         });
     }, []);
 
-  // 전체 글에 대한 추천/최신 필터 버튼ㄴ
+  // 전체 글에 대한 추천/최신 필터 버튼
   const onClickFilterBtn = (filterValue) => {
     setCurrentPage(1);
     setFilter(filterValue);
@@ -250,6 +256,7 @@ function ShowList() {
 
   return (
     <Div>
+      <GlobalStyle/>
       <TopHeader>
         <Title>✏️ 전체글 모아보기</Title>
         <BtnDiv>
@@ -258,28 +265,36 @@ function ShowList() {
         </BtnDiv>
       </TopHeader>
       <PostListContentsDiv>
-        {paginatedContents.length > 0 && paginatedContents.map((content, index) => (
-          <Contents
-            key={index}
-            content={content}
-            isClicked={sendBraveClicked[content.postId]}
-            onClick={() => handleSendBraveClick(content.postId, content)}
-          />
-        ))}
+        {paginatedContents.length > 0 ? (
+          paginatedContents.map((content, index) => (
+            <Contents
+              key={index}
+              content={content}
+              isClicked={sendBraveClicked[content.postId]}
+              onClick={() => handleSendBraveClick(content.postId, content)}
+            />
+          ))
+        ) : (
+          <NoPostImageContainer>
+            <img src={nopost} alt="No post available" />
+          </NoPostImageContainer>
+        )}
       </PostListContentsDiv>
-      <Pagenation>
-        <PagenationButton onClick={() => handleChangePage(currentPage - 1)} disabled={currentPage === 1}>
-          <img src={arrowleft}></img>
-        </PagenationButton>
-        {[...Array(totalPages)].map((_, i) => (
-          <PagenationButton key={i} onClick={() => handleChangePage(i + 1)} isSelected={currentPage === i + 1}>
-            {i + 1}
+      {paginatedContents.length > 0 && ( // 페이지네이션 버튼을 조건부로 렌더링
+        <Pagenation>
+          <PagenationButton onClick={() => handleChangePage(currentPage - 1)} disabled={currentPage === 1}>
+            <img src={arrowleft}></img>
           </PagenationButton>
-        ))}
-        <PagenationButton onClick={() => handleChangePage(currentPage + 1)} disabled={currentPage === totalPages}>
-          <img src={arrowright}></img>
-        </PagenationButton>
-      </Pagenation>
+          {[...Array(totalPages)].map((_, i) => (
+            <PagenationButton key={i} onClick={() => handleChangePage(i + 1)} isSelected={currentPage === i + 1}>
+              {i + 1}
+            </PagenationButton>
+          ))}
+          <PagenationButton onClick={() => handleChangePage(currentPage + 1)} disabled={currentPage === totalPages}>
+            <img src={arrowright}></img>
+          </PagenationButton>
+        </Pagenation>
+      )}
       <LoginModal show={showModal} onClose={() => setShowModal(false)} />
     </Div>
   );
@@ -322,7 +337,7 @@ const FilterBtn = styled.button`
 
   color: var(--Main-001, #005AFF);
   text-align: center;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 18px;
   font-style: normal;
   font-weight: 500;
@@ -360,7 +375,20 @@ const PagenationButton = styled.button`
 
   border-radius: var(--Corner-Full, 1000px);
   background-color: ${(props) => (props.isSelected ? '#F5F5F5' : 'transparent')};
-  cursor: pointer
-  `
+  cursor: pointer;
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+`;
+
+const NoPostImageContainer = styled.div` // 빈 포스트 이미지 컨테이너 추가
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 188px;
+  margin-bottom: 113px;
+`;
 
 export default ShowList;

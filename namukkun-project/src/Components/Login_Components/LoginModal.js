@@ -5,6 +5,7 @@ import Thumbs from '../../Assets/Img/Thumbs.svg';
 import BlueChat from '../../Assets/Img/BlueChat.svg';
 import Heart from '../../Assets/Img/Heart.svg';
 import exspinner from '../../Assets/Img/exspinner.svg'; // exspinner 이미지 불러오기
+import { GlobalStyle } from '../../Assets/Style/theme';
 
 const LoginModal = ({ show, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -35,6 +36,7 @@ const LoginModal = ({ show, onClose }) => {
 
   return (
     <Modal onClick={onClose}>
+      <GlobalStyle/>
       <ModalWindow onClick={e => e.stopPropagation()} isLoading={isLoading}>
         <CloseIcon src={Cancel} alt="Close" onClick={onClose} />
         {isLoading ? (
@@ -135,7 +137,7 @@ const ModalTitle = styled.div`
   align-self: stretch;
   color: #191919;
   text-align: center;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 36px;
   font-weight: 700;
 `;
@@ -144,7 +146,7 @@ const ModalSub = styled.div`
   align-self: stretch;
   color: #626262;
   text-align: center;
-  font-family: "Min Sans";
+  font-family: 'MinSans-Regular';
   font-size: 16px;
   font-weight: 400;
   line-height: 150%;
@@ -182,7 +184,7 @@ const Img = styled.img`
 const Content = styled.div`
   color: var(--Black-main, #191919);
   text-align: center;
-  font-family: "Min Sans-Regular";
+  font-family: 'MinSans-Regular';
   font-size: 17px;
   font-weight: 500;
   line-height: 30px;
