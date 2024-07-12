@@ -103,6 +103,7 @@ function PopularPost() {
             let response;
             if (!postLike[postId]) {
                 response = await checkPostPostAPI(postId);
+                console
             } else {
                 response = await checkPostDeleteAPI(postId);
             }
@@ -110,12 +111,12 @@ function PopularPost() {
             if (response.postId === postId) {
                 setUserData({
                     ...userData,
-                    postUpList: response.postUpList,
+                    postUpList: response.response.postUpList,
                 });
             }
 
             const updatedPostData = recentData.map((p) =>
-                p.postId === postId ? { ...p, upCountPost: response.upCountPost } : p
+                p.postId === postId ? { ...p, upCountPost: response.response.upCountPost } : p
             );
 
             setRecentData(updatedPostData);
