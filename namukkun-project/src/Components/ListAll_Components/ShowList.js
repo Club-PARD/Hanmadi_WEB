@@ -3,17 +3,11 @@ import styled from "styled-components";
 import Contents from "./Contents";
 import arrowleft from '../../Assets/Img/Arrowleft.svg';
 import arrowright from '../../Assets/Img/Arrowright.svg';
-import nopost from '../../Assets/Img/nopost.svg'; // nopost 이미지 import
 import { useRecoilState } from "recoil";
 import { getPopularRegion, getRecentRegion, loginTestState, pagenation, postLikeBtn, userinfo } from "../../Recoil/Atom";
 import LoginModal from "../Login_Components/LoginModal";
 import { useLocation } from "react-router-dom";
-<<<<<<< HEAD
-import { checkPostDeleteAPI, checkPostPostAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
-import { GlobalStyle } from "../../Assets/Style/theme";
-=======
 import { checkPostDeleteAPI, checkPostPostAPI, loginCheckAPI, popularRegionPostGetAPI, recentRegionPostGetAPI, userInfoGetAPI } from "../../API/AxiosAPI";
->>>>>>> develop
 
 function ShowList() {
   // 필터 버튼 값 설정 [추천/최신]
@@ -60,7 +54,7 @@ function ShowList() {
     // 초기 sendBraveClicked 상태 설정
     useEffect(() => {
         getUserInfo().then(userInfo => {
-          console.log("유저 데이터", userInfo);
+          // console.log("유저 데이터", userInfo);
     
           const initialSendBraveClicked = {};
           userInfo.postUpList&& userInfo.postUpList.forEach(postId => {
@@ -73,7 +67,7 @@ function ShowList() {
         });
     }, []);
 
-  // 전체 글에 대한 추천/최신 필터 버튼
+  // 전체 글에 대한 추천/최신 필터 버튼ㄴ
   const onClickFilterBtn = (filterValue) => {
     setCurrentPage(1);
     setFilter(filterValue);
@@ -150,8 +144,8 @@ function ShowList() {
       // // postId에 해당하는 포스트의 upCount 추출
       // const upcount = response.find(post => post.postId == postId)?.postUpCount;
 
-      console.log("upcount", upcount);
-      console.log("post")
+      // console.log("upcount", upcount);
+      // console.log("post")
       // 포스트 데이터 업데이트
       const updatedPostData = getpostData.map(post => {
         if (post.postId === postId) {
@@ -200,7 +194,7 @@ function ShowList() {
   
   useEffect(() => {
     getUserInfo().then(response => {
-      console.log("유저 데이터", response);
+      // console.log("유저 데이터", response);
       setPostLike(sendBraveClicked);
     }).catch(error => {
       console.error("Error fetching user info:", error);
@@ -213,7 +207,7 @@ function ShowList() {
       const response = await recentRegionPostGetAPI(gerPathRegion);
       setGetPostData(response.data);
       setRecentData(response.data);
-      console.log("데이터 확인", getpostData);
+      // console.log("데이터 확인", getpostData);
     } catch (error) {
       console.error("Error fetching recent posts:", error);
     }
@@ -225,7 +219,7 @@ function ShowList() {
       const response = await popularRegionPostGetAPI(gerPathRegion);
       setGetPostData(response.data);
       setPopularData(response.data);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error("Error fetching popular posts:", error);
     }
@@ -256,7 +250,6 @@ function ShowList() {
 
   return (
     <Div>
-      <GlobalStyle/>
       <TopHeader>
         <Title>✏️ 전체글 모아보기</Title>
         <BtnDiv>
@@ -265,36 +258,28 @@ function ShowList() {
         </BtnDiv>
       </TopHeader>
       <PostListContentsDiv>
-        {paginatedContents.length > 0 ? (
-          paginatedContents.map((content, index) => (
-            <Contents
-              key={index}
-              content={content}
-              isClicked={sendBraveClicked[content.postId]}
-              onClick={() => handleSendBraveClick(content.postId, content)}
-            />
-          ))
-        ) : (
-          <NoPostImageContainer>
-            <img src={nopost} alt="No post available" />
-          </NoPostImageContainer>
-        )}
+        {paginatedContents.length > 0 && paginatedContents.map((content, index) => (
+          <Contents
+            key={index}
+            content={content}
+            isClicked={sendBraveClicked[content.postId]}
+            onClick={() => handleSendBraveClick(content.postId, content)}
+          />
+        ))}
       </PostListContentsDiv>
-      {paginatedContents.length > 0 && ( // 페이지네이션 버튼을 조건부로 렌더링
-        <Pagenation>
-          <PagenationButton onClick={() => handleChangePage(currentPage - 1)} disabled={currentPage === 1}>
-            <img src={arrowleft}></img>
+      <Pagenation>
+        <PagenationButton onClick={() => handleChangePage(currentPage - 1)} disabled={currentPage === 1}>
+          <img src={arrowleft}></img>
+        </PagenationButton>
+        {[...Array(totalPages)].map((_, i) => (
+          <PagenationButton key={i} onClick={() => handleChangePage(i + 1)} isSelected={currentPage === i + 1}>
+            {i + 1}
           </PagenationButton>
-          {[...Array(totalPages)].map((_, i) => (
-            <PagenationButton key={i} onClick={() => handleChangePage(i + 1)} isSelected={currentPage === i + 1}>
-              {i + 1}
-            </PagenationButton>
-          ))}
-          <PagenationButton onClick={() => handleChangePage(currentPage + 1)} disabled={currentPage === totalPages}>
-            <img src={arrowright}></img>
-          </PagenationButton>
-        </Pagenation>
-      )}
+        ))}
+        <PagenationButton onClick={() => handleChangePage(currentPage + 1)} disabled={currentPage === totalPages}>
+          <img src={arrowright}></img>
+        </PagenationButton>
+      </Pagenation>
       <LoginModal show={showModal} onClose={() => setShowModal(false)} />
     </Div>
   );
@@ -337,7 +322,7 @@ const FilterBtn = styled.button`
 
   color: var(--Main-001, #005AFF);
   text-align: center;
-  font-family: 'MinSans-Regular';
+  font-family: "Min Sans";
   font-size: 18px;
   font-style: normal;
   font-weight: 500;
@@ -375,20 +360,7 @@ const PagenationButton = styled.button`
 
   border-radius: var(--Corner-Full, 1000px);
   background-color: ${(props) => (props.isSelected ? '#F5F5F5' : 'transparent')};
-  cursor: pointer;
-  &:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
-  }
-`;
-
-const NoPostImageContainer = styled.div` // 빈 포스트 이미지 컨테이너 추가
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 188px;
-  margin-bottom: 113px;
-`;
+  cursor: pointer
+  `
 
 export default ShowList;
