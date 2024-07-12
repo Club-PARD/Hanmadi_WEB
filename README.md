@@ -14,6 +14,9 @@
   <a>
     <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=CSS3&logoColor=white" alt="aws">
   </a>
+  <a>
+    <img src="https://img.shields.io/badge/html5-E34F26?style=flat-flat&logo=html5&logoColor=white">
+  </a>
 </p>
 
 
@@ -68,6 +71,20 @@
 ---
 
 # 🗃️ 화면 구성
+
+[로그인 전 화면]
+
+---
+
+# 📥라이브러리
+
++ npm install react-router-dom
++ npm install styled-components
++ npm install axios
++ npm install recoil
++ npm install react-quill
++ npm install react-slick --save
++ npm install slick-carousel --save
 
 ---
 
