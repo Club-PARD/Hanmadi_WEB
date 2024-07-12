@@ -182,4 +182,7 @@ const BannerBtn = styled.button`
   justify-content: center;
   gap: 10px;
   cursor: pointer;
+  &:hover{
+    background-color: rgba(0, 70, 200, 0.80);
+  }
 `;
