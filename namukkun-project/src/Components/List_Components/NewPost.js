@@ -40,7 +40,7 @@ function PopularPost() {
         };
 
         fetchUserInfo();
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }, []); 
 
     useEffect(() => {
         // 로그인 상태 체크
@@ -54,7 +54,7 @@ function PopularPost() {
         };
 
         checkLoginStatus();
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    }, []); //로그인 상태 체크
 
     useEffect(() => {
         // 최근 데이터 가져오기
@@ -68,8 +68,9 @@ function PopularPost() {
         };
 
         fetchRecentData();
-    }, [getPathRegion]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [getPathRegion]); // 지역별 필터
 
+    //페이지네이션
     const handleDotClick = (index) => {
         setActiveDot(index);
     };
@@ -82,8 +83,10 @@ function PopularPost() {
         setActiveDot((prevActiveDot) => (prevActiveDot - 1 + 3) % 3);
     };
 
+    //글자수 컷
     const truncateText = (text, maxLength) =>
         text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
+
 
     const handleSendBraveClick = async (post) => {
         const postId = post.postId;
@@ -94,10 +97,11 @@ function PopularPost() {
                 [postId]: !postLike[postId],
             };
             setPostLike(newSendBraveClicked);
+            console.log('하단바', newSendBraveClicked);
 
         try {
             let response;
-            if (!newSendBraveClicked[postId]) {
+            if (!postLike[postId]) {
                 response = await checkPostPostAPI(postId);
             } else {
                 response = await checkPostDeleteAPI(postId);
@@ -115,6 +119,13 @@ function PopularPost() {
             );
 
             setRecentData(updatedPostData);
+
+            // Update postLike state after the API response
+            const newSendBraveClicked = {
+                ...postLike,
+                [postId]: !postLike[postId],
+            };
+            setPostLike(newSendBraveClicked);
         } catch (error) {
             console.error('Error updating post:', error);
         }
