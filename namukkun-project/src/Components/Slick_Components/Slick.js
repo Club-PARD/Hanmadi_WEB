@@ -43,7 +43,7 @@ export default Slick;
 
 const SlickContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: 758px;
   overflow: hidden; /* 슬라이드 영역에서 스크롤 방지 */
 `;
 
