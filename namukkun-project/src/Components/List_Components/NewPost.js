@@ -12,7 +12,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { checkPostDeleteAPI, checkPostPostAPI, loginCheckAPI, recentRegionPostGetAPI, userInfoGetAPI } from '../../API/AxiosAPI';
 
 function PopularPost() {
-    const [isClicked, setIsClicked] = useState(false);
     const [activeDot, setActiveDot] = useState(0);
     const [recentData, setRecentData] = useRecoilState(getRecentRegion);
     const [showModal, setShowModal] = useState(false);
@@ -22,38 +21,54 @@ function PopularPost() {
     const [loginCheck, setLoginCheck] = useState(false);
     const [postLike, setPostLike] = useRecoilState(postLikeBtn);
 
-    const fetchUserInfo = async () => {
-        try {
-            const response = await userInfoGetAPI();
-            setUserData({
-                ...userData,
-                nickName: response.data.nickName,
-                local: response.data.local,
-                profileImage: response.data.profileImage,
-                postUpList: response.data.postUpList,
-                commentUpList: response.data.commentUpList,
-            });
-        } catch (error) {
-            console.error('Failed to fetch user info:', error);
-        }
-    };
-
     useEffect(() => {
+        // 유저 정보 로드
+        const fetchUserInfo = async () => {
+            try {
+                const response = await userInfoGetAPI();
+                setUserData({
+                    ...userData,
+                    nickName: response.data.nickName,
+                    local: response.data.local,
+                    profileImage: response.data.profileImage,
+                    postUpList: response.data.postUpList,
+                    commentUpList: response.data.commentUpList,
+                });
+            } catch (error) {
+                console.error('Failed to fetch user info:', error);
+            }
+        };
+
         fetchUserInfo();
-    }, []);
-
-    const checkLoginStatus = async () => {
-        try {
-            const response = await loginCheckAPI();
-            setLoginCheck(response.status === 200);
-        } catch (error) {
-            console.error("Error during login check:", error);
-        }
-    };
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
+        // 로그인 상태 체크
+        const checkLoginStatus = async () => {
+            try {
+                const response = await loginCheckAPI();
+                setLoginCheck(response.status === 200);
+            } catch (error) {
+                console.error('Error during login check:', error);
+            }
+        };
+
         checkLoginStatus();
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    useEffect(() => {
+        // 최근 데이터 가져오기
+        const fetchRecentData = async () => {
+            try {
+                const response = await recentRegionPostGetAPI(getPathRegion);
+                setRecentData(response.data);
+            } catch (error) {
+                console.error('Error fetching recent data:', error);
+            }
+        };
+
+        fetchRecentData();
+    }, [getPathRegion]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleDotClick = (index) => {
         setActiveDot(index);
@@ -67,31 +82,8 @@ function PopularPost() {
         setActiveDot((prevActiveDot) => (prevActiveDot - 1 + 3) % 3);
     };
 
-    const truncateText = (text, maxLength) => text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
-
-    useEffect(() => {
-        const fetchRecentData = async () => {
-            try {
-                const response = await recentRegionPostGetAPI(getPathRegion);
-                setRecentData(response.data);
-            } catch (error) {
-                console.error("Error fetching recent data:", error);
-            }
-        };
-        fetchRecentData();
-    }, [getPathRegion]);
-
-    const postsToDisplay = recentData.slice(activeDot * 2, activeDot * 2 + 2);
-
-    const checkPostIncrease = async (postId) => {
-        const response = await checkPostPostAPI(postId);
-        return response.data;
-    };
-
-    const checkPostDecrease = async (postId) => {
-        const response = await checkPostDeleteAPI(postId);
-        return response.data;
-    };
+    const truncateText = (text, maxLength) =>
+        text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 
     const handleSendBraveClick = async (post) => {
         const postId = post.postId;
@@ -99,40 +91,32 @@ function PopularPost() {
         if (loginCheck) {
             const newSendBraveClicked = {
                 ...postLike,
-                [postId]: !postLike[postId]
+                [postId]: !postLike[postId],
             };
             setPostLike(newSendBraveClicked);
 
             try {
                 let response;
                 if (newSendBraveClicked[postId]) {
-                    response = await checkPostIncrease(postId);
+                    response = await checkPostPostAPI(postId);
                 } else {
-                    response = await checkPostDecrease(postId);
+                    response = await checkPostDeleteAPI(postId);
                 }
 
                 if (response.postId === postId) {
                     setUserData({
                         ...userData,
-                        postUpList: response.postId,
+                        postUpList: response.postUpList,
                     });
                 }
 
-                let upCount;
-                if (response.find((post) => post.postId === postId)) {
-                    upCount = response.find((post) => post.postId === postId).postUpCount;
-                } else {
-                    const currentPost = recentData.find((post) => post.postId === postId);
-                    upCount = currentPost.upCountPost - 1;
-                }
-
-                const updatedPostData = recentData.map((post) =>
-                    post.postId === postId ? { ...post, upCountPost: upCount } : post
+                const updatedPostData = recentData.map((p) =>
+                    p.postId === postId ? { ...p, upCountPost: response.upCountPost } : p
                 );
 
                 setRecentData(updatedPostData);
             } catch (error) {
-                console.error("Error updating post:", error);
+                console.error('Error updating post:', error);
             }
         } else {
             setShowModal(true);
@@ -150,6 +134,9 @@ function PopularPost() {
         }
         return defaultblue;
     };
+
+    const postsToDisplay = recentData.slice(activeDot * 2, activeDot * 2 + 2);
+
         
     return (
         <Container>

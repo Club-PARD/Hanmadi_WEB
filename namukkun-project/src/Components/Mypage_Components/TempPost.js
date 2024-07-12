@@ -33,7 +33,7 @@ function TempPost({ posts , setUpdate, update}) {
 
     //수정 버튼
     const navigateModify = (postId) =>{
-        navigate(`/modify/${postId}`);
+        navigate(`/temmodify/${postId}`);
     }
 
 return (
